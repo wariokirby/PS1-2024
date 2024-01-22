@@ -4,10 +4,11 @@
 
 package frc.robot.subsystems;
 
-import com.ctre.phoenix.sensors.CANCoder;
+import com.ctre.phoenix6.hardware.CANcoder;
 import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkLowLevel;
 import com.revrobotics.RelativeEncoder;
-import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+import com.revrobotics.CANSparkLowLevel.MotorType;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -16,7 +17,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 public class SwervePod extends SubsystemBase {
   private CANSparkMax driveMotor;
   private CANSparkMax swerveMotor;
-  private CANCoder dirEnc;
+  private CANcoder dirEnc;
   private RelativeEncoder driveEnc;
   private PIDController directionControl;
 
@@ -30,17 +31,17 @@ public class SwervePod extends SubsystemBase {
   //private boolean usingSpare;
   /** Creates a new SwervePod. */
   public SwervePod(int driveID , double encoderOffset , boolean usingSpare) {
-    driveMotor = new CANSparkMax(driveID, MotorType.kBrushless);
+    driveMotor = new CANSparkMax(driveID, CANSparkLowLevel.MotorType.kBrushless);
     swerveMotor = new CANSparkMax(driveID + 10, MotorType.kBrushless);
     this.encoderOffset = encoderOffset;
     fieldAdjust = 0;
 
     if(usingSpare){
-      dirEnc = new CANCoder(SPARE_POD_ENCODER_ID);
+      dirEnc = new CANcoder(SPARE_POD_ENCODER_ID);
       encoderOffset = SPARE_POD_ENCODER_OFFSET;
     }
     else{
-      dirEnc = new CANCoder(driveID + 20);
+      dirEnc = new CANcoder(driveID + 20);
     }
 
     driveEnc = driveMotor.getEncoder();
@@ -73,14 +74,13 @@ public class SwervePod extends SubsystemBase {
   }
 
   public double getAngle(){
-    double angle = dirEnc.getAbsolutePosition() + encoderOffset + fieldAdjust;
+    double angle = dirEnc.getAbsolutePosition().getValue() + encoderOffset + fieldAdjust;
     if(angle > 180){
       angle -= 360;
     }
     if(angle < -180){
       angle += 360;
     }
-
     return angle;
   }
 
