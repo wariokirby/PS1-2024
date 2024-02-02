@@ -25,7 +25,7 @@ public class RobotContainer {
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
   private final CommandXboxController xbox =
-      new CommandXboxController(2);
+      new CommandXboxController(0);
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -67,12 +67,12 @@ public class RobotContainer {
       drive
       ));*/
     
-    xbox.start().onTrue(Commands.run(
+    /*xbox.start().onTrue(Commands.run(
       () -> drive.podTester(-xbox.getLeftY(), (xbox.getRightX() / 2)), 
       drive
       ));
 
-    xbox.back().onTrue(Commands.runOnce(drive::stop, drive));
+    xbox.back().onTrue(Commands.runOnce(drive::stop, drive));*/
 
     /*xbox.povUp().onTrue(Commands.run(
       () -> drive.setDirection(0),

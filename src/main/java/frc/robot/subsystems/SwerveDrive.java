@@ -4,49 +4,37 @@
 
 package frc.robot.subsystems;
 
-import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.ctre.phoenix.sensors.PigeonIMU;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class SwerveDrive extends SubsystemBase {
-  private final double L = 22 + (3 / 16);//in inches must be measured axel to axel
-  private final double W = 21 + (13 / 16);
+  private final double L = 22 + (3 / 8.0);//in inches must be measured axel to axel
+  private final double W = 22 + (3 / 8.0);
   private double r;
 
-  private final double POD1_OFFSET = -199;
-  private final double POD2_OFFSET = -8;
-  private final double POD3_OFFSET = -43;
-  private final double POD4_OFFSET = -19;
-
-
-  private SwervePod backLeft;//pod1
-  private SwervePod frontLeft;//pod2
-  private SwervePod frontRight;//pod3
-  private SwervePod backRight;//pod4
+  private SwervePod backLeft;
+  private SwervePod frontLeft;
+  private SwervePod frontRight;
+  private SwervePod backRight;
 
   private PigeonIMU imu;
   private PigeonIMU.GeneralStatus imuStatus;
   private int imuErrorCode;
   private double[] ypr;
 
-  private int whichPod;
-
   /** Creates a new SwerveDrive. */
   public SwerveDrive() {
-    var pigTalon = new WPI_TalonSRX(20);
-    imu = new PigeonIMU(pigTalon);
+    imu = new PigeonIMU(30);
     imuStatus = new PigeonIMU.GeneralStatus();
     ypr = new double[3];
     imu.setYaw(0);
 
-    backLeft = new SwervePod(1 , POD1_OFFSET , false);
-    frontLeft = new SwervePod(2 , POD2_OFFSET , false);
-    frontRight = new SwervePod(3 , POD3_OFFSET , false);
-    backRight = new SwervePod(4 , POD4_OFFSET , false);
-
-    whichPod = 1;
+    backLeft = new SwervePod(4);
+    frontLeft = new SwervePod(3);
+    frontRight = new SwervePod(2);
+    backRight = new SwervePod(5);
 
     r = Math.sqrt((L * L) + (W * W));
     
@@ -60,46 +48,6 @@ public class SwerveDrive extends SubsystemBase {
     imu.getYawPitchRoll(ypr);
     SmartDashboard.putNumber("IMU Health", imuErrorCode);
     SmartDashboard.putNumber("IMU Yaw", ypr[0]);
-  }
-
-  public SwervePod getPod(int pod){
-    switch(pod){
-      case 1:
-        return backLeft;
-      case 2:
-        return frontLeft;
-      case 3:
-        return frontRight;
-       case 4:
-        return backRight;
-      default:
-        return null;
-      }
-  }
-
-  public void podTester(double drive , double turn){
-    switch(whichPod){
-      case 1:
-        backLeft.spinWheel(drive);
-        backLeft.turnPod(turn);
-        break;
-      case 2:
-        frontLeft.spinWheel(drive);
-        frontLeft.turnPod(turn);
-        break;
-      case 3:
-        frontRight.spinWheel(drive);
-        frontRight.turnPod(turn);
-        break;
-      case 4:
-        backRight.spinWheel(drive);
-        backRight.turnPod(turn);
-        break;
-    }//end switch
-  }
-
-  public void switcher(int whichPod){
-    this.whichPod = whichPod;
   }
 
   public void podDriver(double x1 , double y1 , double x2){
@@ -128,7 +76,7 @@ public class SwerveDrive extends SubsystemBase {
     double frontRightAngle = (Math.atan2 (b, d) / Math.PI) * 180;
     double frontLeftAngle = (Math.atan2 (b, c) / Math.PI) * 180;
 
-    SmartDashboard.putNumber("BR Speed", backRightSpeed);
+    /*SmartDashboard.putNumber("BR Speed", backRightSpeed);
     SmartDashboard.putNumber("BR Angle", backRightAngle);
     SmartDashboard.putNumber("BL Speed", backLeftSpeed);
     SmartDashboard.putNumber("BL Angle", backLeftAngle);
@@ -138,7 +86,7 @@ public class SwerveDrive extends SubsystemBase {
     SmartDashboard.putNumber("FL Angle", frontLeftAngle);
     SmartDashboard.putNumber("x1", x1);
     SmartDashboard.putNumber("y1", y1);
-    SmartDashboard.putNumber("x2", x2);
+    SmartDashboard.putNumber("x2", x2);*/
 
     backRight.drivePod (backRightSpeed, backRightAngle, ypr[0]);
     backLeft.drivePod (backLeftSpeed, backLeftAngle, ypr[0]);
