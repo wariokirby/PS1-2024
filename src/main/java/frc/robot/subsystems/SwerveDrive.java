@@ -24,6 +24,8 @@ public class SwerveDrive extends SubsystemBase {
   private int imuErrorCode;
   private double[] ypr;
 
+  private boolean fieldOriented = false;
+
   /** Creates a new SwerveDrive. */
   public SwerveDrive() {
     imu = new PigeonIMU(30);
@@ -51,6 +53,7 @@ public class SwerveDrive extends SubsystemBase {
   }
 
   public void podDriver(double x1 , double y1 , double x2){
+  
     if(Math.abs(x1) <= .1){
       x1 = 0;
     }
@@ -59,6 +62,14 @@ public class SwerveDrive extends SubsystemBase {
     }
     if(Math.abs(x2) <= .1){
       x2 = 0;
+    }
+
+    //field oriented drive controller mod option, set to true in instance variables
+    if(fieldOriented){
+      double yawRad = ypr[0] * Math.PI / 180;
+      double temp = y1 * Math.cos(yawRad) + x1 * Math.sin(yawRad);
+      x1 = y1 * Math.sin(yawRad) + x1 * Math.cos(yawRad);//navx makes y1 negative because clockwise is positive, pigeon is counter clockwise positive I think
+      y1 = temp;
     }
 
     double a = x1 - x2 * (L / r);
@@ -88,10 +99,15 @@ public class SwerveDrive extends SubsystemBase {
     SmartDashboard.putNumber("y1", y1);
     SmartDashboard.putNumber("x2", x2);*/
 
-    backRight.drivePod (backRightSpeed, backRightAngle, ypr[0]);
+    /*backRight.drivePod (backRightSpeed, backRightAngle, ypr[0]);
     backLeft.drivePod (backLeftSpeed, backLeftAngle, ypr[0]);
     frontRight.drivePod (frontRightSpeed, frontRightAngle, ypr[0]);
-    frontLeft.drivePod (frontLeftSpeed, frontLeftAngle, ypr[0]);
+    frontLeft.drivePod (frontLeftSpeed, frontLeftAngle, ypr[0]);*/
+
+    backRight.drivePod (backRightSpeed, backRightAngle);
+    backLeft.drivePod (backLeftSpeed, backLeftAngle);
+    frontRight.drivePod (frontRightSpeed, frontRightAngle);
+    frontLeft.drivePod (frontLeftSpeed, frontLeftAngle);
 
   }
 

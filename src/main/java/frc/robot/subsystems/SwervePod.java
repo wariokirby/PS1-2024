@@ -7,7 +7,6 @@ package frc.robot.subsystems;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkFlex;
-import com.revrobotics.CANSparkLowLevel;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
@@ -22,7 +21,7 @@ public class SwervePod extends SubsystemBase {
   private RelativeEncoder driveEnc;
   private PIDController directionControl;
 
-  private double fieldAdjust;
+  //private double fieldAdjust;
 
   private int podID;
 
@@ -34,7 +33,7 @@ public class SwervePod extends SubsystemBase {
   public SwervePod(int driveID) {
     driveMotor = new CANSparkMax(driveID, MotorType.kBrushless);
     swerveMotor = new CANSparkFlex(driveID + 10, MotorType.kBrushless);
-    fieldAdjust = 0;
+    //fieldAdjust = 0;
     dirEnc = new CANcoder(driveID + 20);
 
     driveEnc = driveMotor.getEncoder();
@@ -51,7 +50,7 @@ public class SwervePod extends SubsystemBase {
  public SwervePod(int driveID, int spareID) {
     driveMotor = new CANSparkMax(driveID, MotorType.kBrushless);
     swerveMotor = new CANSparkFlex(spareID + 10, MotorType.kBrushless);
-    fieldAdjust = 0;
+    //fieldAdjust = 0;
     dirEnc = new CANcoder(spareID + 20);
 
     driveEnc = driveMotor.getEncoder();
@@ -83,7 +82,8 @@ public class SwervePod extends SubsystemBase {
   }
 
   public double getAngle(){
-    double angle = (dirEnc.getAbsolutePosition().getValue() * 360) + fieldAdjust;
+    //double angle = (dirEnc.getAbsolutePosition().getValue() * 360) + fieldAdjust;
+    double angle = (dirEnc.getAbsolutePosition().getValue() * 360);
     /*if(angle > 180){
       angle -= 360;
     }
@@ -117,8 +117,8 @@ public class SwervePod extends SubsystemBase {
     turnPod(directionControl.calculate(getAngle(), direction));
   }
 
-  public void drivePod(double drive , double direction , double yaw){
-    //fieldAdjust = yaw;
+  public void drivePod(double drive , double direction){
+    //fieldAdjust = yaw;//add a yaw parameter and set it up in SwerveDrive class if switching back to changing the encoder offset for field oriented
     setDirection(direction);
     if(Math.abs(drive) > .1){
       driveMotor.set(drive);
