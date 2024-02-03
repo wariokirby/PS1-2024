@@ -113,7 +113,6 @@ public class SwervePod extends SubsystemBase {
     else{
       driveMotor.setInverted(false);
     }
-    SmartDashboard.putNumber("pid" + podID, directionControl.calculate(getAngle(), direction));
     turnPod(directionControl.calculate(getAngle(), direction));
   }
 
