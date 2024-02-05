@@ -11,23 +11,39 @@ import com.revrobotics.RelativeEncoder;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class SwervePod extends SubsystemBase {
+
   private CANSparkMax driveMotor;
   private CANSparkFlex swerveMotor;
   private CANcoder dirEnc;
   private RelativeEncoder driveEnc;
-  private PIDController directionControl;
-
   //private double fieldAdjust;
-
   private int podID;
+
+  private PIDController directionControl;
 
   private final double S_P = 1.0/150;
   private final double S_I = 0;
   private final double S_D = 0;
+
+  private PIDController velocityControl;
+  private final double SPEED_LIMIT = 11.5;//based on neo 5676 rpm stat TODO get actual max speed
+  private SimpleMotorFeedforward ff;
+  private boolean manualOverride;
+ 
+
+  private final double D_P = 1;
+  private final double D_I = 0;
+  private final double D_D = 0;
+  private final double KS = .05;
+  private final double KV = 12.0 / SPEED_LIMIT;
+
+
+
 
   /** Creates a new SwervePod. */
   public SwervePod(int driveID) {
@@ -45,6 +61,10 @@ public class SwervePod extends SubsystemBase {
     driveEnc.setVelocityConversionFactor(((4/12.0) * Math.PI) / (8.14 * 60));//circumference for 4" wheel divided by 12" to a foot / gear ratio * convert to seconds -> feet per second
 
     podID = driveID;
+
+    manualOverride = true;
+    velocityControl = new PIDController(D_P, D_I, D_D);
+    ff = new SimpleMotorFeedforward(KS, KV);
   }
 
  public SwervePod(int driveID, int spareID) {
@@ -62,6 +82,10 @@ public class SwervePod extends SubsystemBase {
     driveEnc.setVelocityConversionFactor(((4/12.0) * Math.PI) / (8.14 * 60));//circumference for 4" wheel divided by 12" to a foot / gear ratio * convert to seconds -> feet per second
 
     podID = driveID;
+
+    manualOverride = true;
+    velocityControl = new PIDController(D_P, D_I, D_D);
+    ff = new SimpleMotorFeedforward(KS, KV);
   }
 
 
@@ -119,12 +143,22 @@ public class SwervePod extends SubsystemBase {
   public void drivePod(double drive , double direction){
     //fieldAdjust = yaw;//add a yaw parameter and set it up in SwerveDrive class if switching back to changing the encoder offset for field oriented
     setDirection(direction);
-    if(Math.abs(drive) > .1){
-      driveMotor.set(drive);
-    }
+    if(manualOverride){
+      if(Math.abs(drive) > .1){
+        driveMotor.set(drive);
+      }
+      else{
+        driveMotor.set(0);
+      }
+    }//end no velocity control
     else{
-      driveMotor.set(0);
-    }
+      double setpoint = drive * SPEED_LIMIT;
+      driveMotor.setVoltage(velocityControl.calculate(getSpeed(), setpoint) + ff.calculate(setpoint));
+    }//end velocity control
+  }
+
+  public void setManualOverride(boolean manualOverride){
+    this.manualOverride = manualOverride;
   }
 
   
