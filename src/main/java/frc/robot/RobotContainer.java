@@ -45,12 +45,9 @@ public class RobotContainer {
    * joysticks}.
    */
   private void configureBindings() {
-    /*xbox.a().onTrue(Commands.runOnce(
-      () -> drive.switcher(1),
-      drive
-      ));
+    xbox.a().onTrue(Commands.runOnce(drive :: resetYaw , drive));
 
-    xbox.x().onTrue(Commands.runOnce(
+    /*xbox.x().onTrue(Commands.runOnce(
       () -> drive.switcher(2),
       drive
       ));

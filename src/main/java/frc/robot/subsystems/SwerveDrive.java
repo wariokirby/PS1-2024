@@ -43,6 +43,10 @@ public class SwerveDrive extends SubsystemBase {
 
   }
 
+  public void resetYaw(){
+    imu.setYaw(0);
+  }
+
   @Override
   public void periodic() {
     // This method will be called once per scheduler run

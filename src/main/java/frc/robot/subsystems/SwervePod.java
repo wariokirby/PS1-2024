@@ -26,7 +26,7 @@ public class SwervePod extends SubsystemBase {
 
   private PIDController directionControl;
 
-  private final double S_P = 1.0/150;
+  private final double S_P = 1.0/180;
   private final double S_I = 0;
   private final double S_D = 0;
 
