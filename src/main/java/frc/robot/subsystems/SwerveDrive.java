@@ -24,7 +24,7 @@ public class SwerveDrive extends SubsystemBase {
   private int imuErrorCode;
   private double[] ypr;
 
-  private boolean fieldOriented = false;
+  private boolean fieldOriented = true;
 
   /** Creates a new SwerveDrive. */
   public SwerveDrive() {
@@ -72,7 +72,7 @@ public class SwerveDrive extends SubsystemBase {
     if(fieldOriented){
       double yawRad = ypr[0] * Math.PI / 180;
       double temp = y1 * Math.cos(yawRad) + x1 * Math.sin(yawRad);
-      x1 = y1 * Math.sin(yawRad) + x1 * Math.cos(yawRad);//navx makes y1 negative because clockwise is positive, pigeon is counter clockwise positive I think
+      x1 = -y1 * Math.sin(yawRad) + x1 * Math.cos(yawRad);//navx makes y1 negative because clockwise is positive, pigeon is counter clockwise positive I think
       y1 = temp;
     }
 

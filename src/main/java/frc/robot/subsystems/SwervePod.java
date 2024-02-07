@@ -26,17 +26,17 @@ public class SwervePod extends SubsystemBase {
 
   private PIDController directionControl;
 
-  private final double S_P = 1.0/180;
+  private final double S_P = 1.0/170;
   private final double S_I = 0;
   private final double S_D = 0;
 
   private PIDController velocityControl;
   private final double SPEED_LIMIT = 11.5;//based on neo 5676 rpm stat TODO get actual max speed
   private SimpleMotorFeedforward ff;
-  private boolean manualOverride;
+  private boolean manualOverride = false;
  
 
-  private final double D_P = 1;
+  private final double D_P = .5;
   private final double D_I = 0;
   private final double D_D = 0;
   private final double KS = .05;
@@ -62,7 +62,7 @@ public class SwervePod extends SubsystemBase {
 
     podID = driveID;
 
-    manualOverride = true;
+    //manualOverride = true;
     velocityControl = new PIDController(D_P, D_I, D_D);
     ff = new SimpleMotorFeedforward(KS, KV);
   }
@@ -83,7 +83,7 @@ public class SwervePod extends SubsystemBase {
 
     podID = driveID;
 
-    manualOverride = true;
+    //manualOverride = true;
     velocityControl = new PIDController(D_P, D_I, D_D);
     ff = new SimpleMotorFeedforward(KS, KV);
   }
