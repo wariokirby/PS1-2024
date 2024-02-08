@@ -24,6 +24,8 @@ public class SwerveDrive extends SubsystemBase {
   private int imuErrorCode;
   private double[] ypr;
 
+  private boolean turbo = true;
+
   private boolean fieldOriented = true;
 
   /** Creates a new SwerveDrive. */
@@ -40,7 +42,15 @@ public class SwerveDrive extends SubsystemBase {
 
     r = Math.sqrt((L * L) + (W * W));
     
+    //turbo = false;
 
+  }
+
+  public void turboOn(){
+    turbo = true;
+  }
+  public void turboOff(){
+    turbo = false;
   }
 
   public void resetYaw(){
@@ -66,6 +76,10 @@ public class SwerveDrive extends SubsystemBase {
     }
     if(Math.abs(x2) <= .1){
       x2 = 0;
+    }
+
+    if(!turbo){
+      y1 *= .5;
     }
 
     //field oriented drive controller mod option, set to true in instance variables

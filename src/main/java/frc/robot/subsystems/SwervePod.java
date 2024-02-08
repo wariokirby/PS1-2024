@@ -11,7 +11,9 @@ import com.revrobotics.RelativeEncoder;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
@@ -30,10 +32,11 @@ public class SwervePod extends SubsystemBase {
   private final double S_I = 0;
   private final double S_D = 0;
 
-  private PIDController velocityControl;
-  private final double SPEED_LIMIT = 11.5;//based on neo 5676 rpm stat TODO get actual max speed
+  //private PIDController velocityControl;
+  private ProfiledPIDController velocityControl;//attempting to reduce acceleration to manageable levels be sure to change both contructors when activating or disabling
+  private final double SPEED_LIMIT = 11;//Actual top speed is about 11.7, limiting for vel control
   private SimpleMotorFeedforward ff;
-  private boolean manualOverride = false;
+  private boolean manualOverride;
  
 
   private final double D_P = .5;
@@ -62,8 +65,9 @@ public class SwervePod extends SubsystemBase {
 
     podID = driveID;
 
-    //manualOverride = true;
-    velocityControl = new PIDController(D_P, D_I, D_D);
+    manualOverride = false;
+    //velocityControl = new PIDController(D_P, D_I, D_D);
+    velocityControl = new ProfiledPIDController(D_P, D_I, D_D, new TrapezoidProfile.Constraints(SPEED_LIMIT , 20));
     ff = new SimpleMotorFeedforward(KS, KV);
   }
 
@@ -83,8 +87,9 @@ public class SwervePod extends SubsystemBase {
 
     podID = driveID;
 
-    //manualOverride = true;
-    velocityControl = new PIDController(D_P, D_I, D_D);
+    manualOverride = false;
+    //velocityControl = new PIDController(D_P, D_I, D_D);
+    velocityControl = new ProfiledPIDController(D_P, D_I, D_D, new TrapezoidProfile.Constraints(SPEED_LIMIT , 20));
     ff = new SimpleMotorFeedforward(KS, KV);
   }
 
@@ -106,14 +111,7 @@ public class SwervePod extends SubsystemBase {
   }
 
   public double getAngle(){
-    //double angle = (dirEnc.getAbsolutePosition().getValue() * 360) + fieldAdjust;
     double angle = (dirEnc.getAbsolutePosition().getValue() * 360);
-    /*if(angle > 180){
-      angle -= 360;
-    }
-    if(angle < -180){
-      angle += 360;
-    }*/
     return angle;
   }
 
@@ -130,7 +128,7 @@ public class SwervePod extends SubsystemBase {
       altDir = direction + 180;
     }
     
-    if(Math.abs(getAngle() - direction) > Math.abs(getAngle() - altDir)){
+    if(optimize(direction)){
       direction = altDir;
       driveMotor.setInverted(true);
     }
@@ -139,6 +137,32 @@ public class SwervePod extends SubsystemBase {
     }
     turnPod(directionControl.calculate(getAngle(), direction));
   }
+
+  private boolean optimize(double direction){
+    double currAngle = getAngle();
+    double altDir;
+    if(direction > 0){
+      altDir = direction - 180;
+    }
+    else{
+      altDir = direction + 180;
+    }
+    double normWay = Math.abs(currAngle - direction);
+    double altWay = Math.abs(currAngle - altDir);
+    double normCross;
+    double altCross;
+    if(currAngle >= 0){
+      normCross = (180 - currAngle) + (direction + 180);
+      altCross = (180 - currAngle) + (altDir + 180);
+    }
+    else{
+      normCross = (currAngle + 180) + (180 - direction);
+      altCross = (currAngle + 180) + (180 - altDir);
+    }
+    return (altWay < normWay && altWay < normCross) || (altCross < normWay && altCross < normCross);
+
+  }
+
 
   public void drivePod(double drive , double direction){
     //fieldAdjust = yaw;//add a yaw parameter and set it up in SwerveDrive class if switching back to changing the encoder offset for field oriented
@@ -153,7 +177,7 @@ public class SwervePod extends SubsystemBase {
     }//end no velocity control
     else{
       double setpoint = drive * SPEED_LIMIT;
-      driveMotor.setVoltage(velocityControl.calculate(getSpeed(), setpoint) + ff.calculate(setpoint));
+      driveMotor.setVoltage(velocityControl.calculate(getSpeed(), setpoint) + ff.calculate(velocityControl.getSetpoint().velocity));
     }//end velocity control
   }
 
