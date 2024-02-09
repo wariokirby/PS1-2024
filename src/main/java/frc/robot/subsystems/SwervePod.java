@@ -24,7 +24,7 @@ public class SwervePod extends SubsystemBase {
   private CANcoder dirEnc;
   private RelativeEncoder driveEnc;
   //private double fieldAdjust;
-  private int podID;
+  private int positionID;
 
   private PIDController directionControl;
 
@@ -43,13 +43,13 @@ public class SwervePod extends SubsystemBase {
   private final double D_I = 0;
   private final double D_D = 0;
   private final double KS = .05;
-  private final double KV = 12.0 / SPEED_LIMIT;
+  private final double KV = 12.0 / 11.5;
 
 
 
 
   /** Creates a new SwervePod. */
-  public SwervePod(int driveID) {
+  /*public SwervePod(int driveID) {
     driveMotor = new CANSparkMax(driveID, MotorType.kBrushless);
     swerveMotor = new CANSparkFlex(driveID + 10, MotorType.kBrushless);
     //fieldAdjust = 0;
@@ -69,13 +69,13 @@ public class SwervePod extends SubsystemBase {
     //velocityControl = new PIDController(D_P, D_I, D_D);
     velocityControl = new ProfiledPIDController(D_P, D_I, D_D, new TrapezoidProfile.Constraints(SPEED_LIMIT , 20));
     ff = new SimpleMotorFeedforward(KS, KV);
-  }
+  }*/
 
- public SwervePod(int driveID, int spareID) {
-    driveMotor = new CANSparkMax(driveID, MotorType.kBrushless);
-    swerveMotor = new CANSparkFlex(spareID + 10, MotorType.kBrushless);
+ public SwervePod(int positionID, int podID) {
+    driveMotor = new CANSparkMax(positionID, MotorType.kBrushless);
+    swerveMotor = new CANSparkFlex(podID + 10, MotorType.kBrushless);
     //fieldAdjust = 0;
-    dirEnc = new CANcoder(spareID + 20);
+    dirEnc = new CANcoder(podID + 20);
 
     driveEnc = driveMotor.getEncoder();
 
@@ -85,7 +85,7 @@ public class SwervePod extends SubsystemBase {
     driveEnc.setPositionConversionFactor(((4/12.0) * Math.PI) / (8.14)); //circumference for 4" wheel divided by 12" to a foot / gear ratio * -> feet
     driveEnc.setVelocityConversionFactor(((4/12.0) * Math.PI) / (8.14 * 60));//circumference for 4" wheel divided by 12" to a foot / gear ratio * convert to seconds -> feet per second
 
-    podID = driveID;
+    this.positionID = positionID;
 
     manualOverride = false;
     //velocityControl = new PIDController(D_P, D_I, D_D);
@@ -96,9 +96,9 @@ public class SwervePod extends SubsystemBase {
 
   @Override
   public void periodic() {
-    SmartDashboard.putNumber("Speed" + podID, getSpeed());
-    SmartDashboard.putNumber("Distance" + podID, getDistance());
-    SmartDashboard.putNumber("Angle" + podID, getAngle());
+    SmartDashboard.putNumber("Speed" + positionID, getSpeed());
+    SmartDashboard.putNumber("Distance" + positionID, getDistance());
+    SmartDashboard.putNumber("Angle" + positionID, getAngle());
     // This method will be called once per scheduler run
   }
 
