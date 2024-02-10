@@ -32,8 +32,8 @@ public class SwervePod extends SubsystemBase {
   private final double S_I = 0;
   private final double S_D = 0;
 
-  //private PIDController velocityControl;
-  private ProfiledPIDController velocityControl;//attempting to reduce acceleration to manageable levels be sure to change both contructors when activating or disabling
+  private PIDController velocityControl;
+  //private ProfiledPIDController velocityControl;//attempting to reduce acceleration to manageable levels be sure to change both contructors when activating or disabling
   private final double SPEED_LIMIT = 11;//Actual top speed is about 11.7, limiting for vel control
   private SimpleMotorFeedforward ff;
   private boolean manualOverride;
@@ -88,8 +88,8 @@ public class SwervePod extends SubsystemBase {
     this.positionID = positionID;
 
     manualOverride = false;
-    //velocityControl = new PIDController(D_P, D_I, D_D);
-    velocityControl = new ProfiledPIDController(D_P, D_I, D_D, new TrapezoidProfile.Constraints(SPEED_LIMIT , 20));
+    velocityControl = new PIDController(D_P, D_I, D_D);
+    //velocityControl = new ProfiledPIDController(D_P, D_I, D_D, new TrapezoidProfile.Constraints(SPEED_LIMIT , 20));
     ff = new SimpleMotorFeedforward(KS, KV);
   }
 
@@ -177,7 +177,7 @@ public class SwervePod extends SubsystemBase {
     }//end no velocity control
     else{
       double setpoint = drive * SPEED_LIMIT;
-      driveMotor.setVoltage(velocityControl.calculate(getSpeed(), setpoint) + ff.calculate(velocityControl.getSetpoint().velocity));
+      driveMotor.setVoltage(velocityControl.calculate(getSpeed(), setpoint) + ff.calculate(setpoint));
     }//end velocity control
   }
 
