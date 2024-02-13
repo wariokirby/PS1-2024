@@ -8,6 +8,7 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Collector extends SubsystemBase {
@@ -20,15 +21,16 @@ public class Collector extends SubsystemBase {
 
   /** Creates a new Collector. */
   public Collector() {
-    deploy = new CANSparkMax(43, MotorType.kBrushless);
+    deploy = new CANSparkMax(45, MotorType.kBrushless);
     deployEncoder = deploy.getEncoder();
-    deployEncoder.setPositionConversionFactor(1 / 100);
-    collect = new CANSparkMax(44, MotorType.kBrushless);
+    deployEncoder.setPositionConversionFactor(1 / 100.0);
+    collect = new CANSparkMax(46, MotorType.kBrushless);
     down = false;
   }
 
   @Override
   public void periodic() {
+    SmartDashboard.putNumber("Collector Position", deployEncoder.getPosition());
     // This method will be called once per scheduler run
   }
 
@@ -42,10 +44,10 @@ public class Collector extends SubsystemBase {
 
   public void runCollector(double speed){
     if(down && deployEncoder.getPosition() < DOWN_POSITION){
-      deploy.set(DOWN_POSITION - deployEncoder.getPosition() / DOWN_POSITION);//TODO Down may need a speed limiter
+      deploy.set((DOWN_POSITION - deployEncoder.getPosition()) / DOWN_POSITION);//TODO Down may need a speed limiter
     }
     else if(!down && deployEncoder.getPosition() > UP_POSITION){
-      deploy.set(UP_POSITION - deployEncoder.getPosition() / DOWN_POSITION);//may need more power
+      deploy.set((UP_POSITION - deployEncoder.getPosition()) / DOWN_POSITION);//may need more power
     }
     else{
       deploy.set(0);
