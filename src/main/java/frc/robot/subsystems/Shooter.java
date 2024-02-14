@@ -77,11 +77,11 @@ public class Shooter extends SubsystemBase {
     loader.set(-1);
   }
 
-  public void fireNote(double speed){
+  public void fireNote(double speed , double load){
     if(manualOverride){
       if(Math.abs(speed) > .1){
-        flywheelTopLeft.set(speed);
-        flywheelBottomLeft.set(speed);
+        flywheelTopLeft.setVoltage(speed * 12);
+        flywheelBottomLeft.setVoltage(speed * 12);
       }
       else{
         flywheelTopLeft.set(0);
@@ -93,6 +93,18 @@ public class Shooter extends SubsystemBase {
       flywheelTopLeft.setVoltage(topControl.calculate(topEncoder.getVelocity(), setpoint) + ff.calculate(setpoint));
       flywheelBottomLeft.setVoltage(bottomControl.calculate(bottomEncoder.getVelocity() , setpoint) + ff.calculate(setpoint));
     }
+
+    if(Math.abs(load) > .1){
+      loader.set(load);
+    }
+    else{
+      loader.set(0);
+    }
+  }
+
+  public void stopShooter(){
+    flywheelTopLeft.set(0);
+    flywheelBottomLeft.set(0);
   }
 
   public boolean getNoteDetect(){
