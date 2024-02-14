@@ -18,8 +18,10 @@ public class Shooter extends SubsystemBase {
   private final double SHOOTER_FEEDFORWARD_KS = 0.05; //probably the same as before
   private final double SHOOTER_FEEDFORWARD_KV = 12.0 / SHOOTER_RPS_MAX;
 
-  private CANSparkMax flywheelTop;
-  private CANSparkMax flywheelBottom;
+  private CANSparkMax flywheelTopLeft;
+  private CANSparkMax flywheelTopFollower;
+  private CANSparkMax flywheelBottomLeft;
+  private CANSparkMax flywheelBottomFollower;
   private CANSparkMax loader;
   private RelativeEncoder topEncoder;
   private RelativeEncoder bottomEncoder;
@@ -30,25 +32,36 @@ public class Shooter extends SubsystemBase {
 
   private boolean manualOverride;
 
-  private DigitalInput noteDetect;
+  private DigitalInput primaryNoteDetect;
+  private DigitalInput backupNoteDetect;
 
   /** Creates a new Shooter. */
   public Shooter() {
-    noteDetect = new DigitalInput(0);
+    primaryNoteDetect = new DigitalInput(0);
+    backupNoteDetect = new DigitalInput(1);
 
-    flywheelTop = new CANSparkMax(40, MotorType.kBrushless);
-    flywheelTop.setInverted(false);
-    topEncoder = flywheelTop.getEncoder();
+
+    flywheelTopLeft = new CANSparkMax(40, MotorType.kBrushless);
+    flywheelTopLeft.setInverted(false);
+    flywheelTopFollower = new CANSparkMax(41, MotorType.kBrushless);
+    flywheelTopFollower.setInverted(!flywheelTopLeft.getInverted());
+    flywheelTopFollower.follow(flywheelTopLeft);
+    topEncoder = flywheelTopLeft.getEncoder();
     topControl = new PIDController(1, 0, 0);
 
-    flywheelBottom = new CANSparkMax(41, MotorType.kBrushless);
-    flywheelBottom.setInverted(true);
-    bottomEncoder = flywheelBottom.getEncoder();
+    flywheelBottomLeft = new CANSparkMax(42, MotorType.kBrushless);
+    flywheelBottomLeft.setInverted(true);
+    flywheelBottomFollower = new CANSparkMax(43, MotorType.kBrushless);
+    flywheelBottomFollower.setInverted(!flywheelBottomLeft.getInverted());
+    flywheelBottomFollower.follow(flywheelBottomLeft);
+    bottomEncoder = flywheelBottomLeft.getEncoder();
     bottomControl = new PIDController(1, 0, 0);
 
     ff = new SimpleMotorFeedforward(SHOOTER_FEEDFORWARD_KS, SHOOTER_FEEDFORWARD_KV);
 
-    loader = new CANSparkMax(42, MotorType.kBrushless);
+    loader = new CANSparkMax(44, MotorType.kBrushless);
+
+    manualOverride = true;
   }
 
   @Override
@@ -69,23 +82,23 @@ public class Shooter extends SubsystemBase {
   public void fireNote(double speed){
     if(manualOverride){
       if(Math.abs(speed) > .1){
-        flywheelTop.set(speed);
-        flywheelBottom.set(speed);
+        flywheelTopLeft.set(speed);
+        flywheelBottomLeft.set(speed);
       }
       else{
-        flywheelTop.set(0);
-        flywheelBottom.set(0);
+        flywheelTopLeft.set(0);
+        flywheelBottomLeft.set(0);
       }
     }
     else{
       double setpoint = SHOOTER_RPS_MAX * speed;
-      flywheelTop.setVoltage(topControl.calculate(topEncoder.getVelocity(), setpoint) + ff.calculate(setpoint));
-      flywheelBottom.setVoltage(bottomControl.calculate(bottomEncoder.getVelocity() , setpoint) + ff.calculate(setpoint));
+      flywheelTopLeft.setVoltage(topControl.calculate(topEncoder.getVelocity(), setpoint) + ff.calculate(setpoint));
+      flywheelBottomLeft.setVoltage(bottomControl.calculate(bottomEncoder.getVelocity() , setpoint) + ff.calculate(setpoint));
     }
   }
 
   public boolean getNoteDetect(){
-    return noteDetect.get();
+    return primaryNoteDetect.get() || backupNoteDetect.get();
   }
 
 

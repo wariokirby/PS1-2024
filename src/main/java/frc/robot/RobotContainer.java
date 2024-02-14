@@ -5,6 +5,7 @@
 package frc.robot;
 
 import frc.robot.commands.Autos;
+import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.SwerveDrive;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -20,10 +21,13 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   private final SwerveDrive drive = new SwerveDrive();
+  private final Shooter shooter = new Shooter();
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
   private final CommandXboxController xbox =
       new CommandXboxController(0);
+  private final CommandXboxController xboxOperator =
+      new CommandXboxController(1);
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -31,9 +35,17 @@ public class RobotContainer {
       () -> drive.podDriver(-xbox.getLeftX(), -xbox.getLeftY() , xbox.getRightX()),
       drive
       ));
+
+    shooter.setDefaultCommand(Commands.run(
+      () -> shooter.fireNote(-xboxOperator.getLeftY()),
+      shooter
+      ));
+
     // Configure the trigger bindings
     configureBindings();
   }
+
+
 
   /**
    * Use this method to define your trigger->command mappings. Triggers can be created via the
