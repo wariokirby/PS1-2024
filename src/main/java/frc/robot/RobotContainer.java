@@ -37,7 +37,7 @@ public class RobotContainer {
       ));
 
     shooter.setDefaultCommand(Commands.run(
-      () -> shooter.fireNote(-xboxOperator.getLeftY() , -xboxOperator.getRightY()),
+      () -> shooter.fireNoteManual(-xboxOperator.getLeftY() , -xboxOperator.getRightY()),
       shooter
       ));
 
@@ -60,7 +60,7 @@ public class RobotContainer {
     xbox.a().onTrue(Commands.runOnce(drive :: resetYaw , drive));
 
     xboxOperator.a().onTrue(Commands.run(
-      () -> shooter.fireNote(.5 , -xboxOperator.getRightY()),
+      () -> shooter.fireNote(2000 , -xboxOperator.getRightY()),
       shooter
       ));
     

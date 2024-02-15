@@ -11,12 +11,13 @@ import com.revrobotics.CANSparkLowLevel.MotorType;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Shooter extends SubsystemBase {
-  private final double SHOOTER_RPS_MAX = 5676 / 60.0; //stated rpm to rps,  TODO: get actual max RPS
+  private final double SHOOTER_RPM_MAX = 5676; ///60 to make rpm to rps,  TODO: get actual max RPM
   private final double SHOOTER_FEEDFORWARD_KS = 0.05; //probably the same as before
-  private final double SHOOTER_FEEDFORWARD_KV = 12.0 / SHOOTER_RPS_MAX;
+  private final double SHOOTER_FEEDFORWARD_KV = 12.0 / SHOOTER_RPM_MAX;
 
   private CANSparkMax flywheelTopLeft;
   private CANSparkMax flywheelTopFollower;
@@ -64,6 +65,8 @@ public class Shooter extends SubsystemBase {
 
   @Override
   public void periodic() {
+    SmartDashboard.putNumber("Top Flywheel", topEncoder.getVelocity());
+    SmartDashboard.putNumber("Bottom Flywheel", bottomEncoder.getVelocity());
     // This method will be called once per scheduler run
   }
 
@@ -77,29 +80,35 @@ public class Shooter extends SubsystemBase {
     loader.set(-1);
   }
 
-  public void fireNote(double speed , double load){
-    if(manualOverride){
-      if(Math.abs(speed) > .1){
-        flywheelTopLeft.setVoltage(speed * 12);
-        flywheelBottomLeft.setVoltage(speed * 12);
-      }
-      else{
-        flywheelTopLeft.set(0);
-        flywheelBottomLeft.set(0);
-      }
+  public void fireNoteManual(double speed , double load){
+    speed *= .5;
+    if(Math.abs(speed) > .1){
+      flywheelTopLeft.setVoltage(speed * 12);
+      flywheelBottomLeft.setVoltage(speed * 12);
     }
     else{
-      double setpoint = SHOOTER_RPS_MAX * speed;
-      flywheelTopLeft.setVoltage(topControl.calculate(topEncoder.getVelocity(), setpoint) + ff.calculate(setpoint));
-      flywheelBottomLeft.setVoltage(bottomControl.calculate(bottomEncoder.getVelocity() , setpoint) + ff.calculate(setpoint));
+      flywheelTopLeft.set(0);
+      flywheelBottomLeft.set(0);
     }
+    runLoader(load);
+  }
 
+  public void fireNote(int rpm , double load){
+    double setpoint = rpm;
+    flywheelTopLeft.setVoltage(topControl.calculate(topEncoder.getVelocity(), setpoint) + ff.calculate(setpoint));
+    flywheelBottomLeft.setVoltage(bottomControl.calculate(bottomEncoder.getVelocity() , setpoint) + ff.calculate(setpoint));
+    runLoader(load);
+
+  }
+
+  private void runLoader(double load){
     if(Math.abs(load) > .1){
       loader.set(load);
     }
     else{
       loader.set(0);
     }
+
   }
 
   public void stopShooter(){
