@@ -59,6 +59,7 @@ public class Shooter extends SubsystemBase {
     ff = new SimpleMotorFeedforward(SHOOTER_FEEDFORWARD_KS, SHOOTER_FEEDFORWARD_KV);
 
     loader = new CANSparkMax(44, MotorType.kBrushless);
+    loader.setInverted(true);
 
     manualOverride = true;
   }
