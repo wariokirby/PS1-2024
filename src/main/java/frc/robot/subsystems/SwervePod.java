@@ -11,19 +11,15 @@ import com.revrobotics.RelativeEncoder;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
 import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
-import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class SwervePod extends SubsystemBase {
-
   private CANSparkMax driveMotor;
   private CANSparkFlex swerveMotor;
   private CANcoder dirEnc;
   private RelativeEncoder driveEnc;
-  //private double fieldAdjust;
   private int positionID;
 
   private PIDController directionControl;
@@ -33,7 +29,6 @@ public class SwervePod extends SubsystemBase {
   private final double S_D = 0;
 
   private PIDController velocityControl;
-  //private ProfiledPIDController velocityControl;//attempting to reduce acceleration to manageable levels be sure to change both contructors when activating or disabling
   private final double SPEED_LIMIT = 11;//Actual top speed is about 11.7, limiting for vel control
   private SimpleMotorFeedforward ff;
   private boolean manualOverride;
@@ -45,51 +40,22 @@ public class SwervePod extends SubsystemBase {
   private final double KS = .05;
   private final double KV = 12.0 / 11.5;
 
-
-
-
-  /** Creates a new SwervePod. */
-  /*public SwervePod(int driveID) {
-    driveMotor = new CANSparkMax(driveID, MotorType.kBrushless);
-    swerveMotor = new CANSparkFlex(driveID + 10, MotorType.kBrushless);
-    //fieldAdjust = 0;
-    dirEnc = new CANcoder(driveID + 20);
-
-    driveEnc = driveMotor.getEncoder();
-
-    directionControl = new PIDController(S_P, S_I, S_D);
-    directionControl.enableContinuousInput(-180, 180);
-
-    driveEnc.setPositionConversionFactor(((4/12.0) * Math.PI) / (8.14)); //circumference for 4" wheel divided by 12" to a foot / gear ratio * -> feet
-    driveEnc.setVelocityConversionFactor(((4/12.0) * Math.PI) / (8.14 * 60));//circumference for 4" wheel divided by 12" to a foot / gear ratio * convert to seconds -> feet per second
-
-    podID = driveID;
-
-    manualOverride = false;
-    //velocityControl = new PIDController(D_P, D_I, D_D);
-    velocityControl = new ProfiledPIDController(D_P, D_I, D_D, new TrapezoidProfile.Constraints(SPEED_LIMIT , 20));
-    ff = new SimpleMotorFeedforward(KS, KV);
-  }*/
-
- public SwervePod(int positionID, int podID) {
+  public SwervePod(int positionID, int podID) {
+    this.positionID = positionID;
     driveMotor = new CANSparkMax(positionID, MotorType.kBrushless);
     swerveMotor = new CANSparkFlex(podID + 10, MotorType.kBrushless);
-    //fieldAdjust = 0;
+
     dirEnc = new CANcoder(podID + 20);
 
     driveEnc = driveMotor.getEncoder();
+    driveEnc.setPositionConversionFactor(((4/12.0) * Math.PI) / (8.14)); //circumference for 4" wheel divided by 12" to a foot / gear ratio * -> feet
+    driveEnc.setVelocityConversionFactor(((4/12.0) * Math.PI) / (8.14 * 60));//circumference for 4" wheel divided by 12" to a foot / gear ratio * convert to seconds -> feet per second
 
     directionControl = new PIDController(S_P, S_I, S_D);
     directionControl.enableContinuousInput(-180, 180);
 
-    driveEnc.setPositionConversionFactor(((4/12.0) * Math.PI) / (8.14)); //circumference for 4" wheel divided by 12" to a foot / gear ratio * -> feet
-    driveEnc.setVelocityConversionFactor(((4/12.0) * Math.PI) / (8.14 * 60));//circumference for 4" wheel divided by 12" to a foot / gear ratio * convert to seconds -> feet per second
-
-    this.positionID = positionID;
-
     manualOverride = false;
     velocityControl = new PIDController(D_P, D_I, D_D);
-    //velocityControl = new ProfiledPIDController(D_P, D_I, D_D, new TrapezoidProfile.Constraints(SPEED_LIMIT , 20));
     ff = new SimpleMotorFeedforward(KS, KV);
   }
 
@@ -160,7 +126,6 @@ public class SwervePod extends SubsystemBase {
       altCross = (currAngle + 180) + (180 - altDir);
     }
     return (altWay < normWay && altWay < normCross) || (altCross < normWay && altCross < normCross);
-
   }
 
 

@@ -8,24 +8,38 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Collector extends SubsystemBase {
+  private CANSparkMax loader;
   private CANSparkMax deploy;
   private CANSparkMax collect;
+
   private RelativeEncoder deployEncoder;
   private final double DOWN_POSITION = .25;//TODO change to how many rotations it actually takes to deploy
   private final double UP_POSITION = .1;//TODO tune this so the motor is not trying to get to a position it can't reach mechanically
   private boolean down;
 
+  private DigitalInput primaryNoteDetect;
+  private DigitalInput backupNoteDetect;
+
+
   /** Creates a new Collector. */
   public Collector() {
+    loader = new CANSparkMax(44, MotorType.kBrushless);
+    loader.setInverted(true);
     deploy = new CANSparkMax(45, MotorType.kBrushless);
     deployEncoder = deploy.getEncoder();
     deployEncoder.setPositionConversionFactor(1 / 100.0);
     collect = new CANSparkMax(46, MotorType.kBrushless);
+
     down = false;
+
+    primaryNoteDetect = new DigitalInput(0);
+    backupNoteDetect = new DigitalInput(1);
+
   }
 
   @Override
@@ -34,6 +48,7 @@ public class Collector extends SubsystemBase {
     // This method will be called once per scheduler run
   }
 
+
   public void deployCollector(){
     down = true;
   }
@@ -41,23 +56,47 @@ public class Collector extends SubsystemBase {
   public void retractCollector(){
     down = false;
   }
+  public boolean isDown(){
+    return down;
+  }
 
-  public void runCollector(double speed){
+  public void holdCollector(){
     if(down && deployEncoder.getPosition() < DOWN_POSITION){
-      deploy.set((DOWN_POSITION - deployEncoder.getPosition()) / DOWN_POSITION);//TODO Down may need a speed limiter
+      deploy.set(.5);//TODO figure out speed currently .5
     }
     else if(!down && deployEncoder.getPosition() > UP_POSITION){
-      deploy.set((UP_POSITION - deployEncoder.getPosition()) / DOWN_POSITION);//may need more power
+      if(deployEncoder.getPosition() / DOWN_POSITION > .7){
+        deploy.set(-1);//run full until 3/4 up TODO tune where to start cutting power
+      }
+      else{
+        deploy.set(-deployEncoder.getPosition() / DOWN_POSITION);//end with proportional control, TODO may need a multiplier
+      }
     }
     else{
       deploy.set(0);
     }//end position holder
+  }
 
+  public void spinCollector(double speed){
+    holdCollector();
     if(Math.abs(speed) > .1){
-      collect.set(speed);
+      if(down){
+        collect.set(speed);
+      }
+      else{
+        collect.set(0);
+      }
+      loader.set(speed);
     }
     else{
       collect.set(0);
+      loader.set(0);
     }
   }
+
+  public boolean getNoteDetect(){
+    return primaryNoteDetect.get() || backupNoteDetect.get();
+  }
+
+
 }

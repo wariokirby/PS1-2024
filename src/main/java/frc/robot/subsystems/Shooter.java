@@ -10,7 +10,6 @@ import com.revrobotics.CANSparkLowLevel.MotorType;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
-import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
@@ -23,7 +22,6 @@ public class Shooter extends SubsystemBase {
   private CANSparkMax flywheelTopFollower;
   private CANSparkMax flywheelBottomLeft;
   private CANSparkMax flywheelBottomFollower;
-  private CANSparkMax loader;
   private RelativeEncoder topEncoder;
   private RelativeEncoder bottomEncoder;
 
@@ -31,15 +29,8 @@ public class Shooter extends SubsystemBase {
   private PIDController bottomControl;
   private SimpleMotorFeedforward ff;
 
-  private boolean manualOverride;
-
-  private DigitalInput primaryNoteDetect;
-  private DigitalInput backupNoteDetect;
-
   /** Creates a new Shooter. */
   public Shooter() {
-    primaryNoteDetect = new DigitalInput(0);
-    backupNoteDetect = new DigitalInput(1);
 
 
     flywheelTopLeft = new CANSparkMax(40, MotorType.kBrushless);
@@ -57,11 +48,6 @@ public class Shooter extends SubsystemBase {
     bottomControl = new PIDController(.002, 0, 0);
 
     ff = new SimpleMotorFeedforward(SHOOTER_FEEDFORWARD_KS, SHOOTER_FEEDFORWARD_KV);
-
-    loader = new CANSparkMax(44, MotorType.kBrushless);
-    loader.setInverted(true);
-
-    manualOverride = true;
   }
 
   @Override
@@ -71,17 +57,8 @@ public class Shooter extends SubsystemBase {
     // This method will be called once per scheduler run
   }
 
-  public void loadNote(){
-    loader.set(1);
-  }
-  public void holdNote(){
-    loader.set(0);
-  }
-  public void backdriveNote(){
-    loader.set(-1);
-  }
 
-  public void fireNoteManual(double speed , double load){
+  public void fireNoteManual(double speed){
     speed *= .5;
     if(Math.abs(speed) > .1){
       flywheelTopLeft.setVoltage(speed * 2);
@@ -91,35 +68,24 @@ public class Shooter extends SubsystemBase {
       flywheelTopLeft.set(0);
       flywheelBottomLeft.set(0);
     }
-    runLoader(load);
-  }
+ }
 
-  public void fireNote(int rpm , double load){
-    double setpoint = rpm;
-    flywheelTopLeft.setVoltage(topControl.calculate(topEncoder.getVelocity(), setpoint) + ff.calculate(setpoint));
-    flywheelBottomLeft.setVoltage(bottomControl.calculate(bottomEncoder.getVelocity() , setpoint) + ff.calculate(setpoint));
-    runLoader(load);
-
-  }
-
-  private void runLoader(double load){
-    if(Math.abs(load) > .1){
-      loader.set(load);
+  public void fireNote(int rpm , boolean toAmp){
+    double ampMod;
+    if(toAmp){
+      ampMod = .2;
     }
     else{
-      loader.set(0);
+      ampMod = 1;
     }
-
+    double setpoint = rpm;
+    flywheelTopLeft.setVoltage(ampMod * (topControl.calculate(topEncoder.getVelocity(), setpoint) + ff.calculate(setpoint)));
+    flywheelBottomLeft.setVoltage(bottomControl.calculate(bottomEncoder.getVelocity() , setpoint) + ff.calculate(setpoint));
   }
 
   public void stopShooter(){
     flywheelTopLeft.set(0);
     flywheelBottomLeft.set(0);
   }
-
-  public boolean getNoteDetect(){
-    return primaryNoteDetect.get() || backupNoteDetect.get();
-  }
-
 
 }

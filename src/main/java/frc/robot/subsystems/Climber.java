@@ -60,17 +60,29 @@ public class Climber extends SubsystemBase {
   }
 
   public void runClimbers(double left , double right){
-    if(!climbEnable){
-      leftClimb.set(0);
-      rightClimb.set(0);
+    if(Math.abs(left) < .1){
+      left = 0;
     }
-    else if(reverseSafetyOff){
+    if(Math.abs(right) < .1){
+      right = 0;
+    }
+
+    if(climbEnable){
+      if(!reverseSafetyOff){
+        if(left < 0){
+          left = 0;
+        }
+        if(right < 0){
+          right  = 0;
+        }
+      }
       leftClimb.set(left);
       rightClimb.set(right);
+
     }
     else{
-      leftClimb.set(-Math.abs(left));
-      rightClimb.set(-Math.abs(right));
+      leftClimb.set(0);
+      rightClimb.set(0);
     }
   }
 }

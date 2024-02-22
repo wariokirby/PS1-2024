@@ -24,7 +24,7 @@ public class SwerveDrive extends SubsystemBase {
   private int imuErrorCode;
   private double[] ypr;
 
-  private boolean turbo = false;
+  private boolean turbo;
 
   private boolean fieldOriented = true;
 
@@ -36,14 +36,14 @@ public class SwerveDrive extends SubsystemBase {
     imu.setYaw(0);
 
     backLeft = new SwervePod(4 , 4);
+    backRight = new SwervePod(5 , 5);
     frontLeft = new SwervePod(3 , 3);
     frontRight = new SwervePod(2 , 6);
-    backRight = new SwervePod(5 , 5);
 
     r = Math.sqrt((L * L) + (W * W));
     
-    //turbo = false;
-
+    turbo = false;
+    fieldOriented = true;
   }
 
   public void turboOn(){
@@ -51,6 +51,13 @@ public class SwerveDrive extends SubsystemBase {
   }
   public void turboOff(){
     turbo = false;
+  }
+
+  public void enableFieldOriented(){
+    fieldOriented = true;
+  }
+  public void disableFieldOriented(){
+    fieldOriented = false;
   }
 
   public void resetYaw(){
@@ -82,11 +89,10 @@ public class SwerveDrive extends SubsystemBase {
       y1 *= .5;
     }
 
-    //field oriented drive controller mod option, set to true in instance variables
     if(fieldOriented){
       double yawRad = ypr[0] * Math.PI / 180;
       double temp = y1 * Math.cos(yawRad) + x1 * Math.sin(yawRad);
-      x1 = -y1 * Math.sin(yawRad) + x1 * Math.cos(yawRad);//navx makes y1 negative because clockwise is positive, pigeon is counter clockwise positive I think
+      x1 = -y1 * Math.sin(yawRad) + x1 * Math.cos(yawRad);
       y1 = temp;
     }
 
@@ -105,23 +111,6 @@ public class SwerveDrive extends SubsystemBase {
     double frontRightAngle = (Math.atan2 (b, d) / Math.PI) * 180;
     double frontLeftAngle = (Math.atan2 (b, c) / Math.PI) * 180;
 
-    /*SmartDashboard.putNumber("BR Speed", backRightSpeed);
-    SmartDashboard.putNumber("BR Angle", backRightAngle);
-    SmartDashboard.putNumber("BL Speed", backLeftSpeed);
-    SmartDashboard.putNumber("BL Angle", backLeftAngle);
-    SmartDashboard.putNumber("FR Speed", frontRightSpeed);
-    SmartDashboard.putNumber("FR Angle", frontRightAngle);
-    SmartDashboard.putNumber("FL Speed", frontLeftSpeed);
-    SmartDashboard.putNumber("FL Angle", frontLeftAngle);
-    SmartDashboard.putNumber("x1", x1);
-    SmartDashboard.putNumber("y1", y1);
-    SmartDashboard.putNumber("x2", x2);*/
-
-    /*backRight.drivePod (backRightSpeed, backRightAngle, ypr[0]);
-    backLeft.drivePod (backLeftSpeed, backLeftAngle, ypr[0]);
-    frontRight.drivePod (frontRightSpeed, frontRightAngle, ypr[0]);
-    frontLeft.drivePod (frontLeftSpeed, frontLeftAngle, ypr[0]);*/
-
     backRight.drivePod (backRightSpeed, backRightAngle);
     backLeft.drivePod (backLeftSpeed, backLeftAngle);
     frontRight.drivePod (frontRightSpeed, frontRightAngle);
@@ -134,7 +123,4 @@ public class SwerveDrive extends SubsystemBase {
 
   }
 
-  /*public void setDirection(double direction){
-    pod1.setDirection(direction);
-  }*/
 }

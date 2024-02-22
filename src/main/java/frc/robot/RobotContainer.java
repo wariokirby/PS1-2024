@@ -5,6 +5,8 @@
 package frc.robot;
 
 import frc.robot.commands.Autos;
+import frc.robot.commands.FireNoteCommand;
+import frc.robot.subsystems.Collector;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.SwerveDrive;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -22,6 +24,7 @@ public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   private final SwerveDrive drive = new SwerveDrive();
   private final Shooter shooter = new Shooter();
+  private final Collector collector = new Collector();
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
   private final CommandXboxController xbox =
@@ -37,8 +40,13 @@ public class RobotContainer {
       ));
 
     shooter.setDefaultCommand(Commands.run(
-      () -> shooter.fireNoteManual(-xboxOperator.getLeftY() , -xboxOperator.getRightY()),
+      () -> shooter.fireNoteManual(-xboxOperator.getLeftY()),
       shooter
+      ));
+    
+    collector.setDefaultCommand(Commands.run(
+      () -> collector.spinCollector(-xbox.getRightY()),
+      collector
       ));
 
     // Configure the trigger bindings
@@ -58,55 +66,25 @@ public class RobotContainer {
    */
   private void configureBindings() {
     xbox.a().onTrue(Commands.runOnce(drive :: resetYaw , drive));
-
-    xboxOperator.a().onTrue(Commands.run(
-      () -> shooter.fireNote(2250 , -xboxOperator.getRightY()),
-      shooter
+//shoot for speaker
+    xboxOperator.rightBumper().onTrue(new FireNoteCommand(
+      () -> -xboxOperator.getRightTriggerAxis(), 
+      false,
+      shooter , collector
+      ));
+//shoot for amp    
+    xboxOperator.start().onTrue(new FireNoteCommand(
+      () -> -xboxOperator.getRightTriggerAxis(), 
+      true,
+      shooter , collector
       ));
     
-    xboxOperator.b().onTrue(Commands.runOnce(shooter :: stopShooter, shooter));
+    xboxOperator.leftBumper().onTrue(Commands.runOnce(shooter :: stopShooter, shooter));
 
-    /*xbox.x().onTrue(Commands.runOnce(
-      () -> drive.switcher(2),
-      drive
-      ));
-      
-    xbox.y().onTrue(Commands.runOnce(
-      () -> drive.switcher(3),
-      drive
-      ));
-        
-    xbox.b().onTrue(Commands.runOnce(
-      () -> drive.switcher(4),
-      drive
-      ));*/
+    xboxOperator.b().onTrue(Commands.runOnce(collector :: deployCollector, collector));
+    xboxOperator.y().onTrue(Commands.runOnce(collector :: retractCollector, collector));
     
-    /*xbox.start().onTrue(Commands.run(
-      () -> drive.podTester(-xbox.getLeftY(), (xbox.getRightX() / 2)), 
-      drive
-      ));
 
-    xbox.back().onTrue(Commands.runOnce(drive::stop, drive));*/
-
-    /*xbox.povUp().onTrue(Commands.run(
-      () -> drive.setDirection(0),
-      drive
-      ));
-
-    xbox.povRight().onTrue(Commands.run(
-      () -> drive.setDirection(-45),
-      drive
-      ));
-
-    xbox.povLeft().onTrue(Commands.run(
-      () -> drive.setDirection(45),
-      drive
-      ));
-
-    xbox.povDown().onTrue(Commands.run(
-      () -> drive.setDirection(135),
-      drive
-      ));*/
     
           // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
   //  new Trigger(m_exampleSubsystem::exampleCondition)
