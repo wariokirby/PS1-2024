@@ -13,7 +13,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Collector extends SubsystemBase {
-  private CANSparkMax loader;
   private CANSparkMax deploy;
   private CANSparkMax collect;
 
@@ -28,9 +27,7 @@ public class Collector extends SubsystemBase {
 
   /** Creates a new Collector. */
   public Collector() {
-    loader = new CANSparkMax(44, MotorType.kBrushless);
-    loader.setInverted(true);
-    deploy = new CANSparkMax(45, MotorType.kBrushless);
+    deploy = new CANSparkMax(44, MotorType.kBrushless);
     deployEncoder = deploy.getEncoder();
     deployEncoder.setPositionConversionFactor(1 / 100.0);
     collect = new CANSparkMax(46, MotorType.kBrushless);
@@ -86,11 +83,9 @@ public class Collector extends SubsystemBase {
       else{
         collect.set(0);
       }
-      loader.set(speed);
     }
     else{
       collect.set(0);
-      loader.set(0);
     }
   }
 

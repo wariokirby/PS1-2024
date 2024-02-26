@@ -34,7 +34,7 @@ public class FireNoteCommand extends Command {
   public void execute() {
     shooter.fireNote(2000, toAmp);
     if(fire.getAsDouble() > .5){
-      collector.spinCollector(1);
+      collector.spinCollector(-1);
     }
     else{
       collector.spinCollector(0);
