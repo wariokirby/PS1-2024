@@ -57,6 +57,13 @@ public class Collector extends SubsystemBase {
     return down;
   }
 
+  public void manualDeploy(double speed){
+    deploy.set(speed);
+  }
+  public void resetDeployEncoder(){
+    deployEncoder.setPosition(0);
+  }
+
   public void holdCollector(){
     if(down && deployEncoder.getPosition() < DOWN_POSITION){
       deploy.set(.5);//TODO figure out speed currently .5
