@@ -45,7 +45,7 @@ public class RobotContainer {
       ));
     
     collector.setDefaultCommand(Commands.run(
-      () -> collector.spinCollector(-xbox.getRightY()),
+      () -> collector.spinCollector(-xboxOperator.getRightY()),
       collector
       ));
 
