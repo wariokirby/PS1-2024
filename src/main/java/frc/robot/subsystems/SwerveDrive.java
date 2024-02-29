@@ -63,6 +63,26 @@ public class SwerveDrive extends SubsystemBase {
   public void resetYaw(){
     imu.setYaw(0);
   }
+  public double getYaw(){
+    return ypr[0];
+  }
+
+  public void resetDistances(boolean all){//false does not reset front right to have a total distance traveled
+    backLeft.resetDistance();
+    backRight.resetDistance();
+    frontLeft.resetDistance();
+    if(all){
+      frontRight.resetDistance();
+    }
+    
+  }
+  public double getAverageDistance(){
+    return (backLeft.getDistance() + backRight.getDistance() + frontLeft.getDistance()) / 3.0;
+  }
+  public double getAbsoluteDistance(){
+    return frontRight.getDistance();
+  }
+
 
   @Override
   public void periodic() {

@@ -70,18 +70,19 @@ public class Shooter extends SubsystemBase {
     }
  }
 
-  public void fireNote(int rpm , int rpm2){
-    double ampMod;
-    if(false){
-      ampMod = .2;
-    }
-    else{
-      ampMod = 1;
-    }
-    double setpoint = rpm;
-    double setpoint2 = rpm2;
-    flywheelTopLeft.setVoltage(ampMod * (topControl.calculate(topEncoder.getVelocity(), setpoint) + ff.calculate(setpoint)));
+  public void fireNote(){
+    double setpoint = 800;//close range shot 800 , 3800
+    double setpoint2 = 3800;
+    flywheelTopLeft.setVoltage(topControl.calculate(topEncoder.getVelocity(), setpoint) + ff.calculate(setpoint));
     flywheelBottomLeft.setVoltage(bottomControl.calculate(bottomEncoder.getVelocity() , setpoint2) + ff.calculate(setpoint2));
+  }
+
+  public void fireNoteAmp() {
+    double ampMod = .2;
+    double setPoint = 1500;
+    flywheelTopLeft.setVoltage(topControl.calculate(topEncoder.getVelocity(), setPoint) + ff.calculate(setPoint));
+    flywheelBottomLeft.setVoltage((bottomControl.calculate(bottomEncoder.getVelocity(), setPoint) + ff.calculate(setPoint)));
+
   }
 
   public void stopShooter(){

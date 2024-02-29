@@ -4,37 +4,39 @@
 
 package frc.robot.commands;
 
-
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.Shooter;
+import frc.robot.subsystems.Collector;
 
-public class FireNoteCommand extends Command {
-  private final Shooter shooter;
-  /** Creates a new FireNote. */
-  public FireNoteCommand(Shooter shooter) {
-    this.shooter = shooter;
+public class AutoPickup extends Command {
+  private Collector collector;
+  /** Creates a new AutoPickup. */
+  public AutoPickup(Collector collector) {
+    this.collector = collector;
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(shooter);
+    addRequirements(collector);
   }
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {}
+  public void initialize() {
+    collector.holdCollector(true, false);
+  }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    shooter.fireNote();//close range shot 800 , 3800
-    
+    collector.intake();
   }
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+    collector.holdCollector(false, true);
+  }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    return collector.getNoteDetect();
   }
 }

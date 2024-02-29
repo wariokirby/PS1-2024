@@ -6,12 +6,15 @@ package frc.robot;
 
 import frc.robot.commands.Autos;
 import frc.robot.commands.FireNoteCommand;
+import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.Collector;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.SwerveDrive;
+import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
 /**
@@ -25,12 +28,16 @@ public class RobotContainer {
   private final SwerveDrive drive = new SwerveDrive();
   private final Shooter shooter = new Shooter();
   private final Collector collector = new Collector();
+  private final Climber climber = new Climber();
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
   private final CommandXboxController xbox =
       new CommandXboxController(0);
   private final CommandXboxController xboxOperator =
       new CommandXboxController(1);
+  private final Joystick prajBox =
+      new Joystick(2);
+  private Trigger enableClimber = new JoystickButton(prajBox, 1);
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -39,16 +46,7 @@ public class RobotContainer {
       drive
       ));
 
-    shooter.setDefaultCommand(Commands.run(
-      () -> shooter.fireNoteManual(-xboxOperator.getLeftY()),
-      shooter
-      ));
-    
-    /*collector.setDefaultCommand(Commands.run(
-      () -> collector.spinCollector(-xboxOperator.getRightY()),
-      collector
-      ));*/
-      collector.setDefaultCommand(Commands.run(
+    collector.setDefaultCommand(Commands.run(
         () -> collector.manualOverride(-xboxOperator.getRightY() , -xboxOperator.getLeftY()),
         collector
         ));
@@ -70,34 +68,28 @@ public class RobotContainer {
    * joysticks}.
    */
   private void configureBindings() {
-    xbox.a().onTrue(Commands.runOnce(drive :: resetYaw , drive));
-//shoot for speaker
-    xboxOperator.rightBumper().onTrue(new FireNoteCommand(false,
-      shooter
-      ));
-//shoot for amp    
-    /*xboxOperator.start().onTrue(new FireNoteCommand(
-      () -> -xboxOperator.getRightTriggerAxis(), 
-      true,
-      shooter , collector
-      ));*/
-    
+    xbox.back().onTrue(Commands.runOnce(drive :: resetYaw , drive));
+    xbox.rightTrigger()
+      .onTrue(Commands.runOnce(drive :: turboOn, drive))
+      .onFalse(Commands.runOnce(drive :: turboOff, drive));
+
+//shooter
+    xboxOperator.rightBumper().onTrue(Commands.run(shooter :: fireNote , shooter));
     xboxOperator.leftBumper().onTrue(Commands.runOnce(shooter :: stopShooter, shooter));
-    xboxOperator.b().onTrue(Commands.run(collector :: fire , collector));
-    xboxOperator.y().onTrue(Commands.runOnce(collector :: off, collector));
-
-    //xboxOperator.b().onTrue(Commands.runOnce(collector :: deployCollector, collector));
-    //xboxOperator.y().onTrue(Commands.runOnce(collector :: retractCollector, collector));
+    xboxOperator.back().onTrue(Commands.run(shooter :: fireNoteAmp, shooter));
     
+    xboxOperator.rightTrigger().whileTrue(Commands.run(collector :: fire , collector));
+    xboxOperator.leftTrigger().whileTrue(Commands.run(collector :: intake, collector));    
 
+    //prajbox safety switch on activates climbers on sticks, disables collector
+    //hold button to reverse
+    enableClimber.whileTrue(Commands.deadline(
+      Commands.run(() -> climber.runClimbers(-xboxOperator.getLeftY(), -xboxOperator.getRightY(), 
+        true, prajBox),
+        climber),
+      Commands.run(collector :: off, collector)
+      ));
     
-          // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
-  //  new Trigger(m_exampleSubsystem::exampleCondition)
-  //      .onTrue(new ExampleCommand(m_exampleSubsystem));
-
-    // Schedule `exampleMethodCommand` when the Xbox controller's B button is pressed,
-    // cancelling on release.
-    //m_driverController.b().whileTrue(m_exampleSubsystem.exampleMethodCommand());
   }
 
   /**

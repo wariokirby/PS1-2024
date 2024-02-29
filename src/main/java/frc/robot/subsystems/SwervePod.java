@@ -75,6 +75,9 @@ public class SwervePod extends SubsystemBase {
   public double getDistance(){
     return driveEnc.getPosition();
   }
+  public void resetDistance(){
+    driveEnc.setPosition(0);
+  }
 
   public double getAngle(){
     double angle = (dirEnc.getAbsolutePosition().getValue() * 360);
