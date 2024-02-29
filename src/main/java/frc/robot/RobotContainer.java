@@ -44,10 +44,15 @@ public class RobotContainer {
       shooter
       ));
     
-    collector.setDefaultCommand(Commands.run(
-      () -> collector.spinCollector(-xbox.getRightY()),
+    /*collector.setDefaultCommand(Commands.run(
+      () -> collector.spinCollector(-xboxOperator.getRightY()),
       collector
-      ));
+      ));*/
+      collector.setDefaultCommand(Commands.run(
+        () -> collector.manualOverride(-xboxOperator.getRightY() , -xboxOperator.getLeftY()),
+        collector
+        ));
+  
 
     // Configure the trigger bindings
     configureBindings();
@@ -67,22 +72,22 @@ public class RobotContainer {
   private void configureBindings() {
     xbox.a().onTrue(Commands.runOnce(drive :: resetYaw , drive));
 //shoot for speaker
-    xboxOperator.rightBumper().onTrue(new FireNoteCommand(
-      () -> -xboxOperator.getRightTriggerAxis(), 
-      false,
-      shooter , collector
+    xboxOperator.rightBumper().onTrue(new FireNoteCommand(false,
+      shooter
       ));
 //shoot for amp    
-    xboxOperator.start().onTrue(new FireNoteCommand(
+    /*xboxOperator.start().onTrue(new FireNoteCommand(
       () -> -xboxOperator.getRightTriggerAxis(), 
       true,
       shooter , collector
-      ));
+      ));*/
     
     xboxOperator.leftBumper().onTrue(Commands.runOnce(shooter :: stopShooter, shooter));
+    xboxOperator.b().onTrue(Commands.run(collector :: fire , collector));
+    xboxOperator.y().onTrue(Commands.runOnce(collector :: off, collector));
 
-    xboxOperator.b().onTrue(Commands.runOnce(collector :: deployCollector, collector));
-    xboxOperator.y().onTrue(Commands.runOnce(collector :: retractCollector, collector));
+    //xboxOperator.b().onTrue(Commands.runOnce(collector :: deployCollector, collector));
+    //xboxOperator.y().onTrue(Commands.runOnce(collector :: retractCollector, collector));
     
 
     

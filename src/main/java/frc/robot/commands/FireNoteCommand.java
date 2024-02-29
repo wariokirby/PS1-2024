@@ -7,22 +7,18 @@ package frc.robot.commands;
 import java.util.function.DoubleSupplier;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.Collector;
+import frc.robot.subsystems.Collector1;
 import frc.robot.subsystems.Shooter;
 
 public class FireNoteCommand extends Command {
   private final Shooter shooter;
-  private final Collector collector;
-  private final DoubleSupplier fire;
   private boolean toAmp;
   /** Creates a new FireNote. */
-  public FireNoteCommand(DoubleSupplier fire, boolean toAmp , Shooter shooter , Collector collector) {
+  public FireNoteCommand(boolean toAmp , Shooter shooter) {
     this.shooter = shooter;
-    this.collector = collector;
-    this.fire = fire;
     this.toAmp = toAmp;
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(shooter , collector);
+    addRequirements(shooter);
   }
 
   // Called when the command is initially scheduled.
@@ -32,13 +28,7 @@ public class FireNoteCommand extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    shooter.fireNote(2000, toAmp);
-    if(fire.getAsDouble() > .5){
-      collector.spinCollector(-1);
-    }
-    else{
-      collector.spinCollector(0);
-    }
+    shooter.fireNote(800, 3800);
     
   }
 

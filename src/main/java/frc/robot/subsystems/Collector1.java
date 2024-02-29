@@ -12,12 +12,12 @@ import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
-public class Collector extends SubsystemBase {
+public class Collector1 extends SubsystemBase {
   private CANSparkMax deploy;
   private CANSparkMax collect;
 
   private RelativeEncoder deployEncoder;
-  private final double DOWN_POSITION = .4;//TODO change to how many rotations it actually takes to deploy
+  private final double DOWN_POSITION = .25;//TODO change to how many rotations it actually takes to deploy
   private final double UP_POSITION = .1;//TODO tune this so the motor is not trying to get to a position it can't reach mechanically
   private boolean down;
 
@@ -26,11 +26,11 @@ public class Collector extends SubsystemBase {
 
 
   /** Creates a new Collector. */
-  public Collector() {
+  public Collector1() {
     deploy = new CANSparkMax(44, MotorType.kBrushless);
     deployEncoder = deploy.getEncoder();
     deployEncoder.setPositionConversionFactor(1 / 100.0);
-    collect = new CANSparkMax(45, MotorType.kBrushless);
+    collect = new CANSparkMax(46, MotorType.kBrushless);
 
     down = false;
 
@@ -45,73 +45,60 @@ public class Collector extends SubsystemBase {
     // This method will be called once per scheduler run
   }
 
-  public void manualOverride(double speed , double dSpeed){
-    if(Math.abs(speed) > .1){
-      collect.set(speed);
-    }
-    else{
-      collect.set(0);
-    }
-    if(Math.abs(dSpeed) > .1){
-      deploy.set(dSpeed);
-    }
-    else{
-      deploy.set(0);
-    }
+
+  public void deployCollector(){
+    down = true;
   }
 
-  public boolean isUp(){
-    return deployEncoder.getPosition() < UP_POSITION;
+  public void retractCollector(){
+    down = false;
   }
-
   public boolean isDown(){
-    return deployEncoder.getPosition() > DOWN_POSITION;
+    return down;
   }
 
-  public void holdCollector(boolean lower , boolean raise){
-    if(raise){
-      down = false;
-    }
-    else if(lower){
-      down = true;
-    }
-
+  /*public void holdCollector(){
     if(down && deployEncoder.getPosition() < DOWN_POSITION){
-      if(deployEncoder.getPosition() < .3){
-        deploy.set(1);//run full until the tipping point //TODO tune where to start cutting power      
-      }
-      else{
-        deploy.set(.15);//end slow
-      }
+      deploy.set(.5);//TODO figure out speed currently .5
     }
     else if(!down && deployEncoder.getPosition() > UP_POSITION){
-      if(deployEncoder.getPosition() > .2){
-        deploy.set(-1);//run full until the tipping point //TODO tune where to start cutting power
+      if(deployEncoder.getPosition() / DOWN_POSITION > .7){
+        deploy.set(-1);//run full until 3/4 up TODO tune where to start cutting power
       }
       else{
-        deploy.set(-.15);//end slow
+        deploy.set(-deployEncoder.getPosition() / DOWN_POSITION);//end with proportional control, TODO may need a multiplier
       }
     }
     else{
       deploy.set(0);
     }//end position holder
-  }
+  }*/
 
-  public void intake(){
-    collect.set(-1);
-  }
-
-  public void fire(){
+  public void justSpin(){
     collect.set(1);
   }
+  public void stop(){
+    collect.set(0);
+  }
+  public void spinCollector(double speed){
+    collect.set(speed);
+   /*if(Math.abs(speed) > .1){
+      
+        collect.set(speed);
+      
+
+        collect.set(0);
+      }
+    
+    else{
+      collect.set(0);
+    }*/
+  }
+
+
 
   public boolean getNoteDetect(){
     return primaryNoteDetect.get() || backupNoteDetect.get();
-  }
-
-  public void off(){
-    collect.set(0);
-    deploy.set(0);
   }
 
 
