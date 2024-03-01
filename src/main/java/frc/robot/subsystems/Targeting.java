@@ -39,7 +39,7 @@ public class Targeting extends SubsystemBase {
   private final double HEIGHT_OF_SPEAKER = 57.125; //use this for source as well
   private final double HEIGHT_OF_AMP = 53.375; 
   private final double HEIGHT_OF_STAGE = 52; 
-  private final double HEIGHT_OF_CAMERA = 12;//TODO hight of camera
+  private final double HEIGHT_OF_CAMERA = 9.75;
   private final double CAMERA_MOUNT_ANGLE = 32;
 
   private NetworkTable limelight;
