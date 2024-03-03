@@ -7,10 +7,10 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Collector;
 
-public class AutoPickup extends Command {
+public class DeployCollectorCommand extends Command {
   private Collector collector;
-  /** Creates a new AutoPickup. */
-  public AutoPickup(Collector collector) {
+  /** Creates a new DeployCollector. */
+  public DeployCollectorCommand(Collector collector) {
     this.collector = collector;
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(collector);
@@ -18,13 +18,12 @@ public class AutoPickup extends Command {
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {
-  }
+  public void initialize() {}
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    collector.intake();
+    collector.manual(-1, 0);
   }
 
   // Called once the command ends or is interrupted.
@@ -36,6 +35,6 @@ public class AutoPickup extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return collector.getNoteDetect();
+    return collector.isDown();
   }
 }

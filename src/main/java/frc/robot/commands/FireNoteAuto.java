@@ -13,14 +13,16 @@ public class FireNoteAuto extends Command {
   private Shooter shooter;
   private Collector collector;
   private Targeting targeting;
-  private double rpmHigh;
-  private double rpmLow;
+  private boolean noLimelight;
+  private boolean secondShot;
   private int timer;
   /** Creates a new FireNote. */
-  public FireNoteAuto(Shooter shooter , Collector collector , Targeting targeting) {
+  public FireNoteAuto(Shooter shooter , Collector collector , Targeting targeting, boolean noLimelight , boolean secondShot) {
     this.shooter = shooter;
     this.collector = collector;
     this.targeting = targeting;
+    this.noLimelight = noLimelight;
+    this.secondShot = secondShot;
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(shooter , collector);
   }
@@ -28,18 +30,33 @@ public class FireNoteAuto extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    collector.holdCollector(false, true);
-    timer = 5;
+    targeting.changeTag(0);
+    timer = 75;
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    //TODO autoranging goes here
-    shooter.fireNote();  
-    timer--;
-    if(timer <= 3){
-      collector.fire();
+    if(noLimelight && !secondShot){
+      shooter.fireNote(2000 , 4000);
+      timer--;
+      if(timer <= 25){
+        collector.fire();
+      }
+    }
+    else if(targeting.calcRange() < 30){
+      shooter.fireNote(2000 , 4000);
+      timer--;
+      if(timer <= 25){
+        collector.fire();
+      }
+    }
+    else if(targeting.calcRange() < 36 || secondShot){
+      shooter.fireNote(2000 , 2000);
+      timer--;
+      if(timer <= 25){
+        collector.fire();
+      }
     }
   }
 

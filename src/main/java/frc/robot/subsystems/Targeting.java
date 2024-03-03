@@ -39,8 +39,8 @@ public class Targeting extends SubsystemBase {
   private final double HEIGHT_OF_SPEAKER = 57.125; //use this for source as well
   private final double HEIGHT_OF_AMP = 53.375; 
   private final double HEIGHT_OF_STAGE = 52; 
-  private final double HEIGHT_OF_CAMERA = 9.75;
-  private final double CAMERA_MOUNT_ANGLE = 32;
+  private final double HEIGHT_OF_CAMERA = 12;
+  private final double CAMERA_MOUNT_ANGLE = 45.2;
 
   private NetworkTable limelight;
   private NetworkTableEntry tv;
@@ -74,13 +74,13 @@ public class Targeting extends SubsystemBase {
     sideChooser = new SendableChooser<>();
     sideChooser.setDefaultOption("Blue", false);
     sideChooser.addOption("red", true);
-    SmartDashboard.putData(sideChooser);
-    pipelines = redPipelines;
+    SmartDashboard.putData("red or Blue", sideChooser);
+    pipelines = bluePipelines;
     targetingWhat = "Speaker";
+    limelight.getEntry("pipeline").setNumber(pipelines[whichTarget]);
 
     limelight.getEntry("ledMode").setNumber(1);
     limelight.getEntry("camMode").setNumber(0);
-    limelight.getEntry("pipeline").setNumber(0);
   }
 
   @Override
@@ -111,6 +111,7 @@ public class Targeting extends SubsystemBase {
     else{
       pipelines = bluePipelines;
     }
+    changeTag(whichTarget);
   }
   public boolean getSide(){
     return sideChooser.getSelected();
@@ -162,7 +163,7 @@ public class Targeting extends SubsystemBase {
       targetingWhat = "Back of Stage";
     }
     double d = (height - HEIGHT_OF_CAMERA) / Math.tan(Math.toRadians(CAMERA_MOUNT_ANGLE + y));
-    return d;       
+    return d-3.5;       
   }
 
 }

@@ -4,15 +4,24 @@
 
 package frc.robot;
 
+import frc.robot.commands.AimAuto;
+import frc.robot.commands.AimTele;
+import frc.robot.commands.AutoCruise;
+import frc.robot.commands.AutoPickup;
 import frc.robot.commands.Autos;
+import frc.robot.commands.DeployCollectorCommand;
+import frc.robot.commands.FireNoteAuto;
 import frc.robot.commands.FireNoteCommand;
+import frc.robot.commands.RetractCollectorCommand;
 import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.Collector;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.SwerveDrive;
+import frc.robot.subsystems.Targeting;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -22,13 +31,23 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
  * "declarative" paradigm, very little robot logic should actually be handled in the {@link Robot}
  * periodic methods (other than the scheduler calls). Instead, the structure of the robot (including
  * subsystems, commands, and trigger mappings) should be declared here.
- */
+  * Praj Box Documentation
+ * these are the button Id's for each switch
+ * safety switch 1
+ * right 3way up 2
+ * right 3way down 3
+ * button 4
+ * left 3way up 5
+ * left 3way down 6
+ * white switch 7
+*/
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   private final SwerveDrive drive = new SwerveDrive();
   private final Shooter shooter = new Shooter();
   private final Collector collector = new Collector();
   private final Climber climber = new Climber();
+  private final Targeting targeting = new Targeting();
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
   private final CommandXboxController xbox =
@@ -38,6 +57,30 @@ public class RobotContainer {
   private final Joystick prajBox =
       new Joystick(2);
   private Trigger enableClimber = new JoystickButton(prajBox, 1);
+  private Trigger overrideCollector = new JoystickButton(prajBox, 7);
+
+
+  private final Command leave = new AutoCruise(1, 0, 0, 3.5, drive);
+  private final SequentialCommandGroup shootLeave = new SequentialCommandGroup(
+    new FireNoteAuto(shooter, collector , targeting, true, false),   
+    new AutoCruise(1, 0, 0, 3.4, drive)
+  );
+  private final SequentialCommandGroup twoNoteDR = new SequentialCommandGroup(
+    new FireNoteAuto(shooter, collector , targeting, true, false), 
+    new DeployCollectorCommand(collector),
+    Commands.race(new AutoCruise(1, 0, 0, 6.6, drive), new AutoPickup(collector)),
+    new RetractCollectorCommand(collector),
+    new AutoCruise(-1, 0, 0, 3.6, drive),
+    new FireNoteAuto(shooter, collector , targeting, true, true)
+  );
+  private final SequentialCommandGroup twoNote = new SequentialCommandGroup(
+    Commands.deadline(new FireNoteAuto(shooter, collector , targeting, true, false), new AimAuto(0, drive, targeting)), 
+    new DeployCollectorCommand(collector),
+    Commands.race(new AutoPickup(collector), new AutoCruise(1, 0, 0, 6.6, drive)),
+    new RetractCollectorCommand(collector),
+    Commands.deadline(new FireNoteAuto(shooter, collector , targeting, true , false), new AimAuto(0, drive, targeting))
+  );
+ 
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -47,7 +90,7 @@ public class RobotContainer {
       ));
 
     collector.setDefaultCommand(Commands.run(
-        () -> collector.manualOverride(-xboxOperator.getRightY() , -xboxOperator.getLeftY()),
+        () -> collector.manual(-xboxOperator.getRightY() , -xboxOperator.getLeftY()),
         collector
         ));
   
@@ -72,14 +115,21 @@ public class RobotContainer {
     xbox.rightTrigger()
       .onTrue(Commands.runOnce(drive :: turboOn, drive))
       .onFalse(Commands.runOnce(drive :: turboOff, drive));
+    xbox.leftTrigger().whileTrue(new AimTele(0, drive, targeting));
 
 //shooter
-    xboxOperator.rightBumper().onTrue(Commands.run(shooter :: fireNote , shooter));
+    xboxOperator.start().onTrue(Commands.run(shooter :: fireNote , shooter));
+    xboxOperator.rightBumper().onTrue(new FireNoteCommand(shooter, targeting, false));
     xboxOperator.leftBumper().onTrue(Commands.runOnce(shooter :: stopShooter, shooter));
     xboxOperator.back().onTrue(Commands.run(shooter :: fireNoteAmp, shooter));
     
     xboxOperator.rightTrigger().whileTrue(Commands.run(collector :: fire , collector));
-    xboxOperator.leftTrigger().whileTrue(Commands.run(collector :: intake, collector));    
+    xboxOperator.leftTrigger().whileTrue(Commands.run(collector :: intake, collector));   
+    xboxOperator.a().onTrue(new FireNoteAuto(shooter, collector, targeting, false, false));
+
+    overrideCollector
+      .onTrue(Commands.runOnce(collector :: enableOverride, collector))
+      .onFalse(Commands.runOnce(collector :: disableOverride, collector));
 
     //prajbox safety switch on activates climbers on sticks, disables collector
     //hold button to reverse
@@ -100,6 +150,10 @@ public class RobotContainer {
   public Command getAutonomousCommand() {
     // An example command will be run in autonomous
     //return Autos.exampleAuto(m_exampleSubsystem);
-    return null;
+    //return new SequentialCommandGroup(
+    //new FireNoteAuto(shooter, collector , targeting, true, false),   
+    //new AutoCruise(1, 0, 0, 4, drive)
+  //);
+  return new FireNoteAuto(shooter, collector , targeting, true, false);
   }
 }

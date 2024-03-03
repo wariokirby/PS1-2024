@@ -29,12 +29,14 @@ public class SwervePod extends SubsystemBase {
   private final double S_D = 0;
 
   private PIDController velocityControl;
-  private final double SPEED_LIMIT = 11;//Actual top speed is about 11.7, limiting for vel control
+  private final double HIGH_SPEED = 11;//Actual top speed is about 11.7, limiting for vel control
+  private final double LOW_SPEED = 6.5;
+  private double speedLimit;
   private SimpleMotorFeedforward ff;
   private boolean manualOverride;
  
 
-  private final double D_P = .5;
+  private final double D_P = .4;
   private final double D_I = 0;
   private final double D_D = 0;
   private final double KS = .05;
@@ -57,6 +59,15 @@ public class SwervePod extends SubsystemBase {
     manualOverride = false;
     velocityControl = new PIDController(D_P, D_I, D_D);
     ff = new SimpleMotorFeedforward(KS, KV);
+    speedLimit = LOW_SPEED;
+  }
+
+  public void turbo(){
+    speedLimit = HIGH_SPEED;
+  }
+
+  public void nerf(){
+    speedLimit = LOW_SPEED;
   }
 
 
@@ -73,7 +84,7 @@ public class SwervePod extends SubsystemBase {
   }
 
   public double getDistance(){
-    return driveEnc.getPosition();
+    return Math.abs(driveEnc.getPosition());
   }
   public void resetDistance(){
     driveEnc.setPosition(0);
@@ -144,7 +155,7 @@ public class SwervePod extends SubsystemBase {
       }
     }//end no velocity control
     else{
-      double setpoint = drive * SPEED_LIMIT;
+      double setpoint = drive * speedLimit;
       driveMotor.setVoltage(velocityControl.calculate(getSpeed(), setpoint) + ff.calculate(setpoint));
     }//end velocity control
   }

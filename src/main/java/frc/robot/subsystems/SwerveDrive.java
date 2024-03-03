@@ -35,10 +35,10 @@ public class SwerveDrive extends SubsystemBase {
     ypr = new double[3];
     imu.setYaw(0);
 
-    backLeft = new SwervePod(4 , 4);
-    backRight = new SwervePod(5 , 5);
-    frontLeft = new SwervePod(3 , 3);
-    frontRight = new SwervePod(2 , 6);
+    backLeft = new SwervePod(2 , 6);
+    backRight = new SwervePod(3 , 3);
+    frontLeft = new SwervePod(5 , 5);
+    frontRight = new SwervePod(4 , 4);
 
     r = Math.sqrt((L * L) + (W * W));
     
@@ -47,10 +47,16 @@ public class SwerveDrive extends SubsystemBase {
   }
 
   public void turboOn(){
-    turbo = true;
+    backLeft.turbo();
+    backRight.turbo();
+    frontLeft.turbo();
+    frontRight.turbo();
   }
   public void turboOff(){
-    turbo = false;
+    backLeft.nerf();
+    backRight.nerf();
+    frontLeft.nerf();
+    frontRight.nerf();
   }
 
   public void enableFieldOriented(){
@@ -105,9 +111,6 @@ public class SwerveDrive extends SubsystemBase {
       x2 = 0;
     }
 
-    if(!turbo){
-      y1 *= .5;
-    }
 
     if(fieldOriented){
       double yawRad = ypr[0] * Math.PI / 180;

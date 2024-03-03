@@ -30,6 +30,7 @@ public class AutoCruise extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    drivetrain.resetYaw();
     double heading = direction * Math.PI / 180;
     y1 = speed * Math.cos(heading);
     x1 = speed * Math.sin(heading);

@@ -33,7 +33,15 @@ public class AimTele extends Command {
   @Override
   public void execute() {
     if(whichTarget == 0){
-      drivetrain.podDriver(0, 0, (targeting.getX())/20);
+      if(targeting.getValidTarget() == 0) {
+        drivetrain.podDriver(0, -.5, 0);
+      }
+      if(targeting.calcRange() < 71) {
+        drivetrain.podDriver(0, 0, (targeting.getX())/20);
+      }
+      else {
+        drivetrain.podDriver(0, -.5, (targeting.getX())/20);
+      }
     }
     else if(whichTarget == 2){
       if(targeting.getSide()){

@@ -17,9 +17,9 @@ public class Collector extends SubsystemBase {
   private CANSparkMax collect;
 
   private RelativeEncoder deployEncoder;
-  private final double DOWN_POSITION = .4;//TODO change to how many rotations it actually takes to deploy
-  private final double UP_POSITION = .1;//TODO tune this so the motor is not trying to get to a position it can't reach mechanically
-  private boolean down;
+  private final double DOWN_POSITION = -.38;//TODO change to how many rotations it actually takes to deploy
+  private final double UP_POSITION = -.05;//TODO tune this so the motor is not trying to get to a position it can't reach mechanically
+  private boolean override;
 
   private DigitalInput primaryNoteDetect;
   private DigitalInput backupNoteDetect;
@@ -32,7 +32,7 @@ public class Collector extends SubsystemBase {
     deployEncoder.setPositionConversionFactor(1 / 100.0);
     collect = new CANSparkMax(45, MotorType.kBrushless);
 
-    down = false;
+    override = false;
 
     primaryNoteDetect = new DigitalInput(0);
     backupNoteDetect = new DigitalInput(1);
@@ -44,16 +44,32 @@ public class Collector extends SubsystemBase {
     SmartDashboard.putNumber("Collector Position", deployEncoder.getPosition());
     // This method will be called once per scheduler run
   }
+  public void enableOverride(){
+    override = true;
+  }
+  public void disableOverride(){
+    override = false;
+    deployEncoder.setPosition(0);
+  }
 
-  public void manualOverride(double speed , double dSpeed){
+  public void manual(double speed , double dSpeed){
     if(Math.abs(speed) > .1){
       collect.set(speed);
     }
     else{
       collect.set(0);
     }
-    if(Math.abs(dSpeed) > .1){
-      deploy.set(dSpeed);
+    if(override){
+      deploy.set(dSpeed * .25);
+    }
+    else if(Math.abs(dSpeed) > .1){
+      if(isUp() && dSpeed > 0){
+        dSpeed = 0;
+      }
+      if(isDown() && dSpeed < 0){
+        dSpeed = 0;
+      }
+      deploy.set(dSpeed * .25);
     }
     else{
       deploy.set(0);
@@ -61,14 +77,14 @@ public class Collector extends SubsystemBase {
   }
 
   public boolean isUp(){
-    return deployEncoder.getPosition() < UP_POSITION;
+    return deployEncoder.getPosition() > UP_POSITION;
   }
 
   public boolean isDown(){
-    return deployEncoder.getPosition() > DOWN_POSITION;
+    return deployEncoder.getPosition() < DOWN_POSITION;
   }
 
-  public void holdCollector(boolean lower , boolean raise){
+  /*public void holdCollector(boolean lower , boolean raise){
     if(raise){
       down = false;
     }
@@ -95,10 +111,10 @@ public class Collector extends SubsystemBase {
     else{
       deploy.set(0);
     }//end position holder
-  }
+  }*/
 
   public void intake(){
-    collect.set(-1);
+    collect.set(-.5);
   }
 
   public void fire(){
