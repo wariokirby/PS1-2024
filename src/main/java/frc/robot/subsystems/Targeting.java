@@ -30,7 +30,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
  * Stage Back: r13 b14, Left r11 b15, Right: r12 b16
  * 
  * Setup pipelines for the following id's red first, then blue, last one reserved for unforseen
- * 4,3,5,10,13 7,8,6,2,16
+ * 4,3,5,10,13 7,8,6,2,14
  * speaker, alt speaker, amp, source left, stage back.  
  */
 
@@ -90,9 +90,9 @@ public class Targeting extends SubsystemBase {
     x = tx.getDouble(0);
     y = ty.getDouble(0);
 
-    SmartDashboard.putNumber("Limelight Valid Target", validTarget);
-    SmartDashboard.putNumber("limelight x", x);
-    SmartDashboard.putNumber("limelight y", y);
+    SmartDashboard.putNumber("Valid Target", validTarget);
+    SmartDashboard.putNumber("Target x", x);
+    SmartDashboard.putNumber("Target y", y);
     SmartDashboard.putString("Targeting", targetingWhat);
     SmartDashboard.putNumber("range", calcRange());
     setSide(sideChooser.getSelected());
