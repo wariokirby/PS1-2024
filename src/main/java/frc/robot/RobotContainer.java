@@ -19,6 +19,8 @@ import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.SwerveDrive;
 import frc.robot.subsystems.Targeting;
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
@@ -60,10 +62,16 @@ public class RobotContainer {
   private Trigger overrideCollector = new JoystickButton(prajBox, 7);
 
 
-  private final Command leave = new AutoCruise(1, 0, 0, 3.5, drive);
+  private final Command justLeave = new AutoCruise(1, 0, 0, 3.5, drive);
+  private final Command justShoot = new FireNoteAuto(shooter, collector , targeting, true, false);
   private final SequentialCommandGroup shootLeave = new SequentialCommandGroup(
     new FireNoteAuto(shooter, collector , targeting, true, false),   
     new AutoCruise(1, 0, 0, 3.4, drive)
+  );
+  private final SequentialCommandGroup shootLeaveRightOffangle = new SequentialCommandGroup(
+    new FireNoteAuto(shooter, collector , targeting, true, false),   
+    new AutoCruise(1, 0, 0, 6.4, drive),
+    new AutoCruise(.5, 90 , 0, 5, drive)
   );
   private final SequentialCommandGroup twoNoteDR = new SequentialCommandGroup(
     new FireNoteAuto(shooter, collector , targeting, true, false), 
@@ -81,9 +89,18 @@ public class RobotContainer {
     Commands.deadline(new FireNoteAuto(shooter, collector , targeting, true , false), new AimAuto(0, drive, targeting))
   );
  
+  SendableChooser<Command> autoChooser = new SendableChooser<Command>();
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
+    autoChooser.setDefaultOption("Shoot and Leave", shootLeave);
+    autoChooser.addOption("Right Offangle shoo", shootLeaveRightOffangle);
+    autoChooser.addOption("Just Shoot", justShoot);
+    autoChooser.addOption("Just Leave", justLeave);
+    autoChooser.addOption("Two Note Maybe?", twoNoteDR);
+
+    SmartDashboard.putData("Auto Choose" , autoChooser);
+
     drive.setDefaultCommand(Commands.run(
       () -> drive.podDriver(-xbox.getLeftX(), -xbox.getLeftY() , xbox.getRightX()),
       drive
@@ -154,6 +171,7 @@ public class RobotContainer {
     //new FireNoteAuto(shooter, collector , targeting, true, false),   
     //new AutoCruise(1, 0, 0, 4, drive)
   //);
-  return new FireNoteAuto(shooter, collector , targeting, true, false);
+  //return new FireNoteAuto(shooter, collector , targeting, true, false);
+  return autoChooser.getSelected();
   }
 }
