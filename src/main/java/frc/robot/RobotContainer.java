@@ -15,6 +15,7 @@ import frc.robot.commands.FireNoteCommand;
 import frc.robot.commands.RetractCollectorCommand;
 import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.Collector;
+import frc.robot.subsystems.Finder;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.SwerveDrive;
 import frc.robot.subsystems.Targeting;
@@ -50,6 +51,7 @@ public class RobotContainer {
   private final Collector collector = new Collector();
   private final Climber climber = new Climber();
   private final Targeting targeting = new Targeting();
+  private final Finder finder = new Finder();
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
   private final CommandXboxController xbox =

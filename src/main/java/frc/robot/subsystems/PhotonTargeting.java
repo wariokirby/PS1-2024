@@ -77,7 +77,7 @@ public class PhotonTargeting extends SubsystemBase {
     SmartDashboard.putNumber("Target x", x);
     SmartDashboard.putNumber("Target y", y);
     SmartDashboard.putString("Targeting", TARGETING_WHAT[whichTarget - 1]);
-    SmartDashboard.putNumber("range", calcRange());
+    //SmartDashboard.putNumber("range", calcRange());
 
 
     // This method will be called once per scheduler run
@@ -97,9 +97,9 @@ public class PhotonTargeting extends SubsystemBase {
     }
     changeTag(whichTarget);
   }
-  public boolean getSide(){
+  /*public boolean getSide(){
     return sideChooser.getSelected();
-  }
+  }*/
 
   public double getValidTarget(){
     return validTarget;
