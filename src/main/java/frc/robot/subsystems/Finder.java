@@ -39,18 +39,20 @@ public class Finder extends SubsystemBase {
     targets = pixy.getCCC().getBlockCache();
     int[] directionSize = findClosestTarget();
     SmartDashboard.putNumber("largest x location", directionSize[0]);
-    SmartDashboard.putNumber("largest width", directionSize[1]);
+    SmartDashboard.putNumber("largest y location", directionSize[1]);
+    SmartDashboard.putNumber("largest width", directionSize[2]);
     // This method will be called once per scheduler run
   }
 
   public int[] findClosestTarget(){
-    int[] directionSize = new int[2];//0 is amount from center of view from -157 to 157, 1 is width of the target
+    int[] directionSize = new int[3];//0 is amount from center of view from -157 to 157, 1 is amount from center vertically from -103 to 103 positive down, 2 is width of the target
     if(targetCount == 0 || targets.size() == 0){
       directionSize[0] = 200;//set outside range to know the target is not in view
+      directionSize[1] = 200;
       return directionSize;
     }
     if(targets.size() == 0){
-      directionSize[0] = -200;//set outside range to know the target is not in view
+      directionSize[0] = -1;//set outside range to know the target is not in view
       return directionSize;
     }
     //searching for the largest target in view which should be the closest
@@ -61,7 +63,8 @@ public class Finder extends SubsystemBase {
       }//end if
     }//end for
     directionSize[0]=closestTarget.getX()-157;//setting the center of the camera view to be center.  
-    directionSize[1]=closestTarget.getWidth();
+    directionSize[1]=closestTarget.getY()-103;//setting the center of the camera view to be center.  
+    directionSize[2]=closestTarget.getWidth();
     return directionSize;
   }//end findClosestTarget
 
