@@ -8,13 +8,13 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.SwerveDrive;
 import frc.robot.subsystems.Targeting;
 
-public class AimTele extends Command {
+public class Aim extends Command {
   private SwerveDrive drivetrain;
   private Targeting targeting;
   private int whichTarget;//0 speaker, 1 altSpeaker, 2 amp, 3 source left, 4 stage back
 
   /** Creates a new Aim. */
-  public AimTele(int whichTarget , SwerveDrive drivetrain, Targeting targeting) {
+  public Aim(int whichTarget , SwerveDrive drivetrain, Targeting targeting) {
     this.whichTarget = whichTarget;
     this.drivetrain = drivetrain;
     this.targeting = targeting;
@@ -33,10 +33,7 @@ public class AimTele extends Command {
   @Override
   public void execute() {
     if(whichTarget == 0){
-      if(targeting.getValidTarget() == 0) {
-        drivetrain.podDriver(0, -.5, 0);
-      }
-      if(targeting.calcRange() < 71) {
+        if(targeting.calcRange() < 71) {
         drivetrain.podDriver(0, 0, (targeting.getX())/20);
       }
       else {

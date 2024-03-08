@@ -43,7 +43,7 @@ public class NotelSeeker extends Command {
     } //end if 
     else {
       collector.intake();
-      drivetrain.podDriver(dize[0] / 100.0, 1, 0);
+      drivetrain.podDriver(dize[0] / 100.0, .75, 0);
     } //end else
   } //end execute
 

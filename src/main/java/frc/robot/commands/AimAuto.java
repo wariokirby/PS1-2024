@@ -32,8 +32,15 @@ public class AimAuto extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+    double drive;
+    if(targeting.calcRange() > 71){
+      drive =  -.5;
+    }
+    else{
+      drive = 0;
+    }
     if(whichTarget == 0){
-      drivetrain.podDriver(0, 0, (targeting.getX())/20);
+      drivetrain.podDriver(0, drive, (targeting.getX())/20);
     }
     else if(whichTarget == 2){
       if(targeting.getSide()){

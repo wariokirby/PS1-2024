@@ -5,13 +5,14 @@
 package frc.robot;
 
 import frc.robot.commands.AimAuto;
-import frc.robot.commands.AimTele;
+import frc.robot.commands.Aim;
 import frc.robot.commands.AutoCruise;
 import frc.robot.commands.AutoPickup;
 import frc.robot.commands.Autos;
 import frc.robot.commands.DeployCollectorCommand;
 import frc.robot.commands.FireNoteAuto;
 import frc.robot.commands.FireNoteCommand;
+import frc.robot.commands.NotelSeeker;
 import frc.robot.commands.RetractCollectorCommand;
 import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.Collector;
@@ -67,28 +68,45 @@ public class RobotContainer {
   private final Command justLeave = new AutoCruise(1, 0, 0, 3.5, drive);
   private final Command justShoot = new FireNoteAuto(shooter, collector , targeting, true, false);
   private final SequentialCommandGroup shootLeave = new SequentialCommandGroup(
-    new FireNoteAuto(shooter, collector , targeting, true, false),   
-    new AutoCruise(1, 0, 0, 3.4, drive)
+    justShoot,   
+    justLeave
   );
-  private final SequentialCommandGroup shootLeaveRightOffangle = new SequentialCommandGroup(
-    new FireNoteAuto(shooter, collector , targeting, true, false),   
-    new AutoCruise(1, 0, 0, 6.4, drive),
-    new AutoCruise(.5, 90 , 0, 5, drive)
+  private final SequentialCommandGroup shootLeaveOffangleRight = new SequentialCommandGroup(
+    new Aim(0, drive, targeting),
+    Commands.deadline(new FireNoteAuto(shooter, collector , targeting, false, false), new Aim(0, drive, targeting)), 
+    new AutoCruise(1, -45, 0, 3.5, drive),
+    new AutoCruise(.5, 0 , 0, 5, drive)
   );
-  private final SequentialCommandGroup twoNoteDR = new SequentialCommandGroup(
+  private final SequentialCommandGroup shootLeaveOffangleLeft = new SequentialCommandGroup(
+    new Aim(0, drive, targeting),
+    Commands.deadline(new FireNoteAuto(shooter, collector , targeting, false, false), new Aim(0, drive, targeting)), 
+    new AutoCruise(1, 45, 0, 3.5, drive),
+    new AutoCruise(.5, 0 , 0, 2, drive)
+  );
+  private final SequentialCommandGroup twoNoteDR = new SequentialCommandGroup(//ends at 36"
     new FireNoteAuto(shooter, collector , targeting, true, false), 
     new DeployCollectorCommand(collector),
-    Commands.race(new AutoCruise(1, 0, 0, 6.6, drive), new AutoPickup(collector)),
+    Commands.race(new AutoCruise(1, 0, 0, 3, drive), new AutoPickup(collector)),
     new RetractCollectorCommand(collector),
-    new AutoCruise(-1, 0, 0, 3.6, drive),
     new FireNoteAuto(shooter, collector , targeting, true, true)
   );
   private final SequentialCommandGroup twoNote = new SequentialCommandGroup(
-    Commands.deadline(new FireNoteAuto(shooter, collector , targeting, true, false), new AimAuto(0, drive, targeting)), 
+    Commands.deadline(new FireNoteAuto(shooter, collector , targeting, false, false), new Aim(0, drive, targeting)), 
     new DeployCollectorCommand(collector),
-    Commands.race(new AutoPickup(collector), new AutoCruise(1, 0, 0, 6.6, drive)),
+    Commands.race(new AutoPickup(collector), new AutoCruise(1, 0, 0, (30 / 12.0), drive)),
+    new NotelSeeker(drive, finder, collector),
     new RetractCollectorCommand(collector),
-    Commands.deadline(new FireNoteAuto(shooter, collector , targeting, true , false), new AimAuto(0, drive, targeting))
+    new Aim(0, drive, targeting),
+    Commands.deadline(new FireNoteAuto(shooter, collector , targeting, false , false), new Aim(0, drive, targeting))
+  );
+  private final SequentialCommandGroup threeNote = new SequentialCommandGroup(//24.5 degrees
+    twoNote,
+    new DeployCollectorCommand(collector),
+    Commands.race(new AutoPickup(collector), new AutoCruise(1, 24.5, 24.5, (55 / 12.0), drive)),
+    new NotelSeeker(drive, finder, collector),
+    new RetractCollectorCommand(collector),
+    new Aim(0, drive, targeting),
+    Commands.deadline(new FireNoteAuto(shooter, collector , targeting, false , false), new Aim(0, drive, targeting))
   );
  
   SendableChooser<Command> autoChooser = new SendableChooser<Command>();
@@ -96,10 +114,12 @@ public class RobotContainer {
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     autoChooser.setDefaultOption("Shoot and Leave", shootLeave);
-    autoChooser.addOption("Right Offangle shoo", shootLeaveRightOffangle);
+    autoChooser.addOption("Right Offangle shoot", shootLeaveOffangleRight);
+    autoChooser.addOption("Left Offangle shoot", shootLeaveOffangleLeft);
     autoChooser.addOption("Just Shoot", justShoot);
     autoChooser.addOption("Just Leave", justLeave);
     autoChooser.addOption("Two Note Maybe?", twoNoteDR);
+    autoChooser.addOption("Two Note", twoNote);
 
     SmartDashboard.putData("Auto Choose" , autoChooser);
 
@@ -134,7 +154,7 @@ public class RobotContainer {
     xbox.rightTrigger()
       .onTrue(Commands.runOnce(drive :: turboOn, drive))
       .onFalse(Commands.runOnce(drive :: turboOff, drive));
-    xbox.leftTrigger().whileTrue(new AimTele(0, drive, targeting));
+    xbox.leftTrigger().whileTrue(new Aim(0, drive, targeting));
 
 //shooter
     xboxOperator.start().onTrue(Commands.run(shooter :: fireNote , shooter));
