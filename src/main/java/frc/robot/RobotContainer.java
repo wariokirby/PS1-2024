@@ -72,13 +72,13 @@ public class RobotContainer {
     justLeave
   );
   private final SequentialCommandGroup shootLeaveOffangleRight = new SequentialCommandGroup(
-    new Aim(0, drive, targeting),
+    new AimAuto(0, drive, targeting),
     Commands.deadline(new FireNoteAuto(shooter, collector , targeting, false, false), new Aim(0, drive, targeting)), 
     new AutoCruise(1, -45, 0, 3.5, drive),
     new AutoCruise(.5, 0 , 0, 5, drive)
   );
   private final SequentialCommandGroup shootLeaveOffangleLeft = new SequentialCommandGroup(
-    new Aim(0, drive, targeting),
+    new AimAuto(0, drive, targeting),
     Commands.deadline(new FireNoteAuto(shooter, collector , targeting, false, false), new Aim(0, drive, targeting)), 
     new AutoCruise(1, 45, 0, 3.5, drive),
     new AutoCruise(.5, 0 , 0, 2, drive)
@@ -91,12 +91,13 @@ public class RobotContainer {
     new FireNoteAuto(shooter, collector , targeting, true, true)
   );
   private final SequentialCommandGroup twoNote = new SequentialCommandGroup(
+    new AimAuto(0, drive, targeting),
     Commands.deadline(new FireNoteAuto(shooter, collector , targeting, false, false), new Aim(0, drive, targeting)), 
     new DeployCollectorCommand(collector),
     Commands.race(new AutoPickup(collector), new AutoCruise(1, 0, 0, (30 / 12.0), drive)),
     new NotelSeeker(drive, finder, collector),
     new RetractCollectorCommand(collector),
-    new Aim(0, drive, targeting),
+    new AimAuto(0, drive, targeting),
     Commands.deadline(new FireNoteAuto(shooter, collector , targeting, false , false), new Aim(0, drive, targeting))
   );
   private final SequentialCommandGroup threeNote = new SequentialCommandGroup(//24.5 degrees
@@ -105,7 +106,7 @@ public class RobotContainer {
     Commands.race(new AutoPickup(collector), new AutoCruise(1, 24.5, 24.5, (55 / 12.0), drive)),
     new NotelSeeker(drive, finder, collector),
     new RetractCollectorCommand(collector),
-    new Aim(0, drive, targeting),
+    new AimAuto(0, drive, targeting),
     Commands.deadline(new FireNoteAuto(shooter, collector , targeting, false , false), new Aim(0, drive, targeting))
   );
  
@@ -120,6 +121,7 @@ public class RobotContainer {
     autoChooser.addOption("Just Leave", justLeave);
     autoChooser.addOption("Two Note Maybe?", twoNoteDR);
     autoChooser.addOption("Two Note", twoNote);
+    autoChooser.addOption("Three Note", threeNote);
 
     SmartDashboard.putData("Auto Choose" , autoChooser);
 
