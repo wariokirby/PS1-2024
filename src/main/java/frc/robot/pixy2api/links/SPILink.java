@@ -33,7 +33,8 @@ import frc.robot.pixy2api.Pixy2.Checksum;
  */
 
 public class SPILink implements Link {
-	private final static int PIXY_SPI_CLOCKRATE = 2000000;
+	//private final static int PIXY_SPI_CLOCKRATE = 2000000;
+	private final static int PIXY_SPI_CLOCKRATE = 19200;
 
 	private SPI spi = null;
 

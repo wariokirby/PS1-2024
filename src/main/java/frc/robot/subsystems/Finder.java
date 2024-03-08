@@ -15,6 +15,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.pixy2api.Pixy2;
 import frc.robot.pixy2api.Pixy2CCC;
 import frc.robot.pixy2api.Pixy2CCC.Block;
+import frc.robot.pixy2api.links.I2CLink;
 import frc.robot.pixy2api.links.SPILink;
 
 public class Finder extends SubsystemBase {
@@ -25,8 +26,9 @@ public class Finder extends SubsystemBase {
   private ArrayList<Block> targets;
 
   public Finder() {
-    pixy = Pixy2.createInstance(new SPILink());
+    pixy = Pixy2.createInstance(new I2CLink());
     pixy.init();
+    //pixy.setLamp((byte) 1, (byte) 1);
     targets = new ArrayList<Block>();
   }
 
