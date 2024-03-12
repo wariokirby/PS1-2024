@@ -40,7 +40,7 @@ public class Targeting extends SubsystemBase {
   private final double HEIGHT_OF_AMP = 53.375; 
   private final double HEIGHT_OF_STAGE = 52; 
   private final double HEIGHT_OF_CAMERA = 12;
-  private final double CAMERA_MOUNT_ANGLE = 45.2;
+  private final double CAMERA_MOUNT_ANGLE = 43;
 
   private NetworkTable limelight;
   private NetworkTableEntry tv;
