@@ -16,7 +16,6 @@ import frc.robot.pixy2api.Pixy2;
 import frc.robot.pixy2api.Pixy2CCC;
 import frc.robot.pixy2api.Pixy2CCC.Block;
 import frc.robot.pixy2api.links.I2CLink;
-import frc.robot.pixy2api.links.SPILink;
 
 public class Finder extends SubsystemBase {
   /** Creates a new Finder. */

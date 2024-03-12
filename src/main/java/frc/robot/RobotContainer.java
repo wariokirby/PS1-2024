@@ -66,7 +66,9 @@ public class RobotContainer {
 
 
   private final Command justLeave = new AutoCruise(1, 0, 0, 3.5, drive);
+
   private final Command justShoot = new FireNoteAuto(shooter, collector , targeting, true, false);
+
   private final SequentialCommandGroup shootLeave = new SequentialCommandGroup(
     justShoot,   
     justLeave
@@ -81,10 +83,10 @@ public class RobotContainer {
     new AimAuto(0, drive, targeting),
     Commands.deadline(new FireNoteAuto(shooter, collector , targeting, false, false), new Aim(0, drive, targeting)), 
     new AutoCruise(1, 45, 0, 3.5, drive),
-    new AutoCruise(.5, 0 , 0, 2, drive)
+    new AutoCruise(.5, 0 , 0, 5, drive)
   );
   private final SequentialCommandGroup twoNoteDR = new SequentialCommandGroup(//ends at 36"
-    new FireNoteAuto(shooter, collector , targeting, true, false), 
+    justShoot,
     new DeployCollectorCommand(collector),
     Commands.race(new AutoCruise(1, 0, 0, 3, drive), new AutoPickup(collector)),
     new RetractCollectorCommand(collector),
@@ -109,7 +111,29 @@ public class RobotContainer {
     new AimAuto(0, drive, targeting),
     Commands.deadline(new FireNoteAuto(shooter, collector , targeting, false , false), new Aim(0, drive, targeting))
   );
- 
+
+  private final SequentialCommandGroup threeNoteCenter = new SequentialCommandGroup(
+    twoNote,
+    new DeployCollectorCommand(collector),
+    Commands.race(new AutoPickup(collector), new AutoCruise(1, 19.6, 19.6, (210 / 12.0), drive)),
+    new NotelSeeker(drive, finder, collector),
+    new RetractCollectorCommand(collector),
+    new AutoCruise(-1, 19.6, 19.6, (210 / 12.0), drive),//negative 1 may not work, change angle if necessary
+    new AimAuto(0, drive, targeting),
+    Commands.deadline(new FireNoteAuto(shooter, collector , targeting, false , false), new Aim(0, drive, targeting))
+  );
+
+  private final SequentialCommandGroup maxGreedMode = new SequentialCommandGroup(
+    threeNoteCenter,
+    new DeployCollectorCommand(collector),
+    Commands.race(new AutoPickup(collector), new AutoCruise(1, 24.5, 24.5, (55 / 12.0), drive)),
+    new NotelSeeker(drive, finder, collector),
+    new RetractCollectorCommand(collector),
+    new AimAuto(0, drive, targeting),
+    Commands.deadline(new FireNoteAuto(shooter, collector , targeting, false , false), new Aim(0, drive, targeting))
+  );
+
+
   SendableChooser<Command> autoChooser = new SendableChooser<Command>();
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
@@ -117,11 +141,13 @@ public class RobotContainer {
     autoChooser.setDefaultOption("Shoot and Leave", shootLeave);
     autoChooser.addOption("Right Offangle shoot", shootLeaveOffangleRight);
     autoChooser.addOption("Left Offangle shoot", shootLeaveOffangleLeft);
+    autoChooser.addOption("2 Note DR", twoNoteDR);
+    autoChooser.addOption("2 Note", twoNote);
+    autoChooser.addOption("3 Note", threeNote);
+    autoChooser.addOption("3 Note Center", threeNoteCenter);
+    autoChooser.addOption("Be Wario", maxGreedMode);
     autoChooser.addOption("Just Shoot", justShoot);
     autoChooser.addOption("Just Leave", justLeave);
-    autoChooser.addOption("Two Note Maybe?", twoNoteDR);
-    autoChooser.addOption("Two Note", twoNote);
-    autoChooser.addOption("Three Note", threeNote);
 
     SmartDashboard.putData("Auto Choose" , autoChooser);
 
