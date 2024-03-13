@@ -29,6 +29,7 @@ public class Collector extends SubsystemBase {
   public Collector() {
     deploy = new CANSparkMax(44, MotorType.kBrushless);
     deployEncoder = deploy.getEncoder();
+    deploy.setInverted(true);
     deployEncoder.setPositionConversionFactor(1 / 100.0);
     collect = new CANSparkMax(45, MotorType.kBrushless);
 

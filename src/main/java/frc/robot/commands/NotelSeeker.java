@@ -43,13 +43,16 @@ public class NotelSeeker extends Command {
     } //end if 
     else {
       collector.intake();
-      drivetrain.podDriver(dize[0] / 100.0, .75, 0);
+      drivetrain.podDriver(-(dize[0] - 74) / 100.0, (dize[1] + 24) / 50, 0);
     } //end else
   } //end execute
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
+    if(!interrupted){
+      new AutoCruise(.5, drivetrain.getYaw(), 0, .5, drivetrain);
+    }
     collector.off();
     drivetrain.podDriver(0, 0, 0);
     drivetrain.enableFieldOriented();
@@ -58,6 +61,7 @@ public class NotelSeeker extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return collector.getNoteDetect();
+    //return collector.getNoteDetect();
+    return Math.abs(dize[0] - 74) < 5 && Math.abs(dize[1] + 24) < 5;
   } //end isFinished
 }

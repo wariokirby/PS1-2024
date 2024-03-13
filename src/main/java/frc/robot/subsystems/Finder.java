@@ -39,8 +39,8 @@ public class Finder extends SubsystemBase {
     //debugging code
     targets = pixy.getCCC().getBlockCache();
     int[] directionSize = findClosestTarget();
-    SmartDashboard.putNumber("largest x location", directionSize[0]);
-    SmartDashboard.putNumber("largest y location", directionSize[1]);
+    SmartDashboard.putNumber("largest x location", directionSize[0] - 74);
+    SmartDashboard.putNumber("largest y location", directionSize[1] + 24);
     SmartDashboard.putNumber("largest width", directionSize[2]);
     // This method will be called once per scheduler run
   }
@@ -64,7 +64,7 @@ public class Finder extends SubsystemBase {
       }//end if
     }//end for
     directionSize[0]=closestTarget.getX()-157;//setting the center of the camera view to be center.  
-    directionSize[1]=closestTarget.getY()-103;//setting the center of the camera view to be center.  
+    directionSize[1]=-1*(closestTarget.getY()-103);//setting the center of the camera view to be center.  
     directionSize[2]=closestTarget.getWidth();
     return directionSize;
   }//end findClosestTarget
