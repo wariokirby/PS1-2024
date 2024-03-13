@@ -12,12 +12,14 @@ public class Aim extends Command {
   private SwerveDrive drivetrain;
   private Targeting targeting;
   private int whichTarget;//0 speaker, 1 altSpeaker, 2 amp, 3 source left, 4 stage back
+  private boolean isAuto;
 
   /** Creates a new Aim. */
-  public Aim(int whichTarget , SwerveDrive drivetrain, Targeting targeting) {
+  public Aim(int whichTarget , SwerveDrive drivetrain, Targeting targeting, boolean isAuto) {
     this.whichTarget = whichTarget;
     this.drivetrain = drivetrain;
     this.targeting = targeting;
+    this.isAuto = isAuto;
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(drivetrain);
   }
@@ -60,6 +62,12 @@ public class Aim extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    if(isAuto){
+      return (targeting.calcRange() < 71 && Math.abs(targeting.getX()) < 2) || targeting.getValidTarget() == 0;
+    }
+    else{
+      return false;
+    }
+    
   }
 }

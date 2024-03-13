@@ -24,7 +24,6 @@ public class SwerveDrive extends SubsystemBase {
   private int imuErrorCode;
   private double[] ypr;
 
-  private boolean turbo;
 
   private boolean fieldOriented = true;
 
@@ -42,7 +41,6 @@ public class SwerveDrive extends SubsystemBase {
 
     r = Math.sqrt((L * L) + (W * W));
     
-    turbo = false;
     fieldOriented = true;
   }
 

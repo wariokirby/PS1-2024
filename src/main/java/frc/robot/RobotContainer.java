@@ -4,14 +4,13 @@
 
 package frc.robot;
 
-import frc.robot.commands.AimAuto;
 import frc.robot.commands.Aim;
 import frc.robot.commands.AutoCruise;
 import frc.robot.commands.AutoPickup;
-import frc.robot.commands.Autos;
 import frc.robot.commands.DeployCollectorCommand;
 import frc.robot.commands.FireNoteAuto;
 import frc.robot.commands.FireNoteCommand;
+import frc.robot.commands.NoteGrabber;
 import frc.robot.commands.NotelSeeker;
 import frc.robot.commands.RetractCollectorCommand;
 import frc.robot.subsystems.Climber;
@@ -74,14 +73,14 @@ public class RobotContainer {
     new AutoCruise(1, 0, 0, 3.5, drive)
   );
   private final SequentialCommandGroup shootLeaveOffangleRight = new SequentialCommandGroup(
-    new AimAuto(0, drive, targeting),
-    Commands.deadline(new FireNoteAuto(shooter, collector , targeting, false, false), new Aim(0, drive, targeting)), 
+    new Aim(0, drive, targeting , true),
+    Commands.deadline(new FireNoteAuto(shooter, collector , targeting, false, false), new Aim(0, drive, targeting , false)), 
     new AutoCruise(1, -45, 0, 3.5, drive),
     new AutoCruise(.5, 0 , 0, 5, drive)
   );
   private final SequentialCommandGroup shootLeaveOffangleLeft = new SequentialCommandGroup(
-    new AimAuto(0, drive, targeting),
-    Commands.deadline(new FireNoteAuto(shooter, collector , targeting, false, false), new Aim(0, drive, targeting)), 
+    new Aim(0, drive, targeting , true),
+    Commands.deadline(new FireNoteAuto(shooter, collector , targeting, false, false), new Aim(0, drive, targeting, false)), 
     new AutoCruise(1, 45, 0, 3.5, drive),
     new AutoCruise(.5, 0 , 0, 5, drive)
   );
@@ -89,76 +88,81 @@ public class RobotContainer {
     new FireNoteAuto(shooter, collector , targeting, true, false),
     new DeployCollectorCommand(collector),
     Commands.race(new AutoCruise(1, 0, 0, 3, drive), new AutoPickup(collector)),
+    new NoteGrabber(drive, collector),
     new RetractCollectorCommand(collector),
     new FireNoteAuto(shooter, collector , targeting, true, true)
   );
   private final SequentialCommandGroup twoNote = new SequentialCommandGroup(
-    new AimAuto(0, drive, targeting),
-    Commands.deadline(new FireNoteAuto(shooter, collector , targeting, false, false), new Aim(0, drive, targeting)), 
+    new FireNoteAuto(shooter, collector , targeting, true, false),
     new DeployCollectorCommand(collector),
     Commands.race(new AutoPickup(collector), new AutoCruise(1, 0, 0, (30 / 12.0), drive)),
     new NotelSeeker(drive, finder, collector),
+    new NoteGrabber(drive, collector),
     new RetractCollectorCommand(collector),
-    new AimAuto(0, drive, targeting),
-    Commands.deadline(new FireNoteAuto(shooter, collector , targeting, false , false), new Aim(0, drive, targeting))
+    new Aim(0, drive, targeting , true),
+    Commands.deadline(new FireNoteAuto(shooter, collector , targeting, false , false), new Aim(0, drive, targeting, false))
   );
   private final SequentialCommandGroup threeNote = new SequentialCommandGroup(//24.5 degrees
-    new AimAuto(0, drive, targeting),
-    Commands.deadline(new FireNoteAuto(shooter, collector , targeting, false, false), new Aim(0, drive, targeting)), 
+    new FireNoteAuto(shooter, collector , targeting, true, false),
     new DeployCollectorCommand(collector),
     Commands.race(new AutoPickup(collector), new AutoCruise(1, 0, 0, (30 / 12.0), drive)),
     new NotelSeeker(drive, finder, collector),
+    new NoteGrabber(drive, collector),
     new RetractCollectorCommand(collector),
-    new AimAuto(0, drive, targeting),
-    Commands.deadline(new FireNoteAuto(shooter, collector , targeting, false , false), new Aim(0, drive, targeting)),
+    new Aim(0, drive, targeting , true),
+    Commands.deadline(new FireNoteAuto(shooter, collector , targeting, false , false), new Aim(0, drive, targeting, false)),
     new DeployCollectorCommand(collector),
     Commands.race(new AutoPickup(collector), new AutoCruise(1, 24.5, 24.5, (55 / 12.0), drive)),
     new NotelSeeker(drive, finder, collector),
+    new NoteGrabber(drive, collector),
     new RetractCollectorCommand(collector),
-    new AimAuto(0, drive, targeting),
-    Commands.deadline(new FireNoteAuto(shooter, collector , targeting, false , false), new Aim(0, drive, targeting))
+    new Aim(0, drive, targeting , true),
+    Commands.deadline(new FireNoteAuto(shooter, collector , targeting, false , false), new Aim(0, drive, targeting, false))
   );
 
   private final SequentialCommandGroup threeNoteCenter = new SequentialCommandGroup(
-    new AimAuto(0, drive, targeting),
-    Commands.deadline(new FireNoteAuto(shooter, collector , targeting, false, false), new Aim(0, drive, targeting)), 
+    new FireNoteAuto(shooter, collector , targeting, true, false),
     new DeployCollectorCommand(collector),
     Commands.race(new AutoPickup(collector), new AutoCruise(1, 0, 0, (30 / 12.0), drive)),
     new NotelSeeker(drive, finder, collector),
+    new NoteGrabber(drive, collector),
     new RetractCollectorCommand(collector),
-    new AimAuto(0, drive, targeting),
-    Commands.deadline(new FireNoteAuto(shooter, collector , targeting, false , false), new Aim(0, drive, targeting)),
+    new Aim(0, drive, targeting , true),
+    Commands.deadline(new FireNoteAuto(shooter, collector , targeting, false , false), new Aim(0, drive, targeting, false)),
     new DeployCollectorCommand(collector),
     Commands.race(new AutoPickup(collector), new AutoCruise(1, 19.6, 19.6, (210 / 12.0), drive)),
     new NotelSeeker(drive, finder, collector),
+    new NoteGrabber(drive, collector),
     new RetractCollectorCommand(collector),
     new AutoCruise(-1, 19.6, 19.6, (210 / 12.0), drive),//negative 1 may not work, change angle if necessary
-    new AimAuto(0, drive, targeting),
-    Commands.deadline(new FireNoteAuto(shooter, collector , targeting, false , false), new Aim(0, drive, targeting))
+    new Aim(0, drive, targeting , true),
+    Commands.deadline(new FireNoteAuto(shooter, collector , targeting, false , false), new Aim(0, drive, targeting, false))
   );
 
   private final SequentialCommandGroup maxGreedMode = new SequentialCommandGroup(
-    new AimAuto(0, drive, targeting),
-    Commands.deadline(new FireNoteAuto(shooter, collector , targeting, false, false), new Aim(0, drive, targeting)), 
+    new FireNoteAuto(shooter, collector , targeting, true, false),
     new DeployCollectorCommand(collector),
     Commands.race(new AutoPickup(collector), new AutoCruise(1, 0, 0, (30 / 12.0), drive)),
     new NotelSeeker(drive, finder, collector),
+    new NoteGrabber(drive, collector),
     new RetractCollectorCommand(collector),
-    new AimAuto(0, drive, targeting),
-    Commands.deadline(new FireNoteAuto(shooter, collector , targeting, false , false), new Aim(0, drive, targeting)),
+    new Aim(0, drive, targeting , true),
+    Commands.deadline(new FireNoteAuto(shooter, collector , targeting, false , false), new Aim(0, drive, targeting, false)),
     new DeployCollectorCommand(collector),
     Commands.race(new AutoPickup(collector), new AutoCruise(1, 19.6, 19.6, (210 / 12.0), drive)),
     new NotelSeeker(drive, finder, collector),
+    new NoteGrabber(drive, collector),
     new RetractCollectorCommand(collector),
     new AutoCruise(-1, 19.6, 19.6, (210 / 12.0), drive),//negative 1 may not work, change angle if necessary
-    new AimAuto(0, drive, targeting),
-    Commands.deadline(new FireNoteAuto(shooter, collector , targeting, false , false), new Aim(0, drive, targeting)),
+    new Aim(0, drive, targeting , true),
+    Commands.deadline(new FireNoteAuto(shooter, collector , targeting, false , false), new Aim(0, drive, targeting, false)),
     new DeployCollectorCommand(collector),
     Commands.race(new AutoPickup(collector), new AutoCruise(1, 24.5, 24.5, (55 / 12.0), drive)),
     new NotelSeeker(drive, finder, collector),
+    new NoteGrabber(drive, collector),
     new RetractCollectorCommand(collector),
-    new AimAuto(0, drive, targeting),
-    Commands.deadline(new FireNoteAuto(shooter, collector , targeting, false , false), new Aim(0, drive, targeting))
+    new Aim(0, drive, targeting , true),
+    Commands.deadline(new FireNoteAuto(shooter, collector , targeting, false , false), new Aim(0, drive, targeting, false))
   );
 
 
@@ -210,8 +214,8 @@ public class RobotContainer {
     xbox.rightTrigger()
       .onTrue(Commands.runOnce(drive :: turboOn, drive))
       .onFalse(Commands.runOnce(drive :: turboOff, drive));
-    xbox.leftTrigger().whileTrue(new Aim(0, drive, targeting));
-    xbox.a().whileTrue(new NotelSeeker(drive, finder, collector));
+    xbox.leftTrigger().whileTrue(new Aim(0, drive, targeting, false));
+    xbox.a().whileTrue(new SequentialCommandGroup(new NotelSeeker(drive, finder, collector) , new NoteGrabber(drive, collector)));
 
 //shooter
     xboxOperator.start().onTrue(Commands.run(shooter :: fireNote , shooter));
