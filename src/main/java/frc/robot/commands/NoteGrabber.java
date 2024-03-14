@@ -14,6 +14,8 @@ public class NoteGrabber extends Command {
 
   /** Creates a new NoteGrabber. */
   public NoteGrabber(SwerveDrive drivetrain, Collector collector) {
+    this.drivetrain = drivetrain;
+    this.collector = collector;
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(drivetrain , collector);
   }
@@ -29,7 +31,7 @@ public class NoteGrabber extends Command {
   @Override
   public void execute() {
     collector.intake();
-    drivetrain.podDriver(0, .5, 0);
+    drivetrain.podDriver(0, .25, 0);
   }
 
   // Called once the command ends or is interrupted.
@@ -44,6 +46,6 @@ public class NoteGrabber extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return drivetrain.getAverageDistance() > 6;
+    return drivetrain.getAverageDistance() > 2;
   }
 }

@@ -38,12 +38,15 @@ public class NotelSeeker extends Command {
   @Override
   public void execute() {
     dize = finder.findClosestTarget();
+    if(dize[1] < 0){
+      dize[1] = 0;
+    }
     if (dize[0] == 160) {
       drivetrain.podDriver(0, 0, 0.5);
     } //end if 
     else {
       collector.intake();
-      drivetrain.podDriver(-(dize[0] - 74) / 100.0, (dize[1] + 24) / 50, 0);
+      drivetrain.podDriver(-(dize[0] - 74) / 100.0, (dize[1] + 24) / 100.0, 0);
     } //end else
   } //end execute
 
@@ -59,6 +62,6 @@ public class NotelSeeker extends Command {
   @Override
   public boolean isFinished() {
     //return collector.getNoteDetect();
-    return Math.abs(dize[0] - 74) < 5 && Math.abs(dize[1] + 24) < 5;
+    return Math.abs(dize[0] - 74) < 15 && (dize[1] + 24) < 35;
   } //end isFinished
 }

@@ -215,7 +215,8 @@ public class RobotContainer {
       .onTrue(Commands.runOnce(drive :: turboOn, drive))
       .onFalse(Commands.runOnce(drive :: turboOff, drive));
     xbox.leftTrigger().whileTrue(new Aim(0, drive, targeting, false));
-    xbox.a().whileTrue(new SequentialCommandGroup(new NotelSeeker(drive, finder, collector) , new NoteGrabber(drive, collector)));
+    xbox.a().onTrue(new SequentialCommandGroup(new NotelSeeker(drive, finder, collector) , new NoteGrabber(drive, collector)));
+    xbox.b().onTrue(Commands.runOnce(drive :: stop, drive));
 
 //shooter
     xboxOperator.start().onTrue(Commands.run(shooter :: fireNote , shooter));
