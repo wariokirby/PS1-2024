@@ -26,7 +26,7 @@ public class Finder extends SubsystemBase {
 
   public Finder() {
     pixy = Pixy2.createInstance(new I2CLink());
-    pixy.init();
+    pixy.init(1);
     //pixy.setLamp((byte) 1, (byte) 1);
     targets = new ArrayList<Block>();
   }

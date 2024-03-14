@@ -223,6 +223,7 @@ public class RobotContainer {
     xboxOperator.rightBumper().onTrue(new FireNoteCommand(shooter, targeting, false));
     xboxOperator.leftBumper().onTrue(Commands.runOnce(shooter :: stopShooter, shooter));
     xboxOperator.back().onTrue(Commands.run(shooter :: fireNoteAmp, shooter));
+    xboxOperator.y().onTrue(Commands.run(shooter :: fireNoteWall, shooter));
     
     xboxOperator.rightTrigger().whileTrue(Commands.run(collector :: fire , collector));
     xboxOperator.leftTrigger().whileTrue(Commands.run(collector :: intake, collector));   

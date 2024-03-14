@@ -35,7 +35,7 @@ public class Aim extends Command {
   @Override
   public void execute() {
     if(whichTarget == 0){
-        if(targeting.calcRange() < 71) {
+        if(targeting.calcRange() < 90) {
         drivetrain.podDriver(0, 0, (targeting.getX())/20);
       }
       else {

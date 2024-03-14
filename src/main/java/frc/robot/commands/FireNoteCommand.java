@@ -30,14 +30,17 @@ public class FireNoteCommand extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if(noLimelight){
-      shooter.fireNote(2000 , 4000);
+    if(noLimelight || targeting.calcRange() <= 50){
+      shooter.fireNote(2000 , 3000);
      }
-    else if(targeting.calcRange() < 65){
-      shooter.fireNote(2000 , 4000);
-    }
-    else if(targeting.calcRange() < 71){
+    else if(targeting.calcRange() <= 66){
       shooter.fireNote(2000 , 2000);
+    }
+    else if(targeting.calcRange() <= 75){
+      shooter.fireNote(4000 , 1800);
+    }
+    else if(targeting.calcRange() <= 90){
+      shooter.fireNote(4000 , 1500);
     }
  }
 

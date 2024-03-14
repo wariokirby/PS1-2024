@@ -62,6 +62,6 @@ public class NotelSeeker extends Command {
   @Override
   public boolean isFinished() {
     //return collector.getNoteDetect();
-    return Math.abs(dize[0] - 74) < 15 && (dize[1] + 24) < 35;
+    return (Math.abs(dize[0] - 74) < 15 && (dize[1] + 24) < 35) || collector.getNoteDetect(); 
   } //end isFinished
 }

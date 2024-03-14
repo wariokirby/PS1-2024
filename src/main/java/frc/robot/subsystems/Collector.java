@@ -22,7 +22,6 @@ public class Collector extends SubsystemBase {
   private boolean override;
 
   private DigitalInput primaryNoteDetect;
-  private DigitalInput backupNoteDetect;
 
 
   /** Creates a new Collector. */
@@ -36,7 +35,6 @@ public class Collector extends SubsystemBase {
     override = false;
 
     primaryNoteDetect = new DigitalInput(0);
-    backupNoteDetect = new DigitalInput(1);
 
   }
 
@@ -123,7 +121,7 @@ public class Collector extends SubsystemBase {
   }
 
   public boolean getNoteDetect(){
-    return primaryNoteDetect.get() || backupNoteDetect.get();
+    return primaryNoteDetect.get();
   }
 
   public void off(){

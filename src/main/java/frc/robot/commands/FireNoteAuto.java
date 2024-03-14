@@ -38,26 +38,28 @@ public class FireNoteAuto extends Command {
   @Override
   public void execute() {
     if(noLimelight && !secondShot){
-      shooter.fireNote(2000 , 4000);
-      timer--;
-      if(timer <= 25){
-        collector.fire();
-      }
+      shooter.fireNote(2000 , 3000);
     }
-    else if(targeting.calcRange() < 30){
-      shooter.fireNote(2000 , 4000);
-      timer--;
-      if(timer <= 25){
-        collector.fire();
-      }
+    else if(noLimelight && secondShot){
+      shooter.fireNote(4000 , 1800);
     }
-    else if(targeting.calcRange() < 36 || secondShot){
+    else if(targeting.calcRange() <= 50){
+      shooter.fireNote(2000 , 3000);
+    }
+    else if(targeting.calcRange() <= 66){
       shooter.fireNote(2000 , 2000);
-      timer--;
-      if(timer <= 25){
-        collector.fire();
-      }
     }
+    else if(targeting.calcRange() <= 75){
+      shooter.fireNote(4000 , 1800);
+    }
+    else if(targeting.calcRange() <= 90){
+      shooter.fireNote(4000 , 1500);
+    }
+    timer--;
+    if(timer <= 25){
+      collector.fire();
+    }
+
   }
 
   // Called once the command ends or is interrupted.
