@@ -93,7 +93,7 @@ public class SwerveDrive extends SubsystemBase {
     // This method will be called once per scheduler run
     imuErrorCode = imu.getGeneralStatus(imuStatus).value;
     imu.getYawPitchRoll(ypr);
-    SmartDashboard.putNumber("IMU Health", imuErrorCode);
+    SmartDashboard.putBoolean("IMU Health", imuErrorCode == 0);
     SmartDashboard.putNumber("IMU Yaw", ypr[0]);
   }
 

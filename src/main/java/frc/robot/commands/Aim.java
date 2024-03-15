@@ -36,18 +36,18 @@ public class Aim extends Command {
   public void execute() {
     if(whichTarget == 0){
         if(targeting.calcRange() < 90) {
-        drivetrain.podDriver(0, 0, (targeting.getX())/20);
+        drivetrain.podDriver(0, 0, -(targeting.getX())/50);
       }
       else {
-        drivetrain.podDriver(0, -.5, (targeting.getX())/20);
+        drivetrain.podDriver(0, -.5, -(targeting.getX())/50);
       }
     }
     else if(whichTarget == 2){
       if(targeting.getSide()){
-        drivetrain.podDriver((targeting.getX())/10, 0, (90 - drivetrain.getYaw()) / 20.0);
+        drivetrain.podDriver((targeting.getX())/10, 0, -(90 - drivetrain.getYaw()) / 20.0);
       }
       else{
-        drivetrain.podDriver((targeting.getX())/10, 0, (-90 - drivetrain.getYaw()) / 20.0);
+        drivetrain.podDriver((targeting.getX())/10, 0, -(-90 - drivetrain.getYaw()) / 20.0);
       }
       
     }

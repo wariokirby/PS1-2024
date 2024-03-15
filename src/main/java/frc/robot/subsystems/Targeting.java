@@ -36,11 +36,11 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Targeting extends SubsystemBase {
   //distances now in inches
-  private final double HEIGHT_OF_SPEAKER = 57.125; //use this for source as well
+  private final double HEIGHT_OF_SPEAKER = 59.5; //57.125 use this for source as well
   private final double HEIGHT_OF_AMP = 53.375; 
   private final double HEIGHT_OF_STAGE = 52; 
-  private final double HEIGHT_OF_CAMERA = 12;
-  private final double CAMERA_MOUNT_ANGLE = 43;
+  private final double HEIGHT_OF_CAMERA = 11.75;
+  private final double CAMERA_MOUNT_ANGLE = 29.2;//43, 35.8
 
   private NetworkTable limelight;
   private NetworkTableEntry tv;
@@ -90,7 +90,7 @@ public class Targeting extends SubsystemBase {
     x = tx.getDouble(0);
     y = ty.getDouble(0);
 
-    SmartDashboard.putNumber("Valid Target", validTarget);
+    SmartDashboard.putBoolean("Valid Target", validTarget > 0);
     SmartDashboard.putNumber("Target x", x);
     SmartDashboard.putNumber("Target y", y);
     SmartDashboard.putString("Targeting", targetingWhat);

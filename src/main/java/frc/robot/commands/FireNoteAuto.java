@@ -40,22 +40,29 @@ public class FireNoteAuto extends Command {
     if(noLimelight && !secondShot){
       shooter.fireNote(2000 , 3000);
     }
-    else if(noLimelight && secondShot){
-      shooter.fireNote(4000 , 1800);
-    }
-    else if(targeting.calcRange() <= 50){
-      shooter.fireNote(2000 , 3000);
-    }
-    else if(targeting.calcRange() <= 66){
+    else if((noLimelight && secondShot) || targeting.getValidTarget() == 0){
       shooter.fireNote(2000 , 2000);
     }
-    else if(targeting.calcRange() <= 75){
-      shooter.fireNote(4000 , 1800);
+    else if(targeting.calcRange() <= 55){
+      shooter.fireNote(2000 , 3000);
     }
-    else if(targeting.calcRange() <= 90){
+    else if(targeting.calcRange() <= 74){
+      shooter.fireNote(2000 , 2000);
+    }
+    else if(targeting.calcRange() <= 79){
+      shooter.fireNote(4000 , 1900);
+    }
+    else if(targeting.calcRange() <= 82){
+      shooter.fireNote(4000 , 1750);
+    }
+    else if(targeting.calcRange() <= 91){
+      shooter.fireNote(4000 , 1600);
+    }
+    else{
       shooter.fireNote(4000 , 1500);
     }
-    timer--;
+
+   timer--;
     if(timer <= 25){
       collector.fire();
     }

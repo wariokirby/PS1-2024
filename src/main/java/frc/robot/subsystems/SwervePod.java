@@ -74,7 +74,7 @@ public class SwervePod extends SubsystemBase {
   @Override
   public void periodic() {
     SmartDashboard.putNumber("Speed" + positionID, getSpeed());
-    SmartDashboard.putNumber("Distance" + positionID, getDistance());
+    //SmartDashboard.putNumber("Distance" + positionID, getDistance());
     SmartDashboard.putNumber("Angle" + positionID, getAngle());
     // This method will be called once per scheduler run
   }

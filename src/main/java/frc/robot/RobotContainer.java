@@ -184,7 +184,7 @@ public class RobotContainer {
     SmartDashboard.putData("Auto Choose" , autoChooser);
 
     drive.setDefaultCommand(Commands.run(
-      () -> drive.podDriver(-xbox.getLeftX(), -xbox.getLeftY() , xbox.getRightX()),
+      () -> drive.podDriver(-xbox.getLeftX(), -xbox.getLeftY() , -xbox.getRightX()),
       drive
       ));
 

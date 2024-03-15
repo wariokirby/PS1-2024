@@ -35,6 +35,7 @@ public class Finder extends SubsystemBase {
   public void periodic() {
     targetCount = pixy.getCCC().getBlocks(false, sig, 11);
     SmartDashboard.putNumber("Notes found", targetCount);
+    SmartDashboard.putBoolean("Pixy Status", targetCount >= 0);
 
     //debugging code
     targets = pixy.getCCC().getBlockCache();
