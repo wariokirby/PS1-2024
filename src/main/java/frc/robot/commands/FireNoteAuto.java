@@ -8,6 +8,8 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Collector;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Targeting;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+
 
 public class FireNoteAuto extends Command {
   private Shooter shooter;
@@ -31,17 +33,20 @@ public class FireNoteAuto extends Command {
   @Override
   public void initialize() {
     targeting.changeTag(0);
-    timer = 75;
+    timer = 65;
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
     if(noLimelight && !secondShot){
-      shooter.fireNote(2000 , 3000);
+      shooter.fireNote(2000 , 4000);
     }
     else if((noLimelight && secondShot) || targeting.getValidTarget() == 0){
       shooter.fireNote(2000 , 2000);
+    }
+    else if(targeting.calcRange() <= 45){
+      shooter.fireNote(2000 , 4000);
     }
     else if(targeting.calcRange() <= 55){
       shooter.fireNote(2000 , 3000);
@@ -79,11 +84,7 @@ public class FireNoteAuto extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    if(timer <= 0){
-      return true;
-    }
-    else{
-      return false;
-    }
+    SmartDashboard.putNumber("autoTimer" , timer);
+    return timer <= 0;
  }
 }

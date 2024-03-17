@@ -7,22 +7,23 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Collector;
 import frc.robot.subsystems.Finder;
+import frc.robot.subsystems.FinderL;
 // import static frc.robot.Constants.*;
 import frc.robot.subsystems.SwerveDrive;
 
 public class NotelSeeker extends Command {
   /** Creates a new BallSeeker. */
   private SwerveDrive drivetrain;
-  private Finder finder;
+  private FinderL finder;
   private Collector collector;
-  private int[] dize;
+  private double[] dize;
 
-  public NotelSeeker(SwerveDrive drivetrain, Finder finder, Collector collector) {
+  public NotelSeeker(SwerveDrive drivetrain, FinderL finder, Collector collector) {
     this.drivetrain = drivetrain;
     this.finder = finder;
     this.collector = collector;
 
-    dize = new int[2];
+    dize = new double[3];
 
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(drivetrain , finder , collector);

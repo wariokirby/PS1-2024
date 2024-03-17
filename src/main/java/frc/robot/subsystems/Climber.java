@@ -38,6 +38,8 @@ public class Climber extends SubsystemBase {
   public void periodic() {
     SmartDashboard.putBoolean("Climbers Enabled", climbEnable);
     SmartDashboard.putBoolean("Climber Reverse Safety", reverseSafetyOff);
+    SmartDashboard.putNumber("leftClimb", leftEncoder.getPosition());
+    SmartDashboard.putNumber("rightClimb", rightEncoder.getPosition());
     // This method will be called once per scheduler run
   }
   public void enableClimber(){
@@ -58,6 +60,29 @@ public class Climber extends SubsystemBase {
   }
   public double getRightRotations(){
     return rightEncoder.getPosition();
+  }
+
+  public boolean leftDeploy(){
+    if(leftEncoder.getPosition() < 3.1){
+      leftClimb.set(1);
+      return false;
+    }
+    else{
+      leftClimb.set(0);
+      return true;
+    }
+    
+  }
+  public boolean rightDeploy(){
+    if(rightEncoder.getPosition() < 4.5){
+      rightClimb.set(1);
+      return false;
+    }
+    else{
+      rightClimb.set(0);
+      return true;
+    }
+    
   }
 
   public void runClimbers(double left , double right , boolean climbEnable , Joystick prajBox){

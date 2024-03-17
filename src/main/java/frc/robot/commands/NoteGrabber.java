@@ -46,6 +46,6 @@ public class NoteGrabber extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return drivetrain.getAverageDistance() > 2 || collector.getNoteDetect(); 
+    return drivetrain.getAverageDistance() > 2; 
   }
 }

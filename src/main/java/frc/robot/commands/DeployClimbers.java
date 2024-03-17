@@ -5,15 +5,17 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.Collector;
+import frc.robot.subsystems.Climber;
 
-public class RetractCollectorCommand extends Command {
-  private Collector collector;
-  /** Creates a new RetractCollectorCommand. */
-  public RetractCollectorCommand(Collector collector) {
-    this.collector = collector;
+public class DeployClimbers extends Command {
+  private Climber climber;
+  private boolean leftUp;
+  private boolean rightUp;
+  /** Creates a new DeployClimbers. */
+  public DeployClimbers(Climber climber) {
+    this.climber = climber;
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(collector);
+    addRequirements(climber);
   }
 
   // Called when the command is initially scheduled.
@@ -23,18 +25,17 @@ public class RetractCollectorCommand extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    collector.manual(0, .66);
+    leftUp = climber.leftDeploy();
+    rightUp = climber.rightDeploy();
   }
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {
-    collector.off();
-  }
+  public void end(boolean interrupted) {}
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return collector.isUp();
+    return leftUp && rightUp;
   }
 }

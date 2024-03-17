@@ -60,7 +60,7 @@ public class Collector extends SubsystemBase {
       collect.set(0);
     }
     if(override){
-      deploy.set(dSpeed * .25);
+      deploy.set(dSpeed * .375);
     }
     else if(Math.abs(dSpeed) > .1){
       if(isUp() && dSpeed > 0){
@@ -69,12 +69,14 @@ public class Collector extends SubsystemBase {
       if(isDown() && dSpeed < 0){
         dSpeed = 0;
       }
-      deploy.set(dSpeed * .25);
+      deploy.set(dSpeed * .375);
     }
     else{
       deploy.set(0);
     }
   }
+
+  
 
   public boolean isUp(){
     return deployEncoder.getPosition() > UP_POSITION;

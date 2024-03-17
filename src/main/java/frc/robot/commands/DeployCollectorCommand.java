@@ -23,7 +23,7 @@ public class DeployCollectorCommand extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    collector.manual(-1, 0);
+    collector.manual(0, -.66);
   }
 
   // Called once the command ends or is interrupted.

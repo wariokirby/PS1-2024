@@ -5,8 +5,10 @@
 package frc.robot;
 
 import frc.robot.commands.Aim;
+import frc.robot.commands.AimAlt;
 import frc.robot.commands.AutoCruise;
 import frc.robot.commands.AutoPickup;
+import frc.robot.commands.DeployClimbers;
 import frc.robot.commands.DeployCollectorCommand;
 import frc.robot.commands.FireNoteAuto;
 import frc.robot.commands.FireNoteCommand;
@@ -16,6 +18,7 @@ import frc.robot.commands.RetractCollectorCommand;
 import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.Collector;
 import frc.robot.subsystems.Finder;
+import frc.robot.subsystems.FinderL;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.SwerveDrive;
 import frc.robot.subsystems.Targeting;
@@ -51,7 +54,7 @@ public class RobotContainer {
   private final Collector collector = new Collector();
   private final Climber climber = new Climber();
   private final Targeting targeting = new Targeting();
-  private final Finder finder = new Finder();
+  private final FinderL finder = new FinderL();
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
   private final CommandXboxController xbox =
@@ -90,7 +93,7 @@ public class RobotContainer {
     Commands.race(new AutoCruise(1, 0, 0, 3, drive), new AutoPickup(collector)),
     new NoteGrabber(drive, collector),
     new RetractCollectorCommand(collector),
-    new FireNoteAuto(shooter, collector , targeting, true, true)
+    Commands.deadline(new FireNoteAuto(shooter, collector , targeting, false , false), new Aim(0, drive, targeting, false))
   );
   private final SequentialCommandGroup twoNote = new SequentialCommandGroup(
     new FireNoteAuto(shooter, collector , targeting, true, false),
@@ -217,9 +220,11 @@ public class RobotContainer {
     xbox.leftTrigger().whileTrue(new Aim(0, drive, targeting, false));
     xbox.a().onTrue(new SequentialCommandGroup(new NotelSeeker(drive, finder, collector) , new NoteGrabber(drive, collector)));
     xbox.b().onTrue(Commands.runOnce(drive :: stop, drive));
+    xbox.leftBumper().whileTrue(new SequentialCommandGroup(new AimAlt(1, drive, targeting, false),
+      new AutoCruise(.5, 90, 0, 27 / 12.0, drive)));
 
 //shooter
-    xboxOperator.start().onTrue(Commands.run(shooter :: fireNote , shooter));
+    xboxOperator.x().onTrue(Commands.run(shooter :: fireNote , shooter));
     xboxOperator.rightBumper().onTrue(new FireNoteCommand(shooter, targeting, false));
     xboxOperator.leftBumper().onTrue(Commands.runOnce(shooter :: stopShooter, shooter));
     xboxOperator.back().onTrue(Commands.run(shooter :: fireNoteAmp, shooter));
@@ -235,13 +240,23 @@ public class RobotContainer {
 
     //prajbox safety switch on activates climbers on sticks, disables collector
     //hold button to reverse
-    enableClimber.whileTrue(Commands.deadline(
+    /*enableClimber.whileTrue(Commands.deadline(
       Commands.run(() -> climber.runClimbers(-xboxOperator.getLeftY(), -xboxOperator.getRightY(), 
         true, prajBox),
         climber),
       Commands.run(collector :: off, collector)
-      ));
-    
+      ));*/
+
+    enableClimber.whileTrue(new SequentialCommandGroup(
+      new DeployClimbers(climber) ,
+      Commands.deadline(
+      Commands.run(() -> climber.runClimbers(-xboxOperator.getLeftY(), -xboxOperator.getRightY(), 
+        true, prajBox),
+        climber),
+      Commands.run(collector :: off, collector)
+      ))
+    );
+
   }
 
   /**

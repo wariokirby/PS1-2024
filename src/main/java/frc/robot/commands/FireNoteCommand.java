@@ -36,6 +36,9 @@ public class FireNoteCommand extends Command {
     else if(targeting.getValidTarget() == 0){
       shooter.fireNote(2000 , 2000);
     }
+    else if(targeting.calcRange() <= 45){
+      shooter.fireNote(2000 , 4000);
+    }
     else if(targeting.calcRange() <= 55){
       shooter.fireNote(2000 , 3000);
     }

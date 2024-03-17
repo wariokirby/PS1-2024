@@ -36,6 +36,6 @@ public class AutoPickup extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return collector.getNoteDetect();
+    return false;
   }
 }
