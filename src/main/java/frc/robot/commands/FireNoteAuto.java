@@ -18,13 +18,15 @@ public class FireNoteAuto extends Command {
   private boolean noLimelight;
   private boolean secondShot;
   private int timer;
+  private boolean delay;
   /** Creates a new FireNote. */
-  public FireNoteAuto(Shooter shooter , Collector collector , Targeting targeting, boolean noLimelight , boolean secondShot) {
+  public FireNoteAuto(Shooter shooter , Collector collector , Targeting targeting, boolean noLimelight , boolean secondShot , boolean delay) {
     this.shooter = shooter;
     this.collector = collector;
     this.targeting = targeting;
     this.noLimelight = noLimelight;
     this.secondShot = secondShot;
+    this.delay  = delay;
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(shooter , collector);
   }
@@ -33,7 +35,13 @@ public class FireNoteAuto extends Command {
   @Override
   public void initialize() {
     targeting.changeTag(0);
-    timer = 65;
+    if(delay){
+      timer = 150;
+    }
+    else{
+      timer = 65;
+    }
+    
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -43,7 +51,7 @@ public class FireNoteAuto extends Command {
       shooter.fireNote(2000 , 4000);
     }
     else if((noLimelight && secondShot) || targeting.getValidTarget() == 0){
-      shooter.fireNote(2000 , 2000);
+      shooter.fireNote(2000 , 3000);
     }
     else if(targeting.calcRange() <= 45){
       shooter.fireNote(2000 , 4000);

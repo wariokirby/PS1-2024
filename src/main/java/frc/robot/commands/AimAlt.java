@@ -11,12 +11,10 @@ import frc.robot.subsystems.Targeting;
 public class AimAlt extends Command {
   private SwerveDrive drivetrain;
   private Targeting targeting;
-  private int whichTarget;//0 speaker, 1 altSpeaker, 2 amp, 3 source left, 4 stage back
   private boolean isAuto;
 
   /** Creates a new Aim. */
-  public AimAlt(int whichTarget , SwerveDrive drivetrain, Targeting targeting, boolean isAuto) {
-    this.whichTarget = whichTarget;
+  public AimAlt(SwerveDrive drivetrain, Targeting targeting, boolean isAuto) {
     this.drivetrain = drivetrain;
     this.targeting = targeting;
     this.isAuto = isAuto;
@@ -34,11 +32,13 @@ public class AimAlt extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {//dist 20.25
+    double angle = Math.atan(20.25 / targeting.calcRange());
+    angle = Math.toDegrees(angle);
     if(targeting.calcRange() < 90) {
-      drivetrain.podDriver((targeting.getX())/50, 0, (0 - drivetrain.getYaw()) / 50.0);
+      drivetrain.podDriver((angle - targeting.getX())/50, 0, (0 - drivetrain.getYaw()) / 50.0);
     }
     else {
-      drivetrain.podDriver((targeting.getX())/50, -.5, (0 - drivetrain.getYaw()) / 50.0);
+      drivetrain.podDriver((angle - targeting.getX())/50, -.5, (0 - drivetrain.getYaw()) / 50.0);
     }
   }
 

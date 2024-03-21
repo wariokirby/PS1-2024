@@ -40,7 +40,7 @@ public class AutoCruise extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    drivetrain.podDriver(x1, y1, (turn - drivetrain.getYaw()) / 20.0);
+    drivetrain.podDriver(x1, y1, (turn - drivetrain.getYaw()) / 50.0);
   }
 
   // Called once the command ends or is interrupted.
