@@ -34,10 +34,10 @@ public class SwerveDrive extends SubsystemBase {
     ypr = new double[3];
     imu.setYaw(0);
 
-    backLeft = new SwervePod(2 , 3);
-    backRight = new SwervePod(3 , 8);
-    frontLeft = new SwervePod(5 , 5);
-    frontRight = new SwervePod(4 , 4);
+    backLeft = new SwervePod(2 , 3 , false);
+    backRight = new SwervePod(3 , 8 , false);
+    frontLeft = new SwervePod(5 , 5 , false);
+    frontRight = new SwervePod(4 , 4 , false);
 
     r = Math.sqrt((L * L) + (W * W));
     

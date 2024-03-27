@@ -6,6 +6,7 @@ package frc.robot.subsystems;
 
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkBase;
 import com.revrobotics.CANSparkFlex;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.CANSparkLowLevel.MotorType;
@@ -17,7 +18,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class SwervePod extends SubsystemBase {
   private CANSparkMax driveMotor;
-  private CANSparkFlex swerveMotor;
+  private CANSparkBase swerveMotor;
   private CANcoder dirEnc;
   private RelativeEncoder driveEnc;
   private int positionID;
@@ -42,10 +43,16 @@ public class SwervePod extends SubsystemBase {
   private final double KS = .05;
   private final double KV = 12.0 / 11.5;
 
-  public SwervePod(int positionID, int podID) {
+  public SwervePod(int positionID, int podID, boolean emergencySparkMax) {
     this.positionID = positionID;
     driveMotor = new CANSparkMax(positionID, MotorType.kBrushless);
-    swerveMotor = new CANSparkFlex(podID + 10, MotorType.kBrushless);
+    if(emergencySparkMax){
+      swerveMotor = new CANSparkMax(podID + 10, MotorType.kBrushless);
+    }
+    else{
+      swerveMotor = new CANSparkFlex(podID + 10, MotorType.kBrushless);
+    }
+    
 
     dirEnc = new CANcoder(podID + 20);
 
