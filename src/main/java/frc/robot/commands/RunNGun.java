@@ -5,19 +5,20 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.subsystems.SwerveDrive;
 import frc.robot.subsystems.Targeting;
 
-public class AimAlt extends Command {
+public class RunNGun extends Command {
   private SwerveDrive drivetrain;
   private Targeting targeting;
-  private boolean isAuto;
+  private CommandXboxController xbox;
 
   /** Creates a new Aim. */
-  public AimAlt(SwerveDrive drivetrain, Targeting targeting, boolean isAuto) {
+  public RunNGun(SwerveDrive drivetrain, Targeting targeting , CommandXboxController xbox) {
     this.drivetrain = drivetrain;
     this.targeting = targeting;
-    this.isAuto = isAuto;
+    this.xbox = xbox;
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(drivetrain);
   }
@@ -25,21 +26,17 @@ public class AimAlt extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    drivetrain.disableFieldOriented();
-    targeting.changeTag(1);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute() {//dist 20.25
-    double angle = Math.atan(20.25 / targeting.calcRange());
-    angle = Math.toDegrees(angle);
-    if(targeting.calcRange() < 90) {
-      drivetrain.podDriver((angle - targeting.getX())/50, 0, (0 - drivetrain.getYaw()) / 50.0);
+public void execute() {
+    if(targeting.getValidTarget() == 0){
+      drivetrain.podDriver(-xbox.getLeftX(), -xbox.getLeftY(), -xbox.getRightX());
     }
     else {
-      drivetrain.podDriver((angle - targeting.getX())/50, -.5, (0 - drivetrain.getYaw()) / 50.0);
-    }
+      drivetrain.podDriver(-xbox.getLeftX(), -xbox.getLeftY(),  -(targeting.getX())/25);
+    }      
   }
 
   // Called once the command ends or is interrupted.
@@ -51,12 +48,6 @@ public class AimAlt extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    if(isAuto){
-      return (targeting.calcRange() < 71 && Math.abs(targeting.getX()) < 2) || targeting.getValidTarget() == 0;
-    }
-    else{
-      return false;
-    }
-    
+    return false;
   }
 }

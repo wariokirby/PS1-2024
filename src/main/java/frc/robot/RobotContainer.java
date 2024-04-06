@@ -5,7 +5,6 @@
 package frc.robot;
 
 import frc.robot.commands.Aim;
-import frc.robot.commands.AimAlt;
 import frc.robot.commands.AutoCruise;
 import frc.robot.commands.AutoPickup;
 import frc.robot.commands.DeployClimbers;
@@ -15,10 +14,12 @@ import frc.robot.commands.FireNoteCommand;
 import frc.robot.commands.NoteGrabber;
 import frc.robot.commands.NotelSeeker;
 import frc.robot.commands.RetractCollectorCommand;
+import frc.robot.commands.RunNGun;
 import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.Collector;
 import frc.robot.subsystems.Finder;
 import frc.robot.subsystems.FinderL;
+import frc.robot.subsystems.PhotonFinder;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.SwerveDrive;
 import frc.robot.subsystems.Targeting;
@@ -54,7 +55,7 @@ public class RobotContainer {
   private final Collector collector = new Collector();
   private final Climber climber = new Climber();
   private final Targeting targeting = new Targeting();
-  private final FinderL finder = new FinderL();
+  private final PhotonFinder finder = new PhotonFinder();
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
   private final CommandXboxController xbox =
@@ -91,15 +92,16 @@ public class RobotContainer {
     new AutoCruise(1, 45, 0, 3.5, drive),
     new AutoCruise(.5, 0 , 0, 5, drive)
   );
+  //2nd note 39.9 from collector at start assuming collector is 39.93 from front
   private final SequentialCommandGroup twoNoteDR = new SequentialCommandGroup(//ends at 36"
     new FireNoteAuto(shooter, collector , targeting, true, false , false),
     new DeployCollectorCommand(collector),
-    Commands.race(new AutoCruise(1, 0, 0, 3, drive), new AutoPickup(collector)),
-    new NoteGrabber(drive, collector),
+    Commands.race(new AutoCruise(1, 0, 0, (39.9 / 12), drive), new AutoPickup(collector)),
+    //new NoteGrabber(drive, collector),
     new RetractCollectorCommand(collector),
     Commands.deadline(new FireNoteAuto(shooter, collector , targeting, true , true , false), new Aim(0, drive, targeting, false))
   );
-  private final SequentialCommandGroup twoNote = new SequentialCommandGroup(
+  /*private final SequentialCommandGroup twoNote = new SequentialCommandGroup(
     new FireNoteAuto(shooter, collector , targeting, true, false , false),
     new DeployCollectorCommand(collector),
     Commands.race(new AutoPickup(collector), new AutoCruise(1, 0, 0, (30 / 12.0), drive)),
@@ -108,36 +110,39 @@ public class RobotContainer {
     new RetractCollectorCommand(collector),
     new Aim(0, drive, targeting , true),
     Commands.deadline(new FireNoteAuto(shooter, collector , targeting, false , false , false), new Aim(0, drive, targeting, false))
-  );
+  );*/
+
   private final SequentialCommandGroup threeNote = new SequentialCommandGroup(//24.5 degrees
     new FireNoteAuto(shooter, collector , targeting, true, false , false),
     new DeployCollectorCommand(collector),
-    Commands.race(new AutoPickup(collector), new AutoCruise(1, 0, 0, (30 / 12.0), drive)),
-    new NotelSeeker(drive, finder, collector),
-    new NoteGrabber(drive, collector),
+    Commands.deadline(new AutoCruise(1, 0, 0, (62.33 / 12), drive) , new AutoPickup(collector)),
+    //new NotelSeeker(drive, finder, collector),
+    //new NoteGrabber(drive, collector),
     new RetractCollectorCommand(collector),
     new Aim(0, drive, targeting , true),
     Commands.deadline(new FireNoteAuto(shooter, collector , targeting, false , false , false), new Aim(0, drive, targeting, false)),
     new DeployCollectorCommand(collector),
     Commands.race(new AutoPickup(collector), new AutoCruise(1, 24.5, 24.5, (55 / 12.0), drive)),
-    new NotelSeeker(drive, finder, collector),
+    //new NotelSeeker(drive, finder, collector),
     new NoteGrabber(drive, collector),
     new RetractCollectorCommand(collector),
     new Aim(0, drive, targeting , true),
     Commands.deadline(new FireNoteAuto(shooter, collector , targeting, false , false , false), new Aim(0, drive, targeting, false))
   );
 
+  //get center to 2nd note position 62.33
+  //for 3rd note from 2nd note: 210.6 back, 75 side, 223.6 hyp at 19.6 degrees then remove 20.5
   private final SequentialCommandGroup threeNoteCenter = new SequentialCommandGroup(
     new FireNoteAuto(shooter, collector , targeting, true, false , false),
     new DeployCollectorCommand(collector),
-    Commands.race(new AutoPickup(collector), new AutoCruise(1, 0, 0, (30 / 12.0), drive)),
-    new NotelSeeker(drive, finder, collector),
-    new NoteGrabber(drive, collector),
+    Commands.deadline(new AutoCruise(1, 0, 0, (62.33 / 12), drive) , new AutoPickup(collector)),
+    //new NotelSeeker(drive, finder, collector),
+    //new NoteGrabber(drive, collector),
     new RetractCollectorCommand(collector),
     new Aim(0, drive, targeting , true),
     Commands.deadline(new FireNoteAuto(shooter, collector , targeting, false , false , false), new Aim(0, drive, targeting, false)),
     new DeployCollectorCommand(collector),
-    Commands.race(new AutoPickup(collector), new AutoCruise(1, 19.6, 19.6, (210 / 12.0), drive)),
+    Commands.deadline(new AutoCruise(1, 19.6, 19.6, (223.6 / 12), drive) , new AutoPickup(collector)),
     new NotelSeeker(drive, finder, collector),
     new NoteGrabber(drive, collector),
     new RetractCollectorCommand(collector),
@@ -223,9 +228,9 @@ public class RobotContainer {
       .onTrue(Commands.runOnce(drive :: turboOn, drive))
       .onFalse(Commands.runOnce(drive :: turboOff, drive));
     xbox.leftTrigger().whileTrue(new Aim(0, drive, targeting, false));
+    xbox.leftBumper().whileTrue(new RunNGun(drive, targeting, xbox));
     //xbox.a().onTrue(new SequentialCommandGroup(new NotelSeeker(drive, finder, collector) , new NoteGrabber(drive, collector)));
     xbox.b().onTrue(Commands.runOnce(drive :: stop, drive));
-    xbox.leftBumper().whileTrue(new AimAlt(drive, targeting, false));
 
 //shooter
     xboxOperator.x().onTrue(Commands.run(shooter :: fireNote , shooter));

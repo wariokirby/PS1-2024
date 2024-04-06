@@ -9,9 +9,11 @@ import frc.robot.subsystems.Collector;
 
 public class AutoPickup extends Command {
   private Collector collector;
+  private boolean isNoteDetectorWorking;
   /** Creates a new AutoPickup. */
   public AutoPickup(Collector collector) {
     this.collector = collector;
+    isNoteDetectorWorking = true;
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(collector);
   }
@@ -19,6 +21,9 @@ public class AutoPickup extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    if(collector.getNoteDetect()){
+      isNoteDetectorWorking = false;
+    }
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -36,6 +41,12 @@ public class AutoPickup extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    if(isNoteDetectorWorking){
+      return collector.getNoteDetect();
+    }
+    else{
+      return false;
+    }
+    
   }
 }

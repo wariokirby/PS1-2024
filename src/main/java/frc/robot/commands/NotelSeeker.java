@@ -6,19 +6,20 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Collector;
-import frc.robot.subsystems.Finder;
-import frc.robot.subsystems.FinderL;
+import frc.robot.subsystems.PhotonFinder;
+//import frc.robot.subsystems.FinderL;
 // import static frc.robot.Constants.*;
 import frc.robot.subsystems.SwerveDrive;
 
 public class NotelSeeker extends Command {
   /** Creates a new BallSeeker. */
   private SwerveDrive drivetrain;
-  private FinderL finder;
+  //private FinderL finder;
+  private PhotonFinder finder;
   private Collector collector;
   private double[] dize;
 
-  public NotelSeeker(SwerveDrive drivetrain, FinderL finder, Collector collector) {
+  public NotelSeeker(SwerveDrive drivetrain, PhotonFinder finder, Collector collector) {
     this.drivetrain = drivetrain;
     this.finder = finder;
     this.collector = collector;
