@@ -92,11 +92,11 @@ public class RobotContainer {
     new AutoCruise(1, 45, 0, 3.5, drive),
     new AutoCruise(.5, 0 , 0, 5, drive)
   );
-  //2nd note 39.9 from collector at start assuming collector is 39.93 from front
+  //2nd note 41.15 from collector at start assuming collector is 38.75 from front
   private final SequentialCommandGroup twoNoteDR = new SequentialCommandGroup(//ends at 36"
     new FireNoteAuto(shooter, collector , targeting, true, false , false),
     new DeployCollectorCommand(collector),
-    Commands.race(new AutoCruise(1, 0, 0, (39.9 / 12), drive), new AutoPickup(collector)),
+    Commands.race(new AutoCruise(1, 0, 0, (41.15 / 12), drive), new AutoPickup(collector)),
     //new NoteGrabber(drive, collector),
     new RetractCollectorCommand(collector),
     Commands.deadline(new FireNoteAuto(shooter, collector , targeting, true , true , false), new Aim(0, drive, targeting, false))
@@ -135,6 +135,25 @@ public class RobotContainer {
   private final SequentialCommandGroup threeNoteCenter = new SequentialCommandGroup(
     new FireNoteAuto(shooter, collector , targeting, true, false , false),
     new DeployCollectorCommand(collector),
+    Commands.deadline(new AutoCruise(.25, 0, 0, (62.33 / 12), drive) , new AutoPickup(collector)),
+    //new NotelSeeker(drive, finder, collector),
+    //new NoteGrabber(drive, collector),
+    new RetractCollectorCommand(collector),
+    new Aim(0, drive, targeting , true),
+    Commands.deadline(new FireNoteAuto(shooter, collector , targeting, false , false , false), new Aim(0, drive, targeting, false)),
+    new DeployCollectorCommand(collector),
+    Commands.deadline(new AutoCruise(.25, 19.6, 19.6, (223.6 / 12), drive) , new AutoPickup(collector)),
+    new NotelSeeker(drive, finder, collector),
+    new NoteGrabber(drive, collector),
+    new RetractCollectorCommand(collector),
+    new AutoCruise(-.25, 19.6, 19.6, (210 / 12.0), drive),//negative 1 may not work, change angle if necessary
+    new Aim(0, drive, targeting , true),
+    Commands.deadline(new FireNoteAuto(shooter, collector , targeting, false , false , false), new Aim(0, drive, targeting, false))
+  );
+
+  private final SequentialCommandGroup threeNoteAdaptive = new SequentialCommandGroup(
+    new FireNoteAuto(shooter, collector , targeting, true, false , false),
+    new DeployCollectorCommand(collector),
     Commands.deadline(new AutoCruise(1, 0, 0, (62.33 / 12), drive) , new AutoPickup(collector)),
     //new NotelSeeker(drive, finder, collector),
     //new NoteGrabber(drive, collector),
@@ -150,7 +169,6 @@ public class RobotContainer {
     new Aim(0, drive, targeting , true),
     Commands.deadline(new FireNoteAuto(shooter, collector , targeting, false , false , false), new Aim(0, drive, targeting, false))
   );
-
   private final SequentialCommandGroup maxGreedMode = new SequentialCommandGroup(
     new FireNoteAuto(shooter, collector , targeting, true, false , false),
     new DeployCollectorCommand(collector),
@@ -187,7 +205,7 @@ public class RobotContainer {
     autoChooser.addOption("Right Offangle shoot", shootLeaveOffangleRight);
     autoChooser.addOption("Left Offangle shoot", shootLeaveOffangleLeft);
     autoChooser.addOption("2 Note DR", twoNoteDR);
-    autoChooser.addOption("2 Note", twoNote);
+    //autoChooser.addOption("2 Note", twoNote);
     autoChooser.addOption("3 Note", threeNote);
     autoChooser.addOption("3 Note Center", threeNoteCenter);
     autoChooser.addOption("Be Wario", maxGreedMode);

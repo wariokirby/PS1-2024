@@ -34,16 +34,9 @@ public class Aim extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+    
     if(whichTarget == 0){
-      if(targeting.getValidTarget() == 0){
-        drivetrain.podDriver(0, 0, (0 - drivetrain.getYaw()) / 50.0);
-      }
-      else if(targeting.calcRange() < 90) {
-        drivetrain.podDriver(0, 0, -(targeting.getX())/50);
-      }
-      else {
-        drivetrain.podDriver(0, -.5, -(targeting.getX())/50);
-      }
+      drivetrain.podDriver(0, 0, -(targeting.getX())/50);
     }
     else if(whichTarget == 2){
       if(targeting.getSide()){
@@ -66,7 +59,7 @@ public class Aim extends Command {
   @Override
   public boolean isFinished() {
     if(isAuto){
-      return (targeting.calcRange() < 71 && Math.abs(targeting.getX()) < 2) || targeting.getValidTarget() == 0;
+      return (Math.abs(targeting.getX()) < 1) || targeting.getValidTarget() == 0;
     }
     else{
       return false;
