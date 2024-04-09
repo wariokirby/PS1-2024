@@ -87,6 +87,12 @@ public class Targeting extends SubsystemBase {
   public void periodic() {
     // This method will be called once per scheduler run
     validTarget = tv.getDouble(0);
+    if(validTarget > 0){
+      ledOn(true);
+    }
+    else{
+      ledOn(false);
+    }
     x = tx.getDouble(0);
     y = ty.getDouble(0);
 
@@ -113,7 +119,7 @@ public class Targeting extends SubsystemBase {
     }
     changeTag(whichTarget);
   }
-  public boolean getSide(){
+  public boolean getSide(){//red is true
     return sideChooser.getSelected();
   }
 
