@@ -51,6 +51,6 @@ public class AutoCruise extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return drivetrain.getAverageDistance() >= distance;
+    return drivetrain.getAverageDistance() >= distance && Math.abs(turn - drivetrain.getYaw()) < 1;
   }
 }

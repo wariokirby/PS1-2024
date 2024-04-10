@@ -13,6 +13,7 @@ public class Aim extends Command {
   private Targeting targeting;
   private int whichTarget;//0 speaker, 1 altSpeaker, 2 amp, 3 source left, 4 stage back
   private boolean isAuto;
+  private boolean usingAlt;
 
   /** Creates a new Aim. */
   public Aim(int whichTarget , SwerveDrive drivetrain, Targeting targeting, boolean isAuto) {
@@ -20,6 +21,7 @@ public class Aim extends Command {
     this.drivetrain = drivetrain;
     this.targeting = targeting;
     this.isAuto = isAuto;
+    usingAlt = false;
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(drivetrain);
   }
@@ -36,7 +38,17 @@ public class Aim extends Command {
   public void execute() {
     
     if(whichTarget == 0){
-      drivetrain.podDriver(0, 0, -(targeting.getX())/50);
+      if(targeting.getValidTarget() == 0){
+        if(usingAlt){
+          targeting.changeTag(0);
+        }
+        else{
+          targeting.changeTag(1);
+        }
+      }
+      else{
+        drivetrain.podDriver(0, 0, -(targeting.getX())/50);
+      }
     }
     else if(whichTarget == 2){
       if(targeting.getSide()){

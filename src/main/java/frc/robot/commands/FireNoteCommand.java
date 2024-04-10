@@ -31,7 +31,7 @@ public class FireNoteCommand extends Command {
   @Override
   public void execute() {
     if(noLimelight){
-      shooter.fireNote(2000 , 3000);
+      shooter.fireNote(2000 , 4000);
     }
     else if(targeting.getValidTarget() == 0){
       shooter.fireNote(2000 , 2000);

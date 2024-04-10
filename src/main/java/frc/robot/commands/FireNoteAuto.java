@@ -7,6 +7,7 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Collector;
 import frc.robot.subsystems.Shooter;
+import frc.robot.subsystems.SwerveDrive;
 import frc.robot.subsystems.Targeting;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
@@ -14,19 +15,21 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 public class FireNoteAuto extends Command {
   private Shooter shooter;
   private Collector collector;
+  private SwerveDrive drivetrain;
   private Targeting targeting;
-  private boolean noLimelight;
   private boolean secondShot;
   private int timer;
   private boolean delay;
+  private boolean noTarget;
   /** Creates a new FireNote. */
-  public FireNoteAuto(Shooter shooter , Collector collector , Targeting targeting, boolean noLimelight , boolean secondShot , boolean delay) {
+  public FireNoteAuto(Shooter shooter , Collector collector , SwerveDrive drivetrain , Targeting targeting , boolean secondShot , boolean delay) {
     this.shooter = shooter;
     this.collector = collector;
+    this.drivetrain = drivetrain;
     this.targeting = targeting;
-    this.noLimelight = noLimelight;
     this.secondShot = secondShot;
     this.delay  = delay;
+    noTarget = false;
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(shooter , collector);
   }
@@ -35,6 +38,12 @@ public class FireNoteAuto extends Command {
   @Override
   public void initialize() {
     targeting.changeTag(0);
+    if(targeting.getValidTarget() == 0){
+      targeting.changeTag(1);
+      if(targeting.getValidTarget() == 0){
+        noTarget = true;
+      }
+    }
     if(delay){
       timer = 150;
     }
@@ -47,32 +56,37 @@ public class FireNoteAuto extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if(noLimelight && !secondShot){
-      shooter.fireNote(2000 , 4000);
+    if(noTarget && !secondShot){
+      shooter.fireNote(4000 , 1750);//range 81.75
     }
-    else if((noLimelight && secondShot) || targeting.getValidTarget() == 0){
-      shooter.fireNote(2000 , 3000);
-    }
-    else if(targeting.calcRange() <= 45){
-      shooter.fireNote(2000 , 4000);
-    }
-    else if(targeting.calcRange() <= 55){
-      shooter.fireNote(2000 , 3000);
-    }
-    else if(targeting.calcRange() <= 74){
-      shooter.fireNote(2000 , 2000);
-    }
-    else if(targeting.calcRange() <= 79){
-      shooter.fireNote(4000 , 1900);
-    }
-    else if(targeting.calcRange() <= 82){
-      shooter.fireNote(4000 , 1750);
-    }
-    else if(targeting.calcRange() <= 91){
-      shooter.fireNote(4000 , 1600);
+    else if(noTarget){
+      shooter.fireNote(4000 , 1500);//range 91.25 stage note
     }
     else{
-      shooter.fireNote(4000 , 1500);
+      drivetrain.podDriver(0, 0, -(targeting.getX())/50);
+      
+      if(targeting.calcRange() <= 45){
+      shooter.fireNote(2000 , 4000);
+      }
+      else if(targeting.calcRange() <= 55){
+        shooter.fireNote(2000 , 3000);
+      }
+      else if(targeting.calcRange() <= 74){
+        shooter.fireNote(2000 , 2000);
+      }
+      else if(targeting.calcRange() <= 79){
+        shooter.fireNote(4000 , 1900);
+      }
+      else if(targeting.calcRange() <= 82){
+        shooter.fireNote(4000 , 1750);
+      }
+      else if(targeting.calcRange() <= 91){
+        shooter.fireNote(4000 , 1600);
+      }
+      else{
+        shooter.fireNote(4000 , 1500);
+      }
+
     }
 
    timer--;
