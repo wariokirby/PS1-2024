@@ -34,16 +34,16 @@ public class Shooter extends SubsystemBase {
 
 
     flywheelTopLeft = new CANSparkMax(40, MotorType.kBrushless);
-    flywheelTopLeft.setInverted(false);
+    flywheelTopLeft.setInverted(true);
     flywheelTopFollower = new CANSparkMax(41, MotorType.kBrushless);
-    flywheelTopFollower.follow(flywheelTopLeft , !flywheelTopLeft.getInverted());
+    flywheelTopFollower.follow(flywheelTopLeft , false);
     topEncoder = flywheelTopLeft.getEncoder();
     topControl = new PIDController(.001, 0, 0);
 
     flywheelBottomLeft = new CANSparkMax(42, MotorType.kBrushless);
-    flywheelBottomLeft.setInverted(true);
+    flywheelBottomLeft.setInverted(false);
     flywheelBottomFollower = new CANSparkMax(43, MotorType.kBrushless);
-    flywheelBottomFollower.follow(flywheelBottomLeft , flywheelBottomLeft.getInverted());
+    flywheelBottomFollower.follow(flywheelBottomLeft , true);
     bottomEncoder = flywheelBottomLeft.getEncoder();
     bottomControl = new PIDController(.002, 0, 0);
 
@@ -77,7 +77,7 @@ public class Shooter extends SubsystemBase {
     flywheelBottomLeft.setVoltage(bottomControl.calculate(bottomEncoder.getVelocity() , setpoint2) + ff.calculate(setpoint2));
   }
   public void fireNote(){
-    double setpoint = 2000;//when all else fails 2000 3000 against the sub
+    double setpoint = 2000;//when all else fails 2000 4000 against the sub
     double setpoint2 = 4000;
     flywheelTopLeft.setVoltage(topControl.calculate(topEncoder.getVelocity(), setpoint) + ff.calculate(setpoint));
     flywheelBottomLeft.setVoltage(bottomControl.calculate(bottomEncoder.getVelocity() , setpoint2) + ff.calculate(setpoint2));
