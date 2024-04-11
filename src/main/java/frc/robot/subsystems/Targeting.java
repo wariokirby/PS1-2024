@@ -39,8 +39,8 @@ public class Targeting extends SubsystemBase {
   private final double HEIGHT_OF_SPEAKER = 53.5; //57.125 use this for source as well
   private final double HEIGHT_OF_AMP = 53.125; 
   private final double HEIGHT_OF_STAGE = 52; 
-  private final double HEIGHT_OF_CAMERA = 11.75;
-  private final double CAMERA_MOUNT_ANGLE = 27.2;//43, 35.8
+  private final double HEIGHT_OF_CAMERA = 12;
+  private final double CAMERA_MOUNT_ANGLE = 25.25;//43, 35.8
 
   private NetworkTable limelight;
   private NetworkTableEntry tv;
@@ -169,7 +169,7 @@ public class Targeting extends SubsystemBase {
       targetingWhat = "Back of Stage";
     }
     double d = (height - HEIGHT_OF_CAMERA) / Math.tan(Math.toRadians(CAMERA_MOUNT_ANGLE + y));
-    return d-3.5;       
+    return d-6;       
   }
 
 }

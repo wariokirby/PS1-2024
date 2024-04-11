@@ -36,7 +36,7 @@ public class Shooter extends SubsystemBase {
     flywheelTopLeft = new CANSparkMax(40, MotorType.kBrushless);
     flywheelTopLeft.setInverted(true);
     flywheelTopFollower = new CANSparkMax(41, MotorType.kBrushless);
-    flywheelTopFollower.follow(flywheelTopLeft , false);
+    flywheelTopFollower.follow(flywheelTopLeft , true);
     topEncoder = flywheelTopLeft.getEncoder();
     topControl = new PIDController(.001, 0, 0);
 

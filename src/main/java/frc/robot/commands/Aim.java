@@ -41,9 +41,11 @@ public class Aim extends Command {
       if(targeting.getValidTarget() == 0){
         if(usingAlt){
           targeting.changeTag(0);
+          usingAlt = false;
         }
         else{
           targeting.changeTag(1);
+          usingAlt = true;
         }
       }
       else{
