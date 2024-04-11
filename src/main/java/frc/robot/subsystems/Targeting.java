@@ -99,7 +99,6 @@ public class Targeting extends SubsystemBase {
     SmartDashboard.putBoolean("Valid Target", validTarget > 0);
     SmartDashboard.putNumber("Target x", x);
     SmartDashboard.putNumber("Target y", y);
-    SmartDashboard.putString("Targeting", targetingWhat);
     SmartDashboard.putNumber("range", calcRange());
     setSide(sideChooser.getSelected());
   }
