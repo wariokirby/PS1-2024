@@ -13,12 +13,14 @@ public class RunNGun extends Command {
   private SwerveDrive drivetrain;
   private Targeting targeting;
   private CommandXboxController xbox;
+  private boolean usingAlt;
 
   /** Creates a new Aim. */
   public RunNGun(SwerveDrive drivetrain, Targeting targeting , CommandXboxController xbox) {
     this.drivetrain = drivetrain;
     this.targeting = targeting;
     this.xbox = xbox;
+    usingAlt = false;
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(drivetrain);
   }
@@ -32,10 +34,18 @@ public class RunNGun extends Command {
   @Override
 public void execute() {
     if(targeting.getValidTarget() == 0){
+      if(usingAlt){
+        targeting.changeTag(0);
+        usingAlt = false;
+      }
+      else{
+        targeting.changeTag(1);
+        usingAlt = true;
+      }
       drivetrain.podDriver(-xbox.getLeftX(), -xbox.getLeftY(), -xbox.getRightX());
     }
     else {
-      drivetrain.podDriver(-xbox.getLeftX(), -xbox.getLeftY(),  -(targeting.getX())/25);
+      drivetrain.podDriver(-xbox.getLeftX(), -xbox.getLeftY(),  -(targeting.getX())/40.0);
     }      
   }
 
