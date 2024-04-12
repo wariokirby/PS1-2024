@@ -70,7 +70,7 @@ public class RobotContainer {
   private Trigger enableClimber = new JoystickButton(prajBox, 1);
   private Trigger overrideCollector = new JoystickButton(prajBox, 7);
 
-
+  private final double A_SPEED = .25;
   private final Command justLeave = new AutoCruise(1, 0, 0, 3, drive);
 
   private final SequentialCommandGroup justShoot = new SequentialCommandGroup(
@@ -87,7 +87,7 @@ public class RobotContainer {
     new AutoCruise(0, 0, 44.2, 0, drive),
     new FireNoteAuto(shooter, collector , drive , targeting, false , false),
     new DeployCollectorCommand(collector),
-    Commands.deadline(new AutoCruise(.25, 0, 0, (39 / 12.0), drive) , new AutoPickup(collector)),
+    Commands.deadline(new AutoCruise(A_SPEED, 0, 0, (39 / 12.0), drive) , new AutoPickup(collector)),
     Commands.parallel(new RetractCollectorCommand(collector), new AutoCruise(0, 0, 31.57, 0, drive)),
     new FireNoteAuto(shooter, collector , drive , targeting, true , false)
   );
@@ -95,7 +95,7 @@ public class RobotContainer {
     new AutoCruise(0, 0, -44.2, 0, drive),
     new FireNoteAuto(shooter, collector , drive , targeting, false , false),
     new DeployCollectorCommand(collector),
-    Commands.deadline(new AutoCruise(.25, 0, 0, (39 / 12.0), drive) , new AutoPickup(collector)),
+    Commands.deadline(new AutoCruise(A_SPEED, 0, 0, (39 / 12.0), drive) , new AutoPickup(collector)),
     Commands.parallel(new RetractCollectorCommand(collector), new AutoCruise(0, 0, -31.57, 0, drive)),
     new FireNoteAuto(shooter, collector , drive , targeting, true , false)
   );
@@ -104,112 +104,132 @@ public class RobotContainer {
     new AutoCruise(0, 0, 44.2, 0, drive),
     new FireNoteAuto(shooter, collector , drive , targeting, false , false),
     new DeployCollectorCommand(collector),
-    Commands.deadline(new AutoCruise(.25, 0, 0, (39 / 12.0), drive) , new AutoPickup(collector)),
+    Commands.deadline(new AutoCruise(A_SPEED, 0, 0, (39 / 12.0), drive) , new AutoPickup(collector)),
     Commands.parallel(new RetractCollectorCommand(collector), new AutoCruise(0, 0, 31.57, 0, drive)),
     new FireNoteAuto(shooter, collector , drive , targeting, true , false),
-    Commands.parallel(new AutoCruise(.25, 90, 25.4, (32/12.0), drive), new DeployCollectorCommand(collector)),//64.6 degrees off horizontal is 25.4 off vertical
-    Commands.deadline(new AutoCruise(.25, 25.4, 25.4, (233.14 / 12.0), drive) , new AutoPickup(collector)),
-    Commands.parallel(new AutoCruise(.25, -158.24, 21.76, (269.72 / 12.0), drive) , new RetractCollectorCommand(collector)),
-    new AutoCruise(.25, -90, 44.2, (32 / 12.0), drive),
+    Commands.parallel(new AutoCruise(A_SPEED, 90, 25.4, (32/12.0), drive), new DeployCollectorCommand(collector)),//64.6 degrees off horizontal is 25.4 off vertical
+    Commands.deadline(new AutoCruise(A_SPEED, 25.4, 25.4, (233.14 / 12.0), drive) , new AutoPickup(collector)),
+    Commands.parallel(new AutoCruise(A_SPEED, -158.24, 21.76, (269.72 / 12.0), drive) , new RetractCollectorCommand(collector)),
+    new AutoCruise(A_SPEED, -90, 44.2, (32 / 12.0), drive),
     new FireNoteAuto(shooter, collector , drive , targeting, false , false)
   );
   private final SequentialCommandGroup threeNoteBlue = new SequentialCommandGroup(
     new AutoCruise(0, 0, -44.2, 0, drive),
     new FireNoteAuto(shooter, collector , drive , targeting, false , false),
     new DeployCollectorCommand(collector),
-    Commands.deadline(new AutoCruise(.25, 0, 0, (39 / 12.0), drive) , new AutoPickup(collector)),
+    Commands.deadline(new AutoCruise(A_SPEED, 0, 0, (39 / 12.0), drive) , new AutoPickup(collector)),
     Commands.parallel(new RetractCollectorCommand(collector), new AutoCruise(0, 0, -31.57, 0, drive)),
     new FireNoteAuto(shooter, collector , drive , targeting, true , false),
-    Commands.parallel(new AutoCruise(.25, -90, -25.4, (32/12.0), drive), new DeployCollectorCommand(collector)),//64.6 degrees off horizontal is 25.4 off vertical
-    Commands.deadline(new AutoCruise(.25, -25.4, -25.4, (233.14 / 12.0), drive) , new AutoPickup(collector)),
-    Commands.parallel(new AutoCruise(.25, 158.24, -21.76, (269.72 / 12.0), drive) , new RetractCollectorCommand(collector)),
-    new AutoCruise(.25, 90, -44.2, (32 / 12.0), drive),
+    Commands.parallel(new AutoCruise(A_SPEED, -90, -25.4, (32/12.0), drive), new DeployCollectorCommand(collector)),//64.6 degrees off horizontal is 25.4 off vertical
+    Commands.deadline(new AutoCruise(A_SPEED, -25.4, -25.4, (233.14 / 12.0), drive) , new AutoPickup(collector)),
+    Commands.parallel(new AutoCruise(A_SPEED, 158.24, -21.76, (269.72 / 12.0), drive) , new RetractCollectorCommand(collector)),
+    new AutoCruise(A_SPEED, 90, -44.2, (32 / 12.0), drive),
     new FireNoteAuto(shooter, collector , drive , targeting, false , false)
   );
 
   private final SequentialCommandGroup denyCenterRed = new SequentialCommandGroup(
-    Commands.parallel(new AutoCruise(.25, -90, 21.76, (32 / 12.0), drive), new DeployCollectorCommand(collector)),
-    Commands.deadline(new AutoCruise(.25, 21.76, 21.76, (269.72 / 12.0), drive) , new AutoPickup(collector)),
-    Commands.parallel(new AutoCruise(.25, 180, 39.27, (74.16 / 12.0), drive) , new RetractCollectorCommand(collector)),
+    new AutoCruise(0, 0, 44.2, 0, drive),
+    new FireNoteAuto(shooter, collector , drive , targeting, false , false),
+    Commands.parallel(new AutoCruise(A_SPEED, 90, 21.76, (32 / 12.0), drive), new DeployCollectorCommand(collector)),
+    Commands.deadline(new AutoCruise(A_SPEED, 21.76, 21.76, (269.72 / 12.0), drive) , new AutoPickup(collector)),
+    Commands.parallel(new AutoCruise(A_SPEED, 180, 39.27, (74.16 / 12.0), drive) , new RetractCollectorCommand(collector)),
     new FireNoteAuto(shooter, collector, drive, targeting, true, false),
     new DeployCollectorCommand(collector),
-    Commands.deadline(new AutoCruise(.25, -41.67, -41.67, (99.28 / 12.0), drive) , new AutoPickup(collector)),
-    Commands.parallel(new AutoCruise(.25, 164.91, 21.76, (269.72 / 12.0), drive) , new RetractCollectorCommand(collector)),
+    Commands.deadline(new AutoCruise(A_SPEED, -41.67, -41.67, (99.28 / 12.0), drive) , new AutoPickup(collector)),
+    Commands.parallel(new AutoCruise(A_SPEED, 164.91, 21.76, (269.72 / 12.0), drive) , new RetractCollectorCommand(collector)),
     new FireNoteAuto(shooter, collector, drive, targeting, true, false),
     new DeployCollectorCommand(collector),
-    Commands.deadline(new AutoCruise(.25, -49.23, -49.23, (113.56 / 12.0), drive) , new AutoPickup(collector)),
-    Commands.parallel(new AutoCruise(.25, 180, 0, (74 / 12.0), drive) , new RetractCollectorCommand(collector))
+    Commands.deadline(new AutoCruise(A_SPEED, -49.23, -49.23, (113.56 / 12.0), drive) , new AutoPickup(collector)),
+    Commands.parallel(new AutoCruise(A_SPEED, 180, 0, (74 / 12.0), drive) , new RetractCollectorCommand(collector))
   );
   private final SequentialCommandGroup denyCenterBlue = new SequentialCommandGroup(
-    Commands.parallel(new AutoCruise(.25, 90, -21.76, (32 / 12.0), drive), new DeployCollectorCommand(collector)),
-    Commands.deadline(new AutoCruise(.25, -21.76, -21.76, (269.72 / 12.0), drive) , new AutoPickup(collector)),
-    Commands.parallel(new AutoCruise(.25, 180, -39.27, (74.16 / 12.0), drive) , new RetractCollectorCommand(collector)),
+    new AutoCruise(0, 0, -44.2, 0, drive),
+    new FireNoteAuto(shooter, collector , drive , targeting, false , false),
+    Commands.parallel(new AutoCruise(A_SPEED, -90, -21.76, (32 / 12.0), drive), new DeployCollectorCommand(collector)),
+    Commands.deadline(new AutoCruise(A_SPEED, -21.76, -21.76, (269.72 / 12.0), drive) , new AutoPickup(collector)),
+    Commands.parallel(new AutoCruise(A_SPEED, 180, -39.27, (74.16 / 12.0), drive) , new RetractCollectorCommand(collector)),
     new FireNoteAuto(shooter, collector, drive, targeting, true, false),
     new DeployCollectorCommand(collector),
-    Commands.deadline(new AutoCruise(.25, 41.67, 41.67, (99.28 / 12.0), drive) , new AutoPickup(collector)),
-    Commands.parallel(new AutoCruise(.25, -164.91, -21.76, (269.72 / 12.0), drive) , new RetractCollectorCommand(collector)),
+    Commands.deadline(new AutoCruise(A_SPEED, 41.67, 41.67, (99.28 / 12.0), drive) , new AutoPickup(collector)),
+    Commands.parallel(new AutoCruise(A_SPEED, -164.91, -21.76, (269.72 / 12.0), drive) , new RetractCollectorCommand(collector)),
     new FireNoteAuto(shooter, collector, drive, targeting, true, false),
     new DeployCollectorCommand(collector),
-    Commands.deadline(new AutoCruise(.25, 49.23, 49.23, (113.56 / 12.0), drive) , new AutoPickup(collector)),
-    Commands.parallel(new AutoCruise(.25, 180, 0, (74 / 12.0), drive) , new RetractCollectorCommand(collector))
+    Commands.deadline(new AutoCruise(A_SPEED, 49.23, 49.23, (113.56 / 12.0), drive) , new AutoPickup(collector)),
+    Commands.parallel(new AutoCruise(A_SPEED, 180, 0, (74 / 12.0), drive) , new RetractCollectorCommand(collector))
   );
 
   //get center to 2nd note position 62.33
   //for 3rd note from 2nd note: 210.6 back, 75 side, 223.6 hyp at 19.6 degrees then remove 20.5
   private final SequentialCommandGroup threeNoteCenterRed = new SequentialCommandGroup(
-    new FireNoteAuto(shooter, collector , drive , targeting, false , false),
+    Commands.deadline(new WaitCommand(.8), Commands.run(shooter :: fireNote , shooter)),
+    Commands.deadline(new WaitCommand(.5), Commands.run(collector :: fire , collector)),
+    Commands.runOnce(shooter :: stopShooter, shooter),
+    Commands.runOnce(collector :: off, collector),//end note 1
     new DeployCollectorCommand(collector),
-    Commands.deadline(new AutoCruise(.25, 0, 0, (62.33 / 12), drive) , new AutoPickup(collector)),
+    Commands.deadline(new AutoCruise(A_SPEED, 0, 0, (41.08 / 12), drive) , new AutoPickup(collector)),//62.33
     new RetractCollectorCommand(collector),
-    new FireNoteAuto(shooter, collector , drive, targeting, true , false),
-    new DeployCollectorCommand(collector),
-    Commands.deadline(new AutoCruise(.25, 19.6, 19.6, (223.6 / 12), drive) , new AutoPickup(collector)),
-    new RetractCollectorCommand(collector),
-    Commands.parallel(new AutoCruise(.25, -160.4, 0, (223.6 / 12.0), drive), new RetractCollectorCommand(collector)),
-    new FireNoteAuto(shooter, collector , drive, targeting, true , false)
+    Commands.deadline(new WaitCommand(.8), Commands.run(shooter :: fireNoteWall , shooter)),
+    Commands.deadline(new WaitCommand(.5), Commands.run(collector :: fire , collector)),
+    Commands.runOnce(shooter :: stopShooter, shooter),
+    Commands.runOnce(collector :: off, collector),//end note 2
+    Commands.parallel(new AutoCruise(A_SPEED, 0, 0, (21.25 / 12.0), drive), new DeployCollectorCommand(collector)),
+    Commands.deadline(new AutoCruise(A_SPEED, 19.6, 19.6, (223.6 / 12), drive) , new AutoPickup(collector)),
+    Commands.parallel(new AutoCruise(A_SPEED, 162.23, -17.77, (259.27 / 12.0), drive), new RetractCollectorCommand(collector)),
+    new FireNoteAuto(shooter, collector , drive, targeting, false , false)
   );
   private final SequentialCommandGroup threeNoteCenterBlue = new SequentialCommandGroup(
-    new FireNoteAuto(shooter, collector , drive , targeting, false , false),
+    Commands.deadline(new WaitCommand(.8), Commands.run(shooter :: fireNote , shooter)),
+    Commands.deadline(new WaitCommand(.5), Commands.run(collector :: fire , collector)),
+    Commands.runOnce(shooter :: stopShooter, shooter),
+    Commands.runOnce(collector :: off, collector),//end note 1
     new DeployCollectorCommand(collector),
-    Commands.deadline(new AutoCruise(.25, 0, 0, (62.33 / 12), drive) , new AutoPickup(collector)),
+    Commands.deadline(new AutoCruise(A_SPEED, 0, 0, (41.08 / 12), drive) , new AutoPickup(collector)),//62.33
     new RetractCollectorCommand(collector),
-    new FireNoteAuto(shooter, collector , drive, targeting, true , false),
-    new DeployCollectorCommand(collector),
-    Commands.deadline(new AutoCruise(.25, -19.6, -19.6, (223.6 / 12), drive) , new AutoPickup(collector)),
-    new RetractCollectorCommand(collector),
-    Commands.parallel(new AutoCruise(.25, 160.4, 0, (223.6 / 12.0), drive), new RetractCollectorCommand(collector)),
-    new FireNoteAuto(shooter, collector , drive, targeting, true , false)
+    Commands.deadline(new WaitCommand(.8), Commands.run(shooter :: fireNoteWall , shooter)),
+    Commands.deadline(new WaitCommand(.5), Commands.run(collector :: fire , collector)),
+    Commands.runOnce(shooter :: stopShooter, shooter),
+    Commands.runOnce(collector :: off, collector),//end note 2
+    Commands.parallel(new AutoCruise(A_SPEED, 0, 0, (21.25 / 12.0), drive), new DeployCollectorCommand(collector)),
+    Commands.deadline(new AutoCruise(A_SPEED, -19.6, -19.6, (223.6 / 12), drive) , new AutoPickup(collector)),
+    Commands.parallel(new AutoCruise(A_SPEED, -162.23, 17.77, (259.27 / 12.0), drive), new RetractCollectorCommand(collector)),
+    new FireNoteAuto(shooter, collector , drive, targeting, false , false)
   );
 
   private final SequentialCommandGroup fourNoteRed = new SequentialCommandGroup(
-    new FireNoteAuto(shooter, collector , drive, targeting, false , false),
+    Commands.deadline(new WaitCommand(.8), Commands.run(shooter :: fireNote , shooter)),
+    Commands.deadline(new WaitCommand(.5), Commands.run(collector :: fire , collector)),
+    Commands.runOnce(shooter :: stopShooter, shooter),
+    Commands.runOnce(collector :: off, collector),//end note 1
     new DeployCollectorCommand(collector),
-    Commands.deadline(new AutoCruise(.25, 0, 0, (62.33 / 12), drive) , new AutoPickup(collector)),
+    Commands.deadline(new AutoCruise(A_SPEED, 0, 0, (41.08 / 12), drive) , new AutoPickup(collector)),//62.33
     new RetractCollectorCommand(collector),
-    new FireNoteAuto(shooter, collector , drive, targeting, true , false),
+    new FireNoteAuto(shooter, collector , drive, targeting, false , false),//end note 2
+    Commands.parallel(new AutoCruise(A_SPEED, 0, 0, (21.25 / 12.0), drive), new DeployCollectorCommand(collector)),
+    Commands.deadline(new AutoCruise(A_SPEED, 19.6, 19.6, (223.6 / 12), drive) , new AutoPickup(collector)),
+    Commands.parallel(new AutoCruise(A_SPEED, 162.23, -17.77, (259.27 / 12.0), drive), new RetractCollectorCommand(collector)),
+    new FireNoteAuto(shooter, collector , drive, targeting, false , false),//end note 3
     new DeployCollectorCommand(collector),
-    Commands.deadline(new AutoCruise(.25, 19.6, 19.6, (223.6 / 12), drive) , new AutoPickup(collector)),
-    Commands.parallel(new AutoCruise(.25, -160.4, 0, (223.6 / 12.0), drive), new RetractCollectorCommand(collector)),
-    new FireNoteAuto(shooter, collector, drive, targeting, true , false),
-    new DeployCollectorCommand(collector),
-    Commands.race(new AutoPickup(collector), new AutoCruise(.25, -90, -90, (57 / 12.0), drive)),
-    Commands.parallel(new AutoCruise(.25, 150, -30, (40 / 12.0), drive), new RetractCollectorCommand(collector)),
-    new FireNoteAuto(shooter, collector, drive, targeting, true , false)
+    Commands.deadline(new AutoCruise(A_SPEED, -42.68, -42.68, (46.26 / 12.0), drive) , new AutoPickup(collector)),
+    Commands.parallel(new AutoCruise(A_SPEED, 137.32, -17.77, (46.26 / 12.0), drive), new RetractCollectorCommand(collector)),
+    new FireNoteAuto(shooter, collector, drive, targeting, false , false)
   );
   private final SequentialCommandGroup fourNoteBlue = new SequentialCommandGroup(
-    new FireNoteAuto(shooter, collector , drive, targeting, false , false),
+    Commands.deadline(new WaitCommand(.8), Commands.run(shooter :: fireNote , shooter)),
+    Commands.deadline(new WaitCommand(.5), Commands.run(collector :: fire , collector)),
+    Commands.runOnce(shooter :: stopShooter, shooter),
+    Commands.runOnce(collector :: off, collector),//end note 1
     new DeployCollectorCommand(collector),
-    Commands.deadline(new AutoCruise(.25, 0, 0, (62.33 / 12), drive) , new AutoPickup(collector)),
+    Commands.deadline(new AutoCruise(A_SPEED, 0, 0, (41.08 / 12), drive) , new AutoPickup(collector)),//62.33
     new RetractCollectorCommand(collector),
-    new FireNoteAuto(shooter, collector , drive, targeting, true , false),
+    new FireNoteAuto(shooter, collector , drive, targeting, true , false),//end note 2
+    Commands.parallel(new AutoCruise(A_SPEED, 0, 0, (21.25 / 12.0), drive), new DeployCollectorCommand(collector)),
+    Commands.deadline(new AutoCruise(A_SPEED, -19.6, -19.6, (223.6 / 12), drive) , new AutoPickup(collector)),
+    Commands.parallel(new AutoCruise(A_SPEED, -162.23, 17.77, (259.27 / 12.0), drive), new RetractCollectorCommand(collector)),
+    new FireNoteAuto(shooter, collector , drive, targeting, false , false),//end note 3
     new DeployCollectorCommand(collector),
-    Commands.deadline(new AutoCruise(.25, -19.6, -19.6, (223.6 / 12), drive) , new AutoPickup(collector)),
-    Commands.parallel(new AutoCruise(.25, 160.4, 0, (223.6 / 12.0), drive), new RetractCollectorCommand(collector)),
-    new FireNoteAuto(shooter, collector, drive, targeting, true , false),
-    new DeployCollectorCommand(collector),
-    Commands.race(new AutoPickup(collector), new AutoCruise(.25, 90, 90, (57 / 12.0), drive)),
-    Commands.parallel(new AutoCruise(.25, -150, 30, (40 / 12.0), drive), new RetractCollectorCommand(collector)),
-    new FireNoteAuto(shooter, collector, drive, targeting, true , false)
+    Commands.deadline(new AutoCruise(A_SPEED, 42.68, 42.68, (46.26 / 12.0), drive) , new AutoPickup(collector)),
+    Commands.parallel(new AutoCruise(A_SPEED, -137.32, 17.77, (46.26 / 12.0), drive), new RetractCollectorCommand(collector)),
+    new FireNoteAuto(shooter, collector, drive, targeting, false , false)
   );
 
 
@@ -233,7 +253,7 @@ public class RobotContainer {
     SmartDashboard.putData("Auto Choose" , autoChooser);
 
     drive.setDefaultCommand(Commands.run(
-      () -> drive.podDriver(-xbox.getLeftX(), -xbox.getLeftY() , -xbox.getRightX()),
+      () -> drive.podDriver(-xbox.getLeftX(), -xbox.getLeftY() , -xbox.getRightX() , true),
       drive
       ));
 
@@ -270,7 +290,7 @@ public class RobotContainer {
 
 //shooter
     xboxOperator.x().onTrue(Commands.run(shooter :: fireNote , shooter));
-    xboxOperator.rightBumper().onTrue(new FireNoteCommand(shooter, targeting, false));
+    xboxOperator.rightBumper().onTrue(new FireNoteCommand(shooter, targeting));
     xboxOperator.leftBumper().onTrue(Commands.runOnce(shooter :: stopShooter, shooter));
     xboxOperator.back().onTrue(Commands.run(shooter :: fireNoteAmp, shooter));
     xboxOperator.y().onTrue(Commands.run(shooter :: fireNoteWall, shooter));

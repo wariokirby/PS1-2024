@@ -31,6 +31,7 @@ public class AutoCruise extends Command {
   @Override
   public void initialize() {
     drivetrain.enableFieldOriented();
+    drivetrain.turboOn();
     //drivetrain.resetYaw();
     double heading = direction * Math.PI / 180;
     y1 = speed * Math.cos(heading);
@@ -41,7 +42,7 @@ public class AutoCruise extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    drivetrain.podDriver(x1, y1, (turn - drivetrain.getYaw()) / 50.0);
+    drivetrain.podDriver(x1, y1, ((turn - drivetrain.getYaw()) / 50.0) , false);
   }
 
   // Called once the command ends or is interrupted.

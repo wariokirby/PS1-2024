@@ -97,7 +97,7 @@ public class SwerveDrive extends SubsystemBase {
     SmartDashboard.putNumber("IMU Yaw", ypr[0]);
   }
 
-  public void podDriver(double x1 , double y1 , double x2){
+  public void podDriver(double x1 , double y1 , double x2 , boolean turnDZ){
   
     if(Math.abs(x1) <= .1){
       x1 = 0;
@@ -105,7 +105,7 @@ public class SwerveDrive extends SubsystemBase {
     if(Math.abs(y1) <= .1){
       y1 = 0;
     }
-    if(Math.abs(x2) <= .1){
+    if((Math.abs(x2) <= .1 && turnDZ)){
       x2 = 0;
     }
 
@@ -140,7 +140,7 @@ public class SwerveDrive extends SubsystemBase {
   }
 
   public void stop(){
-    podDriver(0, 0, 0);
+    podDriver(0, 0, 0 , false);
 
   }
 

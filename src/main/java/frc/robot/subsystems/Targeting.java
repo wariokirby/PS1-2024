@@ -52,11 +52,11 @@ public class Targeting extends SubsystemBase {
   private double y;
 
   private int whichTarget;
+  private boolean usingAlt;
   private SendableChooser<Boolean> sideChooser;
   private final int[] redPipelines = {0,1,2,3,4};
   private final int[] bluePipelines = {5,6,7,8,9};
   private int[] pipelines;
-  private String targetingWhat;
 
   /** Creates a new Targeting. */
   public Targeting() {
@@ -71,12 +71,12 @@ public class Targeting extends SubsystemBase {
     y = 100;
 
     whichTarget = 0;
+    usingAlt = false;
     sideChooser = new SendableChooser<>();
     sideChooser.setDefaultOption("Blue", false);
     sideChooser.addOption("red", true);
     SmartDashboard.putData("red or Blue", sideChooser);
     pipelines = bluePipelines;
-    targetingWhat = "Speaker";
     limelight.getEntry("pipeline").setNumber(pipelines[whichTarget]);
 
     limelight.getEntry("ledMode").setNumber(1);
@@ -87,11 +87,26 @@ public class Targeting extends SubsystemBase {
   public void periodic() {
     // This method will be called once per scheduler run
     validTarget = tv.getDouble(0);
-    if(validTarget > 0){
-      ledOn(true);
-    }
-    else{
-      ledOn(false);
+    if(whichTarget == 0){
+      if(validTarget == 0){
+        ledOn(0);
+        if(usingAlt){
+          changeTag(0);
+          usingAlt = false;
+        }
+        else{
+          changeTag(1);
+          usingAlt = true;
+        }
+      }
+      else{
+        if(calcRange() < 90){
+          ledOn(2);
+        }
+        else{
+          ledOn(1);
+        }
+      }
     }
     x = tx.getDouble(0);
     y = ty.getDouble(0);
@@ -105,7 +120,12 @@ public class Targeting extends SubsystemBase {
 
   //0 speaker, 1 altSpeaker, 2 amp, 3 source left, 4 stage back
   public void changeTag(int whichTarget){//set according to which tag is in which pipeline
-    this.whichTarget = whichTarget;
+    if(whichTarget == 1){
+      this.whichTarget = 0;
+    }
+    else{
+      this.whichTarget = whichTarget;
+    }
     limelight.getEntry("pipeline").setNumber(pipelines[whichTarget]);
   }
 
@@ -135,11 +155,15 @@ public class Targeting extends SubsystemBase {
   }
 
 
-  public void ledOn(boolean on) {
+  public void ledOn(int on) {
     NetworkTableEntry led = limelight.getEntry("ledMode");
-    if(on) {
+    if(on == 2) {
       led.setNumber(3);
-    } else {
+    }
+    else if(on ==  1){//blink
+      led.setNumber(2);
+    } 
+    else {
       led.setNumber(1);
     }
   }
@@ -149,23 +173,18 @@ public class Targeting extends SubsystemBase {
     double height;
     if(whichTarget == 0){
       height = HEIGHT_OF_SPEAKER;
-      targetingWhat = "Speaker";
     }
     else if(whichTarget == 1){
       height = HEIGHT_OF_SPEAKER;
-      targetingWhat = "Alt Speaker";
     }
     else if(whichTarget == 2){
       height = HEIGHT_OF_AMP;
-      targetingWhat = "Amp";
     }
     else if(whichTarget == 3){
       height = HEIGHT_OF_SPEAKER;
-      targetingWhat = "Source";
     }
     else{
       height = HEIGHT_OF_STAGE;
-      targetingWhat = "Back of Stage";
     }
     double d = (height - HEIGHT_OF_CAMERA) / Math.tan(Math.toRadians(CAMERA_MOUNT_ANGLE + y));
     return d-6;       

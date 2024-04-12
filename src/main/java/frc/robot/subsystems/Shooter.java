@@ -78,14 +78,16 @@ public class Shooter extends SubsystemBase {
   }
   public void fireNote(){
     double setpoint = 2000;//when all else fails 2000 4000 against the sub
-    double setpoint2 = 2000;
+    double setpoint2 = 4000;
     flywheelTopLeft.setVoltage(topControl.calculate(topEncoder.getVelocity(), setpoint) + ff.calculate(setpoint));
     flywheelBottomLeft.setVoltage(bottomControl.calculate(bottomEncoder.getVelocity() , setpoint2) + ff.calculate(setpoint2));
   }
 
-  public void fireNoteWall(){
-    double setpoint = 2000;//in case of wall
-    double setpoint2 = 2000;
+  public void fireNoteWall(){//in case of wall
+    //double setpoint = 2000;//old shooter
+    //double setpoint2 = 2000;
+    double setpoint = 4700;//new shooter
+    double setpoint2 = 1100;
     flywheelTopLeft.setVoltage(topControl.calculate(topEncoder.getVelocity(), setpoint) + ff.calculate(setpoint));
     flywheelBottomLeft.setVoltage(bottomControl.calculate(bottomEncoder.getVelocity() , setpoint2) + ff.calculate(setpoint2));
 

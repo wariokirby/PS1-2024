@@ -34,25 +34,16 @@ public class RunNGun extends Command {
   @Override
 public void execute() {
     if(targeting.getValidTarget() == 0){
-      if(usingAlt){
-        targeting.changeTag(0);
-        usingAlt = false;
-      }
-      else{
-        targeting.changeTag(1);
-        usingAlt = true;
-      }
-      drivetrain.podDriver(-xbox.getLeftX(), -xbox.getLeftY(), -xbox.getRightX());
+      drivetrain.podDriver(-xbox.getLeftX(), -xbox.getLeftY(), -xbox.getRightX() , true);
     }
     else {
-      drivetrain.podDriver(-xbox.getLeftX(), -xbox.getLeftY(),  -(targeting.getX())/40.0);
+      drivetrain.podDriver(-xbox.getLeftX(), -xbox.getLeftY(),  -(targeting.getX())/50.0 , false);
     }      
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    drivetrain.enableFieldOriented();
   }
 
   // Returns true when the command should end.

@@ -12,13 +12,11 @@ import frc.robot.subsystems.Targeting;
 public class FireNoteCommand extends Command {
   private final Shooter shooter;
   private final Targeting targeting;
-  private boolean noLimelight;
   
   /** Creates a new FireNote. */
-  public FireNoteCommand(Shooter shooter , Targeting targeting , boolean noLimelight) {
+  public FireNoteCommand(Shooter shooter , Targeting targeting) {
     this.shooter = shooter;
     this.targeting = targeting;
-    this.noLimelight = noLimelight;
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(shooter);
   }
@@ -30,17 +28,63 @@ public class FireNoteCommand extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if(noLimelight){
-      shooter.fireNote(2000 , 4000);
-    }
-    else if(targeting.getValidTarget() == 0){
+    if(targeting.getValidTarget() == 0){
       shooter.fireNote(2000 , 2000);
     }
-    else if(targeting.calcRange() <= 45){
+    else{
+      newShooter();
+    }
+ }
+
+  // Called once the command ends or is interrupted.
+  @Override
+  public void end(boolean interrupted) {}
+
+  // Returns true when the command should end.
+  @Override
+  public boolean isFinished() {
+    return false;
+  }
+
+  public void newShooter(){
+    if(targeting.calcRange() <= 40){
+      shooter.fireNote(2000 , 4000);
+    }
+    else if(targeting.calcRange() <= 44){
+      shooter.fireNote(2000 , 3000);
+    }
+    else if(targeting.calcRange() <= 60){
+      shooter.fireNote(2000 , 2000);
+    }
+    else if(targeting.calcRange() <= 64){
+      shooter.fireNote(4000 , 2000);
+    }
+    else if(targeting.calcRange() <= 72){
+      shooter.fireNote(4000 , 1500);
+    }
+    else if(targeting.calcRange() <= 74){
+      shooter.fireNote(4700 , 1250);
+    }
+    else if(targeting.calcRange() <= 76){
+      shooter.fireNote(4700 , 1100);
+    }
+    else if(targeting.calcRange() <= 84){
+      shooter.fireNote(4700 , 1000);
+    }
+    else{
+      shooter.fireNote(4700 , 900);
+    }
+  }
+
+  public void oldShooter(){
+    if(targeting.calcRange() <= 45){
       shooter.fireNote(2000 , 4000);
     }
     else if(targeting.calcRange() <= 55){
       shooter.fireNote(2000 , 3000);
+    }
+    else if(targeting.calcRange() <= 74){
+      shooter.fireNote(2000 , 2000);
     }
     else if(targeting.calcRange() <= 79){
       shooter.fireNote(4000 , 1900);
@@ -54,15 +98,6 @@ public class FireNoteCommand extends Command {
     else{
       shooter.fireNote(4000 , 1500);
     }
- }
-
-  // Called once the command ends or is interrupted.
-  @Override
-  public void end(boolean interrupted) {}
-
-  // Returns true when the command should end.
-  @Override
-  public boolean isFinished() {
-    return false;
   }
+
 }

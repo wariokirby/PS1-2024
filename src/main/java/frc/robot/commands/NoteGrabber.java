@@ -31,14 +31,14 @@ public class NoteGrabber extends Command {
   @Override
   public void execute() {
     collector.intake();
-    drivetrain.podDriver(0, .25, 0);
+    drivetrain.podDriver(0, .25, 0 , false);
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
     collector.off();
-    drivetrain.podDriver(0, 0, 0);
+    drivetrain.stop();
     drivetrain.enableFieldOriented();
 
   }

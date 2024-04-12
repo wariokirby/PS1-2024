@@ -7,14 +7,17 @@ package frc.robot.subsystems;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
-public class Pathfinder extends SubsystemBase {
+public class Pathfinder extends SubsystemBase {//center is the blue speaker aplril tag
   //all dimensions are inches  104.64
   private double[] NOTE_1 = {0 , 115.955};//second note
-  private double[] NOTE_2 = {57 , 115.955};//closer 3rd note or 4th note
-  private double[] NOTE_3 = {-57 , 115.955};//this is the one touching the stage
-  private double[] NOTE_4 = {75 , 326.555};//center area 3rd note
-  private double[] NOTE_5 = {9 , 326.555};//hard to get center note with stage in the way
-  private double ROBOT_CENTER = 17.5;//total length to the middle of the collector lower rollers 3 + 29 + 6.75;
+  private double[] NOTE_2 = {-57 , 115.955};//closer 3rd note or 4th note
+  private double[] NOTE_3 = {57 , 115.955};//this is the one touching the stage
+  private double[] NOTE_4 = {-75 , 326.555};//center area 3rd note
+  private double[] NOTE_5 = {-9 , 326.555};//hard to get center note with stage in the way
+  private double[] NOTE_6 = {57 , 326.555};//dead center note behind the stage
+  private double[] NOTE_7 = {123 , 326.555};//hard to get center note with stage in the way
+  private double[] NOTE_8 = {189 , 326.555};//hard to get center note with stage in the way
+  private double ROBOT_CENTER = 17.5;//total length to the middle of the collector lower rollers 3 + 29 + 6.75 = 38.75;
 
   private SwerveDrive drive;
   private Targeting targeting;
@@ -41,12 +44,18 @@ public class Pathfinder extends SubsystemBase {
       NOTE_3[0] = -57;
       NOTE_4[0] = 75;
       NOTE_5[0] = 9;
+      NOTE_6[0] = -57;
+      NOTE_7[0] = -123;
+      NOTE_8[0] = -189;
    }
    else{
       NOTE_2[0] = -57;
       NOTE_3[0] = 57;
       NOTE_4[0] = -75;
       NOTE_5[0] = -9;
+      NOTE_6[0] = 57;
+      NOTE_7[0] = 123;
+      NOTE_8[0] = 189;
 
    }
   }
@@ -86,8 +95,17 @@ public class Pathfinder extends SubsystemBase {
    else if(whichNote == 4){
       destination = NOTE_4;
     }
-   else{
+   else if(whichNote == 5){
       destination = NOTE_5;
+    }
+   else if(whichNote == 6){
+      destination = NOTE_6;
+    }
+   else if(whichNote == 7){
+      destination = NOTE_7;
+    }
+   else{
+      destination = NOTE_8;
     }
 
     double x = destination[0] - position[0];

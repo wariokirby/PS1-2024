@@ -44,11 +44,11 @@ public class NotelSeeker extends Command {
       dize[1] = 0;
     }
     if (dize[0] == 160) {
-      drivetrain.podDriver(0, 0, 0.5);
+      drivetrain.podDriver(0, 0, 0.5 , false);
     } //end if 
     else {
       collector.intake();
-      drivetrain.podDriver(-(dize[0] - 74) / 100.0, (dize[1] + 24) / 100.0, 0);
+      drivetrain.podDriver(-(dize[0] - 74) / 100.0, (dize[1] + 24) / 100.0, 0 , false);
     } //end else
   } //end execute
 
@@ -56,7 +56,7 @@ public class NotelSeeker extends Command {
   @Override
   public void end(boolean interrupted) {
     collector.off();
-    drivetrain.podDriver(0, 0, 0);
+    drivetrain.stop();
     drivetrain.enableFieldOriented();
   } //ends end
 

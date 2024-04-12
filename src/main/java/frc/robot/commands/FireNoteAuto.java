@@ -56,40 +56,9 @@ public class FireNoteAuto extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if(noTarget && !secondShot){
-      shooter.fireNote(4000 , 1750);//range 81.75
-    }
-    else if(noTarget){
-      shooter.fireNote(4000 , 1500);//range 91.25 stage note
-    }
-    else{
-      drivetrain.podDriver(0, 0, -(targeting.getX())/50);
-      
-      if(targeting.calcRange() <= 45){
-      shooter.fireNote(2000 , 4000);
-      }
-      else if(targeting.calcRange() <= 55){
-        shooter.fireNote(2000 , 3000);
-      }
-      else if(targeting.calcRange() <= 74){
-        shooter.fireNote(2000 , 2000);
-      }
-      else if(targeting.calcRange() <= 79){
-        shooter.fireNote(4000 , 1900);
-      }
-      else if(targeting.calcRange() <= 82){
-        shooter.fireNote(4000 , 1750);
-      }
-      else if(targeting.calcRange() <= 91){
-        shooter.fireNote(4000 , 1600);
-      }
-      else{
-        shooter.fireNote(4000 , 1500);
-      }
+    newShooter();
 
-    }
-
-   timer--;
+    timer--;
     if(timer <= 25){
       collector.fire();
     }
@@ -109,4 +78,81 @@ public class FireNoteAuto extends Command {
     SmartDashboard.putNumber("autoTimer" , timer);
     return timer <= 0;
  }
+
+  public void newShooter(){
+    if(noTarget && !secondShot){
+      shooter.fireNote(4700 , 1000);//range 81.75
+    }
+    else if(noTarget && Math.abs(drivetrain.getYaw()) > 5){
+      shooter.fireNote(4700 , 900);//range 91.25 stage note
+    }
+    else if(noTarget){
+       shooter.fireNote(4700 , 1100);//range 77.08
+    }
+    else{
+      drivetrain.podDriver(0, 0, -(targeting.getX()/50) , false);
+
+      if(targeting.calcRange() <= 40){
+        shooter.fireNote(2000 , 4000);
+      }
+      else if(targeting.calcRange() <= 44){
+        shooter.fireNote(2000 , 3000);
+      }
+      else if(targeting.calcRange() <= 60){
+        shooter.fireNote(2000 , 2000);
+      }
+      else if(targeting.calcRange() <= 64){
+        shooter.fireNote(4000 , 2000);
+      }
+      else if(targeting.calcRange() <= 72){
+        shooter.fireNote(4000 , 1500);
+      }
+      else if(targeting.calcRange() <= 74){
+        shooter.fireNote(4700 , 1250);
+      }
+      else if(targeting.calcRange() <= 76){
+        shooter.fireNote(4700 , 1100);
+      }
+      else if(targeting.calcRange() <= 84){
+        shooter.fireNote(4700 , 1000);
+      }
+      else{
+        shooter.fireNote(4700 , 900);
+      }
+    }
+  }
+
+  public void oldShooter(){
+    if(noTarget && !secondShot){
+      shooter.fireNote(4000 , 1750);//range 81.75
+    }
+    else if(noTarget){
+      shooter.fireNote(4000 , 1500);//range 91.25 stage note
+    }
+    else{
+      drivetrain.podDriver(0, 0, -(targeting.getX()/50) , false);
+
+      if(targeting.calcRange() <= 45){
+        shooter.fireNote(2000 , 4000);
+      }
+      else if(targeting.calcRange() <= 55){
+        shooter.fireNote(2000 , 3000);
+      }
+      else if(targeting.calcRange() <= 74){
+        shooter.fireNote(2000 , 2000);
+      }
+      else if(targeting.calcRange() <= 79){
+        shooter.fireNote(4000 , 1900);
+      }
+      else if(targeting.calcRange() <= 82){
+        shooter.fireNote(4000 , 1750);
+      }
+      else if(targeting.calcRange() <= 91){
+        shooter.fireNote(4000 , 1600);
+      }
+      else{
+        shooter.fireNote(4000 , 1500);
+      }
+    }
+  }
 }
