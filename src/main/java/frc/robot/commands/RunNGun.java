@@ -33,13 +33,21 @@ public class RunNGun extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
 public void execute() {
-    if(targeting.getValidTarget() == 0){
-      drivetrain.podDriver(-xbox.getLeftX(), -xbox.getLeftY(), -xbox.getRightX() , true);
+  if(targeting.getValidTarget() == 0){
+    if(usingAlt){
+      targeting.changeTag(0);
+      usingAlt = false;
     }
-    else {
-      drivetrain.podDriver(-xbox.getLeftX(), -xbox.getLeftY(),  -(targeting.getX())/50.0 , false);
-    }      
+    else{
+      targeting.changeTag(1);
+      usingAlt = true;
+    }
+    drivetrain.podDriver(-xbox.getLeftX(), -xbox.getLeftY(), -xbox.getRightX() , true , true);
   }
+  else {
+    drivetrain.podDriver(-xbox.getLeftX(), -xbox.getLeftY(),  -(targeting.getX()/60.0) , false , true);
+  }      
+}
 
   // Called once the command ends or is interrupted.
   @Override

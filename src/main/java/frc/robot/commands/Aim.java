@@ -39,18 +39,25 @@ public class Aim extends Command {
     
     if(whichTarget == 0){
       if(targeting.getValidTarget() == 0){
-        drivetrain.podDriver(0, 0, -.5 , false);
+        if(usingAlt){
+          targeting.changeTag(0);
+          usingAlt = false;
+        }
+        else{
+          targeting.changeTag(1);
+          usingAlt = true;
+        }
       }
       else{
-        drivetrain.podDriver(0, 0, -(targeting.getX()/50) , false);
+        drivetrain.podDriver(0, 0, -(targeting.getX()/60) , false , false);
       }
     }
     else if(whichTarget == 2){
       if(targeting.getSide()){
-        drivetrain.podDriver((targeting.getX()/10), 0, -((90 - drivetrain.getYaw()) / 20.0) , false);
+        drivetrain.podDriver((targeting.getX()/10), 0, -((90 - drivetrain.getYaw()) / 20.0) , false , false);
       }
       else{
-        drivetrain.podDriver((targeting.getX())/10, 0, -((-90 - drivetrain.getYaw()) / 20.0) , false);
+        drivetrain.podDriver((targeting.getX())/10, 0, -((-90 - drivetrain.getYaw()) / 20.0) , false , false);
       }
       
     }

@@ -31,7 +31,7 @@ public class NoteGrabber extends Command {
   @Override
   public void execute() {
     collector.intake();
-    drivetrain.podDriver(0, .25, 0 , false);
+    drivetrain.podDriver(0, .25, 0 , false , false);
   }
 
   // Called once the command ends or is interrupted.

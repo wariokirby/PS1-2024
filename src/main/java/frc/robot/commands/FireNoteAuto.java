@@ -37,6 +37,7 @@ public class FireNoteAuto extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    collector.intake();
     targeting.changeTag(0);
     if(targeting.getValidTarget() == 0){
       targeting.changeTag(1);
@@ -48,7 +49,7 @@ public class FireNoteAuto extends Command {
       timer = 150;
     }
     else{
-      timer = 65;
+      timer = 75;
     }
     
   }
@@ -86,11 +87,11 @@ public class FireNoteAuto extends Command {
     else if(noTarget && Math.abs(drivetrain.getYaw()) > 5){
       shooter.fireNote(4700 , 900);//range 91.25 stage note
     }
-    else if(noTarget){
+    else if(noTarget || targeting.calcRange() > 91){
        shooter.fireNote(4700 , 1100);//range 77.08
     }
     else{
-      drivetrain.podDriver(0, 0, -(targeting.getX()/50) , false);
+      drivetrain.podDriver(0, 0, -(targeting.getX()/60) , false , false);
 
       if(targeting.calcRange() <= 40){
         shooter.fireNote(2000 , 4000);
@@ -130,7 +131,7 @@ public class FireNoteAuto extends Command {
       shooter.fireNote(4000 , 1500);//range 91.25 stage note
     }
     else{
-      drivetrain.podDriver(0, 0, -(targeting.getX()/50) , false);
+      drivetrain.podDriver(0, 0, -(targeting.getX()/50) , false , false);
 
       if(targeting.calcRange() <= 45){
         shooter.fireNote(2000 , 4000);

@@ -87,27 +87,17 @@ public class Targeting extends SubsystemBase {
   public void periodic() {
     // This method will be called once per scheduler run
     validTarget = tv.getDouble(0);
-    if(whichTarget == 0){
-      if(validTarget == 0){
-        ledOn(0);
-        if(usingAlt){
-          changeTag(0);
-          usingAlt = false;
-        }
-        else{
-          changeTag(1);
-          usingAlt = true;
-        }
-      }
-      else{
-        if(calcRange() < 90){
-          ledOn(2);
-        }
-        else{
-          ledOn(1);
-        }
-      }
+    if(validTarget == 0){
+      ledOn(0);
     }
+    else if(calcRange() < 90){
+      ledOn(2);
+    }
+    else{
+      ledOn(1);
+    }
+  
+    
     x = tx.getDouble(0);
     y = ty.getDouble(0);
 
@@ -120,12 +110,8 @@ public class Targeting extends SubsystemBase {
 
   //0 speaker, 1 altSpeaker, 2 amp, 3 source left, 4 stage back
   public void changeTag(int whichTarget){//set according to which tag is in which pipeline
-    if(whichTarget == 1){
-      this.whichTarget = 0;
-    }
-    else{
-      this.whichTarget = whichTarget;
-    }
+    this.whichTarget = whichTarget;
+    
     limelight.getEntry("pipeline").setNumber(pipelines[whichTarget]);
   }
 

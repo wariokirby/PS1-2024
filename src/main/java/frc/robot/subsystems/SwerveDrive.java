@@ -95,14 +95,15 @@ public class SwerveDrive extends SubsystemBase {
     imu.getYawPitchRoll(ypr);
     SmartDashboard.putBoolean("IMU Health", imuErrorCode == 0);
     SmartDashboard.putNumber("IMU Yaw", ypr[0]);
+    SmartDashboard.putNumber("AVG Distance", getAverageDistance() * 12);
   }
 
-  public void podDriver(double x1 , double y1 , double x2 , boolean turnDZ){
+  public void podDriver(double x1 , double y1 , double x2 , boolean turnDZ , boolean driveDZ){
   
-    if(Math.abs(x1) <= .1){
+    if(Math.abs(x1) <= .1 && driveDZ){
       x1 = 0;
     }
-    if(Math.abs(y1) <= .1){
+    if(Math.abs(y1) <= .1 && driveDZ){
       y1 = 0;
     }
     if((Math.abs(x2) <= .1 && turnDZ)){
@@ -140,7 +141,7 @@ public class SwerveDrive extends SubsystemBase {
   }
 
   public void stop(){
-    podDriver(0, 0, 0 , false);
+    podDriver(0, 0, 0 , false , false);
 
   }
 

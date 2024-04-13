@@ -94,10 +94,10 @@ public class RobotContainer {
   private final SequentialCommandGroup twoNoteBlue = new SequentialCommandGroup(
     new AutoCruise(0, 0, -44.2, 0, drive),
     new FireNoteAuto(shooter, collector , drive , targeting, false , false),
-    new DeployCollectorCommand(collector),
-    Commands.deadline(new AutoCruise(A_SPEED, 0, 0, (39 / 12.0), drive) , new AutoPickup(collector)),
-    Commands.parallel(new RetractCollectorCommand(collector), new AutoCruise(0, 0, -31.57, 0, drive)),
-    new FireNoteAuto(shooter, collector , drive , targeting, true , false)
+    Commands.parallel(new DeployCollectorCommand(collector), new AutoCruise(0, 0, 0, 0, drive)),
+    Commands.deadline(new AutoCruise(A_SPEED, 0, 0, (41 / 12.0), drive) , new AutoPickup(collector)),
+    Commands.parallel(new RetractCollectorCommand(collector), new AutoCruise(A_SPEED, 180, -44.2, (40 / 12.0), drive)),
+    new FireNoteAuto(shooter, collector , drive , targeting, false , false)
   );
 
   private final SequentialCommandGroup threeNoteRed = new SequentialCommandGroup(
@@ -146,15 +146,16 @@ public class RobotContainer {
     new AutoCruise(0, 0, -44.2, 0, drive),
     new FireNoteAuto(shooter, collector , drive , targeting, false , false),
     Commands.parallel(new AutoCruise(A_SPEED, -90, -21.76, (32 / 12.0), drive), new DeployCollectorCommand(collector)),
-    Commands.deadline(new AutoCruise(A_SPEED, -21.76, -21.76, (269.72 / 12.0), drive) , new AutoPickup(collector)),
+    Commands.waitSeconds(.1),
+    Commands.deadline(new AutoCruise(A_SPEED, -21, -21, (284 / 12.0), drive) , new AutoPickup(collector)),
     Commands.parallel(new AutoCruise(A_SPEED, 180, -39.27, (74.16 / 12.0), drive) , new RetractCollectorCommand(collector)),
     new FireNoteAuto(shooter, collector, drive, targeting, true, false),
     new DeployCollectorCommand(collector),
-    Commands.deadline(new AutoCruise(A_SPEED, 41.67, 41.67, (99.28 / 12.0), drive) , new AutoPickup(collector)),
-    Commands.parallel(new AutoCruise(A_SPEED, -164.91, -21.76, (269.72 / 12.0), drive) , new RetractCollectorCommand(collector)),
+    Commands.deadline(new AutoCruise(A_SPEED, 32.67, 32.67, (112.28 / 12.0), drive) , new AutoPickup(collector)),
+    Commands.parallel(new AutoCruise(A_SPEED, -164.91, -21.76, (82.72 / 12.0), drive) , new RetractCollectorCommand(collector)),
     new FireNoteAuto(shooter, collector, drive, targeting, true, false),
     new DeployCollectorCommand(collector),
-    Commands.deadline(new AutoCruise(A_SPEED, 49.23, 49.23, (113.56 / 12.0), drive) , new AutoPickup(collector)),
+    Commands.deadline(new AutoCruise(A_SPEED, 47.23, 47.23, (125.56 / 12.0), drive) , new AutoPickup(collector)),
     Commands.parallel(new AutoCruise(A_SPEED, 180, 0, (74 / 12.0), drive) , new RetractCollectorCommand(collector))
   );
 
@@ -253,7 +254,7 @@ public class RobotContainer {
     SmartDashboard.putData("Auto Choose" , autoChooser);
 
     drive.setDefaultCommand(Commands.run(
-      () -> drive.podDriver(-xbox.getLeftX(), -xbox.getLeftY() , -xbox.getRightX() , true),
+      () -> drive.podDriver(-xbox.getLeftX(), -xbox.getLeftY() , -xbox.getRightX() , true , true),
       drive
       ));
 
@@ -283,8 +284,8 @@ public class RobotContainer {
     xbox.rightTrigger()
       .onTrue(Commands.runOnce(drive :: turboOn, drive))
       .onFalse(Commands.runOnce(drive :: turboOff, drive));
-    xbox.leftTrigger().whileTrue(new Aim(0, drive, targeting, false));
-    xbox.leftBumper().whileTrue(new RunNGun(drive, targeting, xbox));
+    xbox.leftBumper().whileTrue(new Aim(0, drive, targeting, false));
+    xbox.leftTrigger().whileTrue(new RunNGun(drive, targeting, xbox));
     //xbox.a().onTrue(new SequentialCommandGroup(new NotelSeeker(drive, finder, collector) , new NoteGrabber(drive, collector)));
     xbox.b().onTrue(Commands.runOnce(drive :: stop, drive));
 

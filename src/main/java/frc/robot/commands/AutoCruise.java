@@ -42,16 +42,18 @@ public class AutoCruise extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    drivetrain.podDriver(x1, y1, ((turn - drivetrain.getYaw()) / 50.0) , false);
+    drivetrain.podDriver(x1, y1, ((turn - drivetrain.getYaw()) / 100.0) , false , false);
   }
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+    drivetrain.stop();
+  }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return drivetrain.getAverageDistance() >= distance && Math.abs(turn - drivetrain.getYaw()) < 1;
+    return drivetrain.getAverageDistance() >= distance && Math.abs(turn - drivetrain.getYaw()) < 2;
   }
 }
