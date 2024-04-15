@@ -10,7 +10,7 @@ import frc.robot.subsystems.SwerveDrive;
 public class AutoCruise extends Command {
   private final SwerveDrive drivetrain;
   private double speed;
-  private double direction;
+  private double heading;
   private double turn;
   private double distance;
   private double x1;
@@ -20,7 +20,7 @@ public class AutoCruise extends Command {
   public AutoCruise(double speed , double direction , double turn , double distance , SwerveDrive drivetrain) {
     this.drivetrain = drivetrain;
     this.speed = speed;
-    this.direction = direction;
+    this.heading = direction * Math.PI / 180;
     this.turn = turn;
     this.distance = distance;
     // Use addRequirements() here to declare subsystem dependencies.
@@ -33,15 +33,24 @@ public class AutoCruise extends Command {
     drivetrain.enableFieldOriented();
     drivetrain.turboOn();
     //drivetrain.resetYaw();
-    double heading = direction * Math.PI / 180;
-    y1 = speed * Math.cos(heading);
-    x1 = speed * Math.sin(heading);
     drivetrain.resetDistances(false);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+    if(drivetrain.getAverageDistance() < 2 || distance - drivetrain.getAverageDistance() < 2){
+      y1 = .25 * Math.cos(heading);
+      x1 = .25 * Math.sin(heading);
+    }
+    else if(speed > .5 && (drivetrain.getAverageDistance() < 3 || distance - drivetrain.getAverageDistance() < 3)){
+      y1 = .5 * Math.cos(heading);
+      x1 = .5 * Math.sin(heading);
+    }
+    else{
+      y1 = speed * Math.cos(heading);
+      x1 = speed * Math.sin(heading);
+    }
     drivetrain.podDriver(x1, y1, ((turn - drivetrain.getYaw()) / 100.0) , false , false);
   }
 
