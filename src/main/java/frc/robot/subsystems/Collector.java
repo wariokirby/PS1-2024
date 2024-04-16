@@ -41,7 +41,7 @@ public class Collector extends SubsystemBase {
   @Override
   public void periodic() {
     SmartDashboard.putNumber("Collector Position", deployEncoder.getPosition());
-    SmartDashboard.putBoolean("Have Note" , primaryNoteDetect.get());
+    SmartDashboard.putBoolean("Have Note" , !primaryNoteDetect.get());
     // This method will be called once per scheduler run
   }
   public void enableOverride(){
@@ -121,6 +121,10 @@ public class Collector extends SubsystemBase {
 
   public void fire(){
     collect.set(1);
+  }
+
+  public void fireAmp(){
+    collect.set(.3);
   }
 
   public boolean getNoteDetect(){

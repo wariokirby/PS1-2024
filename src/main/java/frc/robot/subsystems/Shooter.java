@@ -94,10 +94,10 @@ public class Shooter extends SubsystemBase {
   }
 
   public void fireNoteAmp() {
-    double ampMod = .2;
-    double setPoint = 1500;
-    flywheelTopLeft.setVoltage(topControl.calculate(topEncoder.getVelocity(), setPoint * ampMod) + ff.calculate(setPoint * ampMod));
-    flywheelBottomLeft.setVoltage((bottomControl.calculate(bottomEncoder.getVelocity(), setPoint) + ff.calculate(setPoint)));
+    double setPoint = 500;
+    double setPoint2 = 1350;
+    flywheelTopLeft.setVoltage(topControl.calculate(topEncoder.getVelocity(), setPoint) + ff.calculate(setPoint));
+    flywheelBottomLeft.setVoltage((bottomControl.calculate(bottomEncoder.getVelocity(), setPoint2) + ff.calculate(setPoint2)));
 
   }
 

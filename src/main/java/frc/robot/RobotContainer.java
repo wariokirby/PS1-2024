@@ -70,7 +70,7 @@ public class RobotContainer {
   private Trigger enableClimber = new JoystickButton(prajBox, 1);
   private Trigger overrideCollector = new JoystickButton(prajBox, 7);
 
-  private final double A_SPEED = .25;
+  private final double A_SPEED = .5;
   private final Command justLeave = new AutoCruise(1, 0, 0, 3, drive);
 
   private final SequentialCommandGroup justShoot = new SequentialCommandGroup(
@@ -295,7 +295,8 @@ public class RobotContainer {
     xboxOperator.leftBumper().onTrue(Commands.runOnce(shooter :: stopShooter, shooter));
     xboxOperator.back().onTrue(Commands.run(shooter :: fireNoteAmp, shooter));
     xboxOperator.y().onTrue(Commands.run(shooter :: fireNoteWall, shooter));
-    
+    xboxOperator.b().onTrue(Commands.run(shooter :: fireNoteAmp, shooter));
+
     xboxOperator.rightTrigger().whileTrue(Commands.run(collector :: fire , collector));
     xboxOperator.leftTrigger().whileTrue(Commands.run(collector :: intake, collector));   
     xboxOperator.a().onTrue(new FireNoteAuto(shooter, collector, drive , targeting, false , false));
