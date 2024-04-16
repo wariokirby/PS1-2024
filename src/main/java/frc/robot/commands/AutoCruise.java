@@ -10,19 +10,21 @@ import frc.robot.subsystems.SwerveDrive;
 public class AutoCruise extends Command {
   private final SwerveDrive drivetrain;
   private double speed;
-  private double direction;
+  private double heading;
   private double turn;
   private double distance;
   private double x1;
   private double y1;
   private double xSlow;
   private double ySlow;
+  private double xMid;
+  private double yMid;
 
   /** Creates a new AutoCruise. */
   public AutoCruise(double speed , double direction , double turn , double distance , SwerveDrive drivetrain) {
     this.drivetrain = drivetrain;
     this.speed = speed;
-    this.direction = direction;
+    this.heading = direction * Math.PI / 180;
     this.turn = turn;
     this.distance = distance;
     // Use addRequirements() here to declare subsystem dependencies.
@@ -35,21 +37,27 @@ public class AutoCruise extends Command {
     drivetrain.enableFieldOriented();
     drivetrain.turboOn();
     //drivetrain.resetYaw();
-    double heading = direction * Math.PI / 180;
     y1 = speed * Math.cos(heading);
     x1 = speed * Math.sin(heading);    
     ySlow = .25 * Math.cos(heading);
     xSlow = .25 * Math.sin(heading);
+    yMid = .5 * Math.cos(heading);
+    xMid = .5 * Math.sin(heading);
     drivetrain.resetDistances(false);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if(drivetrain.getAverageDistance() < 2 || distance - drivetrain.getAverageDistance() < 2) {
+    if(drivetrain.getAverageDistance() < 2 || distance - drivetrain.getAverageDistance() < 2){
       drivetrain.podDriver(xSlow, ySlow, ((turn - drivetrain.getYaw()) / 100.0) , false , false);
     }
-    drivetrain.podDriver(x1, y1, ((turn - drivetrain.getYaw()) / 100.0) , false , false);
+    else if(speed > .5 && (drivetrain.getAverageDistance() < 3 || distance - drivetrain.getAverageDistance() < 3)){
+      drivetrain.podDriver(xMid, yMid, ((turn - drivetrain.getYaw()) / 100.0) , false , false);
+    }
+    else{
+      drivetrain.podDriver(x1, y1, ((turn - drivetrain.getYaw()) / 100.0) , false , false);
+    }
   }
 
 
