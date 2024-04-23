@@ -29,7 +29,7 @@ public class FireNoteCommand extends Command {
   @Override
   public void execute() {
     if(targeting.getValidTarget() == 0){
-      shooter.fireNote(2000 , 2000);
+      shooter.fireNote(2000 , 4000);
     }
     else{
       newShooter();
@@ -71,8 +71,11 @@ public class FireNoteCommand extends Command {
     else if(targeting.calcRange() <= 84){
       shooter.fireNote(4700 , 1000);
     }
-    else{
+    else if(targeting.calcRange() <= 89){
       shooter.fireNote(4700 , 900);
+    }
+    else{
+      shooter.fireNote(4700 , 700);
     }
   }
 

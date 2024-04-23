@@ -56,7 +56,6 @@ public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   private final SwerveDrive drive = new SwerveDrive();
   private final Shooter shooter = new Shooter();
-  private final Collector collector = new Collector();
   private final Climber climber = new Climber();
   private final Targeting targeting = new Targeting();
   private final PhotonFinder finder = new PhotonFinder();
@@ -71,6 +70,7 @@ public class RobotContainer {
       new Joystick(2);
   private Trigger enableClimber = new JoystickButton(prajBox, 1);
   private Trigger overrideCollector = new JoystickButton(prajBox, 7);
+  private final Collector collector = new Collector(xbox , xboxOperator);
 
   private final double A_SPEED = .5;
 
@@ -88,25 +88,28 @@ public class RobotContainer {
   //first shot, 44.2 left for red, right for blue 
   //second shot 31.57  ^^^ 
   private final SequentialCommandGroup twoNoteRed = new SequentialCommandGroup(
+    Commands.runOnce(drive::resetYaw, drive),
     new AutoCruise(0, 0, 44.2, 0, drive),
     new FireNoteAuto(shooter, collector , drive , targeting, false , false),
-    new DeployCollectorCommand(collector),
-    Commands.deadline(new AutoCruise(A_SPEED, 0, 0, (41 / 12.0), drive) , new AutoPickup(collector)),
-    Commands.waitSeconds(A_PAUSE),//end drive segment
+    Commands.parallel(new AutoCruise(0, 0, 0, 0, drive), new DeployCollectorCommand(collector)),
+    Commands.deadline(new AutoCruise(.25, 0, 0, (41 / 12.0), drive) , new AutoPickup(collector)),
+    Commands.waitSeconds(.1),//end drive segment
     Commands.parallel(new RetractCollectorCommand(collector), new AutoCruise(A_SPEED, 180, 44.2, (40 / 12.0), drive)),
     new FireNoteAuto(shooter, collector , drive , targeting, true , false)
   );
   private final SequentialCommandGroup twoNoteBlue = new SequentialCommandGroup(
+    Commands.runOnce(drive::resetYaw, drive),
     new AutoCruise(0, 0, -44.2, 0, drive),
     new FireNoteAuto(shooter, collector , drive , targeting, false , false),
-    Commands.parallel(new DeployCollectorCommand(collector), new AutoCruise(0, 0, 0, 0, drive)),
-    Commands.deadline(new AutoCruise(A_SPEED, 0, 0, (41 / 12.0), drive) , new AutoPickup(collector)),
-    Commands.waitSeconds(A_PAUSE),//end drive segment
+    Commands.parallel(new AutoCruise(0, 0, 0, 0, drive), new DeployCollectorCommand(collector)),
+    Commands.deadline(new AutoCruise(.25, 0, 0, (41 / 12.0), drive) , new AutoPickup(collector)),
+    Commands.waitSeconds(.1),//end drive segment
     Commands.parallel(new RetractCollectorCommand(collector), new AutoCruise(A_SPEED, 180, -44.2, (40 / 12.0), drive)),
     new FireNoteAuto(shooter, collector , drive , targeting, false , false)
   );
 
   private final SequentialCommandGroup threeNoteRed = new SequentialCommandGroup(
+    Commands.runOnce(drive::resetYaw, drive),
     new AutoCruise(0, 0, 44.2, 0, drive),
     new FireNoteAuto(shooter, collector , drive , targeting, false , false),
     new DeployCollectorCommand(collector),
@@ -116,7 +119,7 @@ public class RobotContainer {
     new FireNoteAuto(shooter, collector , drive , targeting, true , false),
     Commands.parallel(new AutoCruise(A_SPEED, 90, 21.76, (32 / 12.0), drive), new DeployCollectorCommand(collector)),
     Commands.waitSeconds(A_PAUSE),//end drive segment
-    Commands.deadline(new AutoCruise(A_SPEED, 21, 21, (284 / 12.0), drive) , new AutoPickup(collector)),
+    Commands.deadline(new AutoCruise(A_SPEED, 15, 15, (284 / 12.0), drive) , new AutoPickup(collector)),
     Commands.waitSeconds(A_PAUSE),//end drive segment
     Commands.parallel(new AutoCruise(A_SPEED, -159, 44.2, (269.72 / 12.0), drive) , new RetractCollectorCommand(collector)),
     Commands.waitSeconds(A_PAUSE),//end drive segment
@@ -124,16 +127,17 @@ public class RobotContainer {
     new FireNoteAuto(shooter, collector , drive , targeting, false , false)
   );
   private final SequentialCommandGroup threeNoteBlue = new SequentialCommandGroup(
+    Commands.runOnce(drive::resetYaw, drive),
     new AutoCruise(0, 0, -44.2, 0, drive),
     new FireNoteAuto(shooter, collector , drive , targeting, false , false),
     new DeployCollectorCommand(collector),
     Commands.deadline(new AutoCruise(A_SPEED, 0, 0, (39 / 12.0), drive) , new AutoPickup(collector)),
-    Commands.waitSeconds(A_PAUSE),//end drive segment
+    Commands.waitSeconds(.1),//end drive segment
     Commands.parallel(new RetractCollectorCommand(collector), new AutoCruise(0, 0, -44.2, 0, drive)),
     new FireNoteAuto(shooter, collector , drive , targeting, true , false),
     Commands.parallel(new AutoCruise(A_SPEED, -90, -21.76, (32 / 12.0), drive), new DeployCollectorCommand(collector)),
     Commands.waitSeconds(A_PAUSE),//end drive segment
-    Commands.deadline(new AutoCruise(A_SPEED, -21, -21, (284 / 12.0), drive) , new AutoPickup(collector)),
+    Commands.deadline(new AutoCruise(A_SPEED, -15, -15, (284 / 12.0), drive) , new AutoPickup(collector)),
     Commands.waitSeconds(A_PAUSE),//end drive segment
     Commands.parallel(new AutoCruise(A_SPEED, 159, -44.2, (269.72 / 12.0), drive) , new RetractCollectorCommand(collector)),
     Commands.waitSeconds(A_PAUSE),//end drive segment
@@ -142,47 +146,50 @@ public class RobotContainer {
   );
 
   private final SequentialCommandGroup denyCenterRed = new SequentialCommandGroup(
+    Commands.runOnce(drive::resetYaw, drive),
     new AutoCruise(0, 0, 44.2, 0, drive),
     new FireNoteAuto(shooter, collector , drive , targeting, false , false),
     Commands.parallel(new AutoCruise(A_SPEED, 90, 21.76, (32 / 12.0), drive), new DeployCollectorCommand(collector)),
-    Commands.waitSeconds(A_PAUSE),//end drive segment
-    Commands.deadline(new AutoCruise(A_SPEED, 21, 21, (284 / 12.0), drive) , new AutoPickup(collector)),
-    Commands.waitSeconds(A_PAUSE),//end drive segment
+    Commands.waitSeconds(.1),//end drive segment
+    Commands.deadline(new AutoCruise(A_SPEED, 15, 15, (284 / 12.0), drive) , new AutoPickup(collector)),
+    //Commands.waitSeconds(A_PAUSE),//end drive segment
     Commands.parallel(new AutoCruise(A_SPEED, 180, 39.27, (74.16 / 12.0), drive) , new RetractCollectorCommand(collector)),
     new FireNoteAuto(shooter, collector, drive, targeting, true, false),
     new DeployCollectorCommand(collector),
     Commands.deadline(new AutoCruise(A_SPEED, -32.67, -32.67, (112.28 / 12.0), drive) , new AutoPickup(collector)),
-    Commands.waitSeconds(A_PAUSE),//end drive segment
+    //Commands.waitSeconds(A_PAUSE),//end drive segment
     Commands.parallel(new AutoCruise(A_SPEED, 164.91, 21.76, (82.72 / 12.0), drive) , new RetractCollectorCommand(collector)),
     new FireNoteAuto(shooter, collector, drive, targeting, true, false),
     new DeployCollectorCommand(collector),
     Commands.deadline(new AutoCruise(A_SPEED, -47.23, -47.23, (125.56 / 12.0), drive) , new AutoPickup(collector)),
-    Commands.waitSeconds(A_PAUSE),//end drive segment
+    //Commands.waitSeconds(A_PAUSE),//end drive segment
     Commands.parallel(new AutoCruise(A_SPEED, 180, 0, (74 / 12.0), drive) , new RetractCollectorCommand(collector))
   );
   private final SequentialCommandGroup denyCenterBlue = new SequentialCommandGroup(
+    Commands.runOnce(drive::resetYaw, drive),
     new AutoCruise(0, 0, -44.2, 0, drive),
     new FireNoteAuto(shooter, collector , drive , targeting, false , false),
     Commands.parallel(new AutoCruise(A_SPEED, -90, -21.76, (32 / 12.0), drive), new DeployCollectorCommand(collector)),
-    Commands.waitSeconds(A_PAUSE),//end drive segment
-    Commands.deadline(new AutoCruise(A_SPEED, -21, -21, (284 / 12.0), drive) , new AutoPickup(collector)),
-    Commands.waitSeconds(A_PAUSE),//end drive segment
+    Commands.waitSeconds(.1),//end drive segment
+    Commands.deadline(new AutoCruise(A_SPEED, -15, -15, (284 / 12.0), drive) , new AutoPickup(collector)),
+    //Commands.waitSeconds(A_PAUSE),//end drive segment
     Commands.parallel(new AutoCruise(A_SPEED, 180, -39.27, (74.16 / 12.0), drive) , new RetractCollectorCommand(collector)),
     new FireNoteAuto(shooter, collector, drive, targeting, true, false),
     new DeployCollectorCommand(collector),
-    Commands.deadline(new AutoCruise(A_SPEED, 32.67, 32.67, (112.28 / 12.0), drive) , new AutoPickup(collector)),
-    Commands.waitSeconds(A_PAUSE),//end drive segment
+    Commands.deadline(new AutoCruise(A_SPEED, 35.67, 35.67, (112.28 / 12.0), drive) , new AutoPickup(collector)),
+   // Commands.waitSeconds(A_PAUSE),//end drive segment
     Commands.parallel(new AutoCruise(A_SPEED, -164.91, -21.76, (82.72 / 12.0), drive) , new RetractCollectorCommand(collector)),
     new FireNoteAuto(shooter, collector, drive, targeting, true, false),
     new DeployCollectorCommand(collector),
     Commands.deadline(new AutoCruise(A_SPEED, 47.23, 47.23, (125.56 / 12.0), drive) , new AutoPickup(collector)),
-    Commands.waitSeconds(A_PAUSE),//end drive segment
+    //Commands.waitSeconds(A_PAUSE),//end drive segment
     Commands.parallel(new AutoCruise(A_SPEED, 180, 0, (74 / 12.0), drive) , new RetractCollectorCommand(collector))
   );
 
   //get center to 2nd note position 62.33
   //for 3rd note from 2nd note: 210.6 back, 75 side, 223.6 hyp at 19.6 degrees then remove 20.5
   private final SequentialCommandGroup threeNoteCenterRed = new SequentialCommandGroup(
+    Commands.runOnce(drive::resetYaw, drive),
     Commands.deadline(new WaitCommand(.8), Commands.run(shooter :: fireNote , shooter)),
     Commands.deadline(new WaitCommand(.5), Commands.run(collector :: fire , collector)),
     Commands.runOnce(shooter :: stopShooter, shooter),
@@ -202,6 +209,7 @@ public class RobotContainer {
     new FireNoteAuto(shooter, collector , drive, targeting, false , false)
   );
   private final SequentialCommandGroup threeNoteCenterBlue = new SequentialCommandGroup(
+    Commands.runOnce(drive::resetYaw, drive),
     Commands.deadline(new WaitCommand(.8), Commands.run(shooter :: fireNote , shooter)),
     Commands.deadline(new WaitCommand(.5), Commands.run(collector :: fire , collector)),
     Commands.runOnce(shooter :: stopShooter, shooter),
@@ -222,7 +230,8 @@ public class RobotContainer {
   );
 
   private final SequentialCommandGroup fourNoteRed = new SequentialCommandGroup(
-     Commands.deadline(new WaitCommand(.8), Commands.run(shooter :: fireNote , shooter)),
+    Commands.runOnce(drive::resetYaw, drive),
+    Commands.deadline(new WaitCommand(.8), Commands.run(shooter :: fireNote , shooter)),
     Commands.deadline(new WaitCommand(.5), Commands.run(collector :: fire , collector)),
     Commands.runOnce(shooter :: stopShooter, shooter),
     Commands.runOnce(collector :: off, collector),//end note 1
@@ -245,6 +254,7 @@ public class RobotContainer {
     new FireNoteAuto(shooter, collector, drive, targeting, false , false)
   );
   private final SequentialCommandGroup fourNoteBlue = new SequentialCommandGroup(
+    Commands.runOnce(drive::resetYaw, drive),
     Commands.deadline(new WaitCommand(.8), Commands.run(shooter :: fireNote , shooter)),
     Commands.deadline(new WaitCommand(.5), Commands.run(collector :: fire , collector)),
     Commands.runOnce(shooter :: stopShooter, shooter),

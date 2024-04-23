@@ -36,11 +36,11 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Targeting extends SubsystemBase {
   //distances now in inches
-  private final double HEIGHT_OF_SPEAKER = 53.5; //57.125 use this for source as well
+  private final double HEIGHT_OF_SPEAKER = 57.125; //57.125 use this for source as well
   private final double HEIGHT_OF_AMP = 53.125; 
   private final double HEIGHT_OF_STAGE = 52; 
   private final double HEIGHT_OF_CAMERA = 12;
-  private final double CAMERA_MOUNT_ANGLE = 25.25;//43, 35.8
+  private final double CAMERA_MOUNT_ANGLE = 22.75;//43, 35.8
 
   private NetworkTable limelight;
   private NetworkTableEntry tv;
@@ -54,7 +54,7 @@ public class Targeting extends SubsystemBase {
   private int whichTarget;
   private boolean usingAlt;
   private SendableChooser<Boolean> sideChooser;
-  private final int[] redPipelines = {0,1,2,3,4};
+  private final int[] redPipelines = {1,1,2,3,4};
   private final int[] bluePipelines = {5,6,7,8,9};
   private int[] pipelines;
 
@@ -90,7 +90,7 @@ public class Targeting extends SubsystemBase {
     if(validTarget == 0){
       ledOn(0);
     }
-    else if(calcRange() < 90){
+    else if(calcRange() < 85){
       ledOn(2);
     }
     else{
@@ -109,6 +109,7 @@ public class Targeting extends SubsystemBase {
   }
 
   //0 speaker, 1 altSpeaker, 2 amp, 3 source left, 4 stage back
+  //red is 0 alt speaker, 1 speaker
   public void changeTag(int whichTarget){//set according to which tag is in which pipeline
     this.whichTarget = whichTarget;
     
@@ -173,6 +174,9 @@ public class Targeting extends SubsystemBase {
       height = HEIGHT_OF_STAGE;
     }
     double d = (height - HEIGHT_OF_CAMERA) / Math.tan(Math.toRadians(CAMERA_MOUNT_ANGLE + y));
+    if(getSide()){
+      d += .12*(d-36)-.32;
+    }
     return d-6;       
   }
 

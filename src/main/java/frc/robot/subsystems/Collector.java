@@ -9,8 +9,10 @@ import com.revrobotics.RelativeEncoder;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 
 public class Collector extends SubsystemBase {
   private CANSparkMax deploy;
@@ -22,10 +24,14 @@ public class Collector extends SubsystemBase {
   private boolean override;
 
   private DigitalInput primaryNoteDetect;
+  private int RUMBLE_TIMER = 25;
+
+  private CommandXboxController xboxD;
+  private CommandXboxController xboxO;
 
 
   /** Creates a new Collector. */
-  public Collector() {
+  public Collector(CommandXboxController xboxD , CommandXboxController xboxO) {
     deploy = new CANSparkMax(44, MotorType.kBrushless);
     deployEncoder = deploy.getEncoder();
     deploy.setInverted(true);
@@ -35,6 +41,8 @@ public class Collector extends SubsystemBase {
     override = false;
 
     primaryNoteDetect = new DigitalInput(0);
+    this.xboxD = xboxD;
+    this.xboxO = xboxO;
 
   }
 
@@ -42,6 +50,8 @@ public class Collector extends SubsystemBase {
   public void periodic() {
     SmartDashboard.putNumber("Collector Position", deployEncoder.getPosition());
     SmartDashboard.putBoolean("Have Note" , !primaryNoteDetect.get());
+    //if()
+    //xboxD.getHID().setRumble(RumbleType.kBothRumble , 1);
     // This method will be called once per scheduler run
   }
   public void enableOverride(){
@@ -120,7 +130,7 @@ public class Collector extends SubsystemBase {
   }
 
   public void fire(){
-    collect.set(1);
+    collect.set(1);//1
   }
 
   public void fireAmp(){

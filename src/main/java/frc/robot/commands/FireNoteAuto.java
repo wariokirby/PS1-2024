@@ -82,7 +82,7 @@ public class FireNoteAuto extends Command {
 
   public void newShooter(){
     if(noTarget && !secondShot){
-      shooter.fireNote(4700 , 1000);//range 81.75
+      shooter.fireNote(4700 , 1100);//range 81.75
     }
     else if(noTarget && Math.abs(drivetrain.getYaw()) > 5){
       shooter.fireNote(4700 , 900);//range 91.25 stage note
