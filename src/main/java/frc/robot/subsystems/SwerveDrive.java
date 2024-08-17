@@ -37,7 +37,7 @@ public class SwerveDrive extends SubsystemBase {
     backLeft = new SwervePod(2 , 7 , false);
     backRight = new SwervePod(3 , 8 , false);
     frontLeft = new SwervePod(5 , 5 , false);
-    frontRight = new SwervePod(4 , 4 , false);
+    frontRight = new SwervePod(4 , 14 , false);
 
     r = Math.sqrt((L * L) + (W * W));
     

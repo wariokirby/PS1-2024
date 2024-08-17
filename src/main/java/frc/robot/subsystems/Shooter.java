@@ -29,6 +29,10 @@ public class Shooter extends SubsystemBase {
   private PIDController bottomControl;
   private SimpleMotorFeedforward ff;
 
+  private double topShooterRowSpeed;
+  private double bottomShooterRowSpeed;
+  private boolean reachedMaxSpeed;
+
   /** Creates a new Shooter. */
   public Shooter() {
 
@@ -48,12 +52,26 @@ public class Shooter extends SubsystemBase {
     bottomControl = new PIDController(.002, 0, 0);
 
     ff = new SimpleMotorFeedforward(SHOOTER_FEEDFORWARD_KS, SHOOTER_FEEDFORWARD_KV);
+
+    topShooterRowSpeed = 0;
+    bottomShooterRowSpeed = 0;
+    reachedMaxSpeed = false;
   }
 
   @Override
   public void periodic() {
-    SmartDashboard.putNumber("Top Flywheel", topEncoder.getVelocity());
-    SmartDashboard.putNumber("Bottom Flywheel", bottomEncoder.getVelocity());
+
+    topShooterRowSpeed = topEncoder.getVelocity();
+    bottomShooterRowSpeed = bottomEncoder.getVelocity();
+
+    reachedMaxSpeed = topShooterRowSpeed >= 2000 && bottomShooterRowSpeed >= 4000; //<-default for now, but need to find
+                                                                                   //right distances for speeds through
+                                                                                   //bool function and use returned value
+
+    SmartDashboard.putNumber("Top Flywheel", topShooterRowSpeed);
+    SmartDashboard.putNumber("Bottom Flywheel", bottomShooterRowSpeed);
+   
+    SmartDashboard.putBoolean("Shoot Ready", reachedMaxSpeed);
     // This method will be called once per scheduler run
   }
 
@@ -73,14 +91,16 @@ public class Shooter extends SubsystemBase {
   public void fireNote(double upper , double lower){
     double setpoint = upper;//<30  2000 4000
     double setpoint2 = lower;//30-36 2000 2000
-    flywheelTopLeft.setVoltage(topControl.calculate(topEncoder.getVelocity(), setpoint) + ff.calculate(setpoint));
-    flywheelBottomLeft.setVoltage(bottomControl.calculate(bottomEncoder.getVelocity() , setpoint2) + ff.calculate(setpoint2));
+
+    flywheelTopLeft.setVoltage(topControl.calculate(topShooterRowSpeed, setpoint) + ff.calculate(setpoint));
+    flywheelBottomLeft.setVoltage(bottomControl.calculate(bottomShooterRowSpeed , setpoint2) + ff.calculate(setpoint2));
   }
   public void fireNote(){
     double setpoint = 2000;//when all else fails 2000 4000 against the sub
     double setpoint2 = 4000;
-    flywheelTopLeft.setVoltage(topControl.calculate(topEncoder.getVelocity(), setpoint) + ff.calculate(setpoint));
-    flywheelBottomLeft.setVoltage(bottomControl.calculate(bottomEncoder.getVelocity() , setpoint2) + ff.calculate(setpoint2));
+
+    flywheelTopLeft.setVoltage(topControl.calculate(topShooterRowSpeed, setpoint) + ff.calculate(setpoint));
+    flywheelBottomLeft.setVoltage(bottomControl.calculate(bottomShooterRowSpeed, setpoint2) + ff.calculate(setpoint2));
   }
 
   public void fireNoteWall(){//in case of wall
@@ -88,16 +108,18 @@ public class Shooter extends SubsystemBase {
     //double setpoint2 = 2000;
     double setpoint = 4700;//new shooter
     double setpoint2 = 1100;
-    flywheelTopLeft.setVoltage(topControl.calculate(topEncoder.getVelocity(), setpoint) + ff.calculate(setpoint));
-    flywheelBottomLeft.setVoltage(bottomControl.calculate(bottomEncoder.getVelocity() , setpoint2) + ff.calculate(setpoint2));
 
+    flywheelTopLeft.setVoltage(topControl.calculate(topShooterRowSpeed, setpoint) + ff.calculate(setpoint));
+    flywheelBottomLeft.setVoltage(bottomControl.calculate(bottomShooterRowSpeed , setpoint2) + ff.calculate(setpoint2));
+    
   }
 
   public void fireNoteAmp() {
     double setPoint = 500;
     double setPoint2 = 1350;
-    flywheelTopLeft.setVoltage(topControl.calculate(topEncoder.getVelocity(), setPoint) + ff.calculate(setPoint));
-    flywheelBottomLeft.setVoltage((bottomControl.calculate(bottomEncoder.getVelocity(), setPoint2) + ff.calculate(setPoint2)));
+
+    flywheelTopLeft.setVoltage(topControl.calculate(topShooterRowSpeed, setPoint) + ff.calculate(setPoint));
+    flywheelBottomLeft.setVoltage((bottomControl.calculate(bottomShooterRowSpeed, setPoint2) + ff.calculate(setPoint2)));
 
   }
 
