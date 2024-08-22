@@ -64,9 +64,7 @@ public class Shooter extends SubsystemBase {
     topShooterRowSpeed = topEncoder.getVelocity();
     bottomShooterRowSpeed = bottomEncoder.getVelocity();
 
-    reachedMaxSpeed = topShooterRowSpeed >= 2000 && bottomShooterRowSpeed >= 4000; //<-default for now, but need to find
-                                                                                   //right distances for speeds through
-                                                                                   //bool function and use returned value
+    reachedMaxSpeed = topShooterRowSpeed >= 2000 && bottomShooterRowSpeed >= 4000; //max speed, need to find distances with calcRange(), then find suited speed values for an if/else or switch/case for dependent ranges
 
     SmartDashboard.putNumber("Top Flywheel", topShooterRowSpeed);
     SmartDashboard.putNumber("Bottom Flywheel", bottomShooterRowSpeed);
