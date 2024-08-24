@@ -156,28 +156,18 @@ public class Targeting extends SubsystemBase {
   }
 
   //calculate horizontal range to target
-  public double calcRange() {
+  public double calcRange(){
     double height;
-    if(whichTarget == 0){
-      height = HEIGHT_OF_SPEAKER;
-    }
-    else if(whichTarget == 1){
-      height = HEIGHT_OF_SPEAKER;
-    }
-    else if(whichTarget == 2){
-      height = HEIGHT_OF_AMP;
-    }
-    else if(whichTarget == 3){
-      height = HEIGHT_OF_SPEAKER;
-    }
-    else{
-      height = HEIGHT_OF_STAGE;
-    }
+    if(whichTarget == 0) height = HEIGHT_OF_SPEAKER;
+    else if(whichTarget == 1) height = HEIGHT_OF_SPEAKER;
+    else if(whichTarget == 2) height = HEIGHT_OF_AMP;
+    else if(whichTarget == 3) height = HEIGHT_OF_SPEAKER;
+    else height = HEIGHT_OF_STAGE;
+    
     double d = (height - HEIGHT_OF_CAMERA) / Math.tan(Math.toRadians(CAMERA_MOUNT_ANGLE + y));
-    if(getSide()){
-      d += .12*(d-36)-.32;
-    }
-    return d-6;       
+    if(getSide()) d += .12*(d-36)-.32;
+    
+    return d - 6;       
   }
 
 }

@@ -4,6 +4,8 @@
 
 package frc.robot.subsystems;
 
+import java.lang.annotation.Target;
+
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.CANSparkLowLevel.MotorType;
@@ -33,10 +35,11 @@ public class Shooter extends SubsystemBase {
   private double bottomShooterRowSpeed;
   private boolean reachedMaxSpeed;
 
+  private Targeting rangeCalculator;
+
   /** Creates a new Shooter. */
-  public Shooter() {
-
-
+  public Shooter() 
+  {
     flywheelTopLeft = new CANSparkMax(40, MotorType.kBrushless);
     flywheelTopLeft.setInverted(true);
     flywheelTopFollower = new CANSparkMax(41, MotorType.kBrushless);
@@ -56,15 +59,23 @@ public class Shooter extends SubsystemBase {
     topShooterRowSpeed = 0;
     bottomShooterRowSpeed = 0;
     reachedMaxSpeed = false;
+
+    rangeCalculator = new Targeting();
   }
 
   @Override
-  public void periodic() {
-
+  public void periodic(){
     topShooterRowSpeed = topEncoder.getVelocity();
     bottomShooterRowSpeed = bottomEncoder.getVelocity();
 
-    reachedMaxSpeed = topShooterRowSpeed >= 2000 && bottomShooterRowSpeed >= 4000; //max speed, need to find distances with calcRange(), then find suited speed values for an if/else or switch/case for dependent ranges
+
+    //max speed, need to find distances with calcRange(), 
+    //then find suited speed values for an if/else or switch/case for dependent ranges
+
+    double distance = rangeCalculator.calcRange();
+    if (distance > 200) reachedMaxSpeed = topShooterRowSpeed >= 2000 && bottomShooterRowSpeed >= 4000; 
+    else if (distance > 100) reachedMaxSpeed = topShooterRowSpeed >= 4700 && bottomShooterRowSpeed >= 1100;
+    else if (distance > 0) reachedMaxSpeed = topShooterRowSpeed >= 500 && bottomShooterRowSpeed >= 1350;
 
     SmartDashboard.putNumber("Top Flywheel", topShooterRowSpeed);
     SmartDashboard.putNumber("Bottom Flywheel", bottomShooterRowSpeed);
