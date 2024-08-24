@@ -6,6 +6,7 @@ package frc.robot.subsystems;
 
 import com.ctre.phoenix.sensors.PigeonIMU;
 
+import edu.wpi.first.math.Vector;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
@@ -96,6 +97,13 @@ public class SwerveDrive extends SubsystemBase {
     SmartDashboard.putBoolean("IMU Health", imuErrorCode == 0);
     SmartDashboard.putNumber("IMU Yaw", ypr[0]);
     SmartDashboard.putNumber("AVG Distance", getAverageDistance() * 12);
+
+    double[] quaternionValues = new double[4];
+		imu.get6dQuaternion(quaternionValues);
+    SmartDashboard.putNumber("IMU W", quaternionValues[0]);
+    SmartDashboard.putNumber("IMU X", quaternionValues[1]);
+    SmartDashboard.putNumber("IMU Y", quaternionValues[2]);
+    SmartDashboard.putNumber("IMU Z", quaternionValues[3]);
   }
 
   public void podDriver(double x1 , double y1 , double x2 , boolean turnDZ , boolean driveDZ){

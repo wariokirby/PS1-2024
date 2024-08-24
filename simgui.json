@@ -1,0 +1,28 @@
+{
+  "NTProvider": {
+    "types": {
+      "/FMSInfo": "FMSInfo",
+      "/SmartDashboard/Auto Choose": "String Chooser",
+      "/SmartDashboard/red or Blue": "String Chooser"
+    },
+    "windows": {
+      "/SmartDashboard/Auto Choose": {
+        "window": {
+          "visible": true
+        }
+      }
+    }
+  },
+  "NetworkTables": {
+    "transitory": {
+      "PathPlanner": {
+        "HotReload": {
+          "open": true
+        }
+      }
+    }
+  },
+  "NetworkTables Info": {
+    "visible": true
+  }
+}
