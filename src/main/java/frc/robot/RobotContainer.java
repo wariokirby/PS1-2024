@@ -325,7 +325,7 @@ public class RobotContainer {
    * joysticks}.
    */
   private void configureBindings() {
-    xbox.back().onTrue(Commands.runOnce(drive :: resetYaw , drive));
+    xbox.a().onTrue(Commands.runOnce(drive :: resetYaw , drive));
     xbox.rightTrigger()
       .onTrue(Commands.runOnce(drive :: turboOn, drive))
       .onFalse(Commands.runOnce(drive :: turboOff, drive));
